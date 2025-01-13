@@ -69,4 +69,4 @@ jobs:
         script_stop: true
         script: |
           sudo fuser -k -n tcp 4165 || true
-          sudo nohup java -jar cicdtest.jar > ./output.log 2>&1 &
+          sudo nohup java -jar keodam-main.jar > ./output.log 2>&1 &
