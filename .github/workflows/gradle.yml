@@ -39,7 +39,7 @@ jobs:
 
     - name: Build with Gradle Wrapper
       run: |
-        chmod -x ./gradlew
+        chmod +x ./gradlew
         ./gradlew clean build
 
     - name: Modify build file name
