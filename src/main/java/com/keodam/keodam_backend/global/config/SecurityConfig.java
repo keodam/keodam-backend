@@ -53,6 +53,7 @@ public class SecurityConfig {
     public RequestHeaderAuthenticationFilter requestHeaderAuthenticationFilter() {
         RequestHeaderAuthenticationFilter filter = new RequestHeaderAuthenticationFilter();
         filter.setPrincipalRequestHeader("id_token");
+        filter.setExceptionIfHeaderMissing(false);
         filter.setAuthenticationManager(authenticationManager());
         filter.setAuthenticationSuccessHandler(idTokenLoginSuccessHandler);
         return filter;
