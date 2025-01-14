@@ -18,6 +18,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
 
 @Configuration
@@ -51,11 +53,14 @@ public class SecurityConfig {
 
     @Bean
     public RequestHeaderAuthenticationFilter requestHeaderAuthenticationFilter() {
+        RequestMatcher requestMatcher = new AntPathRequestMatcher("/auth/login");
         RequestHeaderAuthenticationFilter filter = new RequestHeaderAuthenticationFilter();
+
+        filter.setRequiresAuthenticationRequestMatcher(requestMatcher);
         filter.setPrincipalRequestHeader("id_token");
-        filter.setExceptionIfHeaderMissing(false);
         filter.setAuthenticationManager(authenticationManager());
         filter.setAuthenticationSuccessHandler(idTokenLoginSuccessHandler);
+
         return filter;
     }
 
