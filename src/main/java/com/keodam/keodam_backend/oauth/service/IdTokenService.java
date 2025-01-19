@@ -31,14 +31,20 @@ public class IdTokenService {
 
     public CustomIdTokenUser loadUserByAccessToken(String accessToken){
 
-        DecodedJWT decodedJWT = JWT.decode(accessToken);
-        SocialType socialType = checkIssuer(decodedJWT.getIssuer());
+        DecodedJWT decodedJWT;
+        SocialType socialType;
+        User findUser;
+        try {
+            decodedJWT = JWT.decode(accessToken);
+            socialType = checkIssuer(decodedJWT.getIssuer());
 
-        Map<String, Object> attributes = tokenToattributes(accessToken, socialType);
-        IdTokenAttributes idTokenAttributes = new IdTokenAttributes(attributes, socialType);
+            Map<String, Object> attributes = tokenToattributes(accessToken, socialType);
+            IdTokenAttributes idTokenAttributes = new IdTokenAttributes(attributes, socialType);
 
-        User findUser = checkUser(idTokenAttributes);
-
+            findUser = checkUser(idTokenAttributes);
+        } catch (Exception e) {
+            throw e;
+        }
         return new CustomIdTokenUser(
                 Collections.singleton(new SimpleGrantedAuthority(findUser.getRoleType().toString())),
                 findUser.getOAuthId(),
