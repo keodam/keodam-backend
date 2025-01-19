@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter;
@@ -70,14 +71,18 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager() {
         return authentication -> {
             String token = (String) authentication.getPrincipal();
-            CustomIdTokenUser user = idTokenService.loadUserByAccessToken(token);
+            try {
+                CustomIdTokenUser user = idTokenService.loadUserByAccessToken(token);
 
-            // PreAuthenticatedAuthenticationToken 생성
-            return new PreAuthenticatedAuthenticationToken(
-                    user,
-                    token,
-                    user.getAuthorities()
-            );
+                // PreAuthenticatedAuthenticationToken 생성
+                return new PreAuthenticatedAuthenticationToken(
+                        user,
+                        token,
+                        user.getAuthorities()
+                );
+            } catch (Exception e) {
+                throw new RuntimeException(e.getMessage());
+            }
         };
     }
 
