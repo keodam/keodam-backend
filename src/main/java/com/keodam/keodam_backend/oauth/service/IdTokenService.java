@@ -43,7 +43,7 @@ public class IdTokenService {
 
             findUser = checkUser(idTokenAttributes);
         } catch (Exception e) {
-            throw e;
+            throw new RuntimeException("엑세스 토큰 인증 오류 " + e.getMessage());
         }
         return new CustomIdTokenUser(
                 Collections.singleton(new SimpleGrantedAuthority(findUser.getRoleType().toString())),
