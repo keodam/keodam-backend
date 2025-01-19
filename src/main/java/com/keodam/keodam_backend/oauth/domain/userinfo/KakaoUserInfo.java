@@ -8,11 +8,6 @@ public class KakaoUserInfo extends UserInfo{
     @Override
     public String getId(){ return String.valueOf(attributes.get("sub")); }
 
-    @Override
-    public String getNickname(){ return (String) attributes.get("nickname"); }
-
-    @Override
-    public String getImageUrl(){ return (String) attributes.get("thumbnail_image_url"); }
 
     @Override
     public String getEmail(){ return (String) attributes.get("email"); }

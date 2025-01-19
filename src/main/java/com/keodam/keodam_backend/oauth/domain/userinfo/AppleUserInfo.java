@@ -1,12 +1,10 @@
 package com.keodam.keodam_backend.oauth.domain.userinfo;
 
-import lombok.extern.slf4j.Slf4j;
 import java.util.Map;
 
-@Slf4j
-public class GoogleUserInfo extends UserInfo {
+public class AppleUserInfo extends UserInfo {
 
-    public GoogleUserInfo(Map<String, Object> attributes) { super(attributes); log.info(attributes.toString()); }
+    public AppleUserInfo(Map<String, Object> attributes) { super(attributes); }
 
     @Override
     public String getId(){ return (String) attributes.get("sub"); }

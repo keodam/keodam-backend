@@ -3,6 +3,7 @@ package com.keodam.keodam_backend.oauth.domain;
 import com.keodam.keodam_backend.app.domain.RoleType;
 import com.keodam.keodam_backend.app.domain.SocialType;
 import com.keodam.keodam_backend.app.domain.User;
+import com.keodam.keodam_backend.oauth.domain.userinfo.AppleUserInfo;
 import com.keodam.keodam_backend.oauth.domain.userinfo.GoogleUserInfo;
 import com.keodam.keodam_backend.oauth.domain.userinfo.KakaoUserInfo;
 import com.keodam.keodam_backend.oauth.domain.userinfo.UserInfo;
@@ -21,7 +22,7 @@ public class IdTokenAttributes {
         this.socialType = socialType;
         if(socialType == SocialType.GOOGLE) this.userInfo = new GoogleUserInfo(attributes);
         if(socialType == SocialType.KAKAO) this.userInfo = new KakaoUserInfo(attributes);
-        //if(socialType == SocialType.APPLE) this.userInfo = new AppleUserInfo(attributes);
+        if(socialType == SocialType.APPLE) this.userInfo = new AppleUserInfo(attributes);
     }
 
     public User toUser() {

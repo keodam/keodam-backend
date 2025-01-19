@@ -5,7 +5,7 @@ import com.keodam.keodam_backend.global.security.JwtAuthenticationProcessingFilt
 import com.keodam.keodam_backend.global.security.JwtService;
 import com.keodam.keodam_backend.oauth.domain.CustomIdTokenUser;
 import com.keodam.keodam_backend.oauth.service.IdTokenService;
-import com.keodam.keodam_backend.oauth.service.handler.IdTokenLoginSuccessHandler;
+import com.keodam.keodam_backend.oauth.service.handler.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +28,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 public class SecurityConfig {
 
     private final IdTokenLoginSuccessHandler idTokenLoginSuccessHandler;
+    private final IdTokenLoginFailureHandler idTokenLoginFailureHandler;
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final IdTokenService idTokenService;
@@ -60,6 +61,7 @@ public class SecurityConfig {
         filter.setPrincipalRequestHeader("id_token");
         filter.setAuthenticationManager(authenticationManager());
         filter.setAuthenticationSuccessHandler(idTokenLoginSuccessHandler);
+        filter.setAuthenticationFailureHandler(idTokenLoginFailureHandler);
 
         return filter;
     }
