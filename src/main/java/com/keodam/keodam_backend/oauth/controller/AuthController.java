@@ -22,8 +22,6 @@ public class AuthController {
             required = true,
             in = ParameterIn.HEADER
     )
-    public String login() {
-
-        return "필터에서 처리";
+    public void login() {
     }
 }
