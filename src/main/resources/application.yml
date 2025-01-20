@@ -1,0 +1,41 @@
+spring:
+  datasource:
+    # MySQL
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://146.56.175.179:3306/keodamdb?&serverTimezone=Asia/Seoul
+    username: jangsumoja
+    password: skhugdg2024
+
+    jpa:
+      hibernate:
+        ddl-auto: update
+        naming:
+          physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      properties:
+        hibernate:
+          format_sql: true
+          default_batch_fetch_size: 1000 #??? ??
+
+jwt:
+  secretKey: f4e6cdb3bfe18ef04ffe31d054a56099649a10d651aa5e7e719276b9a6787cc4c5020edbf80b705724ce5de1ae77dd9487f5bc5ba29de447f7b527210f595346
+
+  access:
+    expiration: 3600000
+    header: AccessToken
+
+  refresh:
+    expiration: 3600000
+    header: RefreshToken
+
+springdoc:
+  swagger-ui:
+    path: /api-test
+
+    groups-order: DESC
+
+    tags-sorter: alpha
+
+    operations-sorter: method
+
+  paths-to-match:
+    - /**
