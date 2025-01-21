@@ -26,6 +26,7 @@ public class IdTokenLoginSuccessHandler implements AuthenticationSuccessHandler 
         log.info("완료");
         CustomIdTokenUser idTokenUser = (CustomIdTokenUser) authentication.getPrincipal();
         response.setStatus(HttpServletResponse.SC_OK);
+        response.setHeader("page", String.valueOf(idTokenUser.getRoleType()));
         String accessToken = jwtService.createAccessToken(idTokenUser.getEmail());
         String refreshToken = jwtService.createRefreshToken();
         jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
