@@ -2,9 +2,9 @@ name: Docker Image CI/CD
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: [ "feat/#6" ]
   pull_request:
-    branches: [ "develop" ]
+    branches: [ "feat/#6" ]
 
 jobs:
   build:
@@ -13,27 +13,33 @@ jobs:
       contents: read
 
     steps:
+      # 코드 체크아웃
       - uses: actions/checkout@v4
 
+      # JDK 17 설정
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
+      # application.yml 파일 설정
       - name: Setup application.yml
         run: |
           mkdir -p src/main/resources
           echo "${{ secrets.APPLICATION_YML }}" > ./src/main/resources/application.yml
 
+      # Gradle 설정
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582
 
+      # Gradle로 빌드
       - name: Build with Gradle Wrapper
         run: |
           chmod +x ./gradlew
           ./gradlew clean build -x test
 
+      # 빌드된 JAR 파일 이름 수정
       - name: Modify build file name
         run: cp ./build/libs/*SNAPSHOT.jar ./keodam-main.jar
 
@@ -45,17 +51,18 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2  # 원하는 리전으로 변경
 
+      # AWS ECR 로그인 명령
       - name: Login to Amazon ECR
         id: login-ecr
         run: |
-          aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_REPOSITORY }}
+          aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_REPOSITORY }}.dkr.ecr.ap-northeast-2.amazonaws.com
 
       # Docker 이미지 빌드 및 태깅
       - name: Build and tag Docker image
         run: |
-          docker build -t ${{ secrets.AWS_ECR_REPOSITORY }}:latest .
+          docker build -t ${{ secrets.AWS_ECR_REPOSITORY }}.dkr.ecr.ap-northeast-2.amazonaws.com/keodam-backend:latest .
 
-      # Docker 이미지 ECR로 푸시
+      # Docker 이미지를 ECR로 푸시
       - name: Push Docker image to Amazon ECR
         run: |
-          docker push ${{ secrets.AWS_ECR_REPOSITORY }}:latest
+          docker push ${{ secrets.AWS_ECR_REPOSITORY }}.dkr.ecr.ap-northeast-2.amazonaws.com/keodam-backend:latest
