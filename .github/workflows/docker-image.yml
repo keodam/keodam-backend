@@ -34,7 +34,14 @@ jobs:
         ./gradlew clean build -x test
     - name: Modify build file name
       run: cp ./build/libs/*SNAPSHOT.jar ./keodam-main.jar
-
+      
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v3
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-northeast-2
+        
     - name: Login to Amazon ECR
       run: |
         aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
