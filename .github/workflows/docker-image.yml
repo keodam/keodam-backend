@@ -68,7 +68,6 @@ jobs:
           host: ${{ secrets.KEODAM_BACKEND_SSH_IP }}
           username: ${{ secrets.KEODAM_BACKEND_SSH_ID }}
           key: ${{ secrets.KEODAM_BACKEND_SECRET }}
-          script_stop: true
           script: |
             # 기존 컨테이너 중지 및 제거
             docker stop keodam-backend || true
