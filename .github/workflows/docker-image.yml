@@ -37,43 +37,25 @@ jobs:
       - name: Modify build file name
         run: cp ./build/libs/*SNAPSHOT.jar ./keodam-main.jar
 
-      - name: Login to Amazon ECR
-        run: |
-          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY }}
-
-      - name: Build and Push Docker Image
-        run: |
-          docker build -t keodam-backend .
-          docker tag keodam-backend:latest ${{ secrets.ECR_REPOSITORY }}/keodam:latest
-          docker push ${{ secrets.ECR_REPOSITORY }}/keodam:latest
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Deploy to EC2 via SSH
-        uses: appleboy/ssh-action@master
+      # AWS ECR 로그인
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
         with:
-          host: ${{ secrets.KEODAM_BACKEND_SSH_IP }}
-          username: ${{ secrets.KEODAM_BACKEND_SSH_ID }}
-          key: ${{ secrets.KEODAM_BACKEND_SECRET }}
-          script: |
-            # 기존 컨테이너 중지 및 제거
-            sudo aws ecr batch-delete-image --profile ${{ secrets.IAM_PROFILE_USERNAME }} --repository-name keodam-backend --image-ids imageTag=latest
-            
-            #ECR Login
-            sudo aws ecr get-login-password --profile ${{ secrets.IAM_PROFILE_USERNAME }} --region ap-northeast-2 | sudo docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY }}
-            # 최신 Docker 이미지 Pull
-            sudo docker ps -q | xargs -r docker stop
-            sudo docker ps -asq | xargs -r docker rm
-            sudo docker images -q | xargs -r docker rmi
-            sudo docker system prune -af
-            sudo docker pull ${{ secrets.ECR_REPOSITORY }}
-            
-            # 새 컨테이너 실행
-            sudo docker stop hdev_server || true
-            sudo docker rm hdev_server || true
-            sudo docker run -d --env-file ~/root/.env -p 8080:8080 ${{ secrets.ECR_REPOSITORY }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2  # 원하는 리전으로 변경
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        run: |
+          aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_REPOSITORY }}
+
+      # Docker 이미지 빌드 및 태깅
+      - name: Build and tag Docker image
+        run: |
+          docker build -t ${{ secrets.AWS_ECR_REPOSITORY }}:latest .
+
+      # Docker 이미지 ECR로 푸시
+      - name: Push Docker image to Amazon ECR
+        run: |
+          docker push ${{ secrets.AWS_ECR_REPOSITORY }}:latest
