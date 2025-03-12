@@ -35,7 +35,7 @@ jobs:
         ./gradlew clean build -x test
 
     - name: Modify build file name
-      run: mv ./build/libs/*SNAPSHOT.jar ./keodam-main.jar
+      run: cp ./build/libs/*SNAPSHOT.jar ./keodam-main.jar
 
     - name: Login to Amazon ECR
       run: |
