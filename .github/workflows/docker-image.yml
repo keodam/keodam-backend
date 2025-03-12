@@ -13,69 +13,61 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
 
-      - name: Setup application.yml
-        run: |
-          mkdir -p src/main/resources
-          echo "${{ secrets.APPLICATION_YML }}" > ./src/main/resources/application.yml
+    - name: Setup application.yml
+      run: |
+        mkdir -p src/main/resources
+        echo "${{ secrets.APPLICATION_YML }}" > ./src/main/resources/application.yml
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582
 
-      - name: Build with Gradle Wrapper
-        run: |
-          chmod +x ./gradlew
-          ./gradlew clean build -x test
+    - name: Build with Gradle Wrapper
+      run: |
+        chmod +x ./gradlew
+        ./gradlew clean build -x test
 
-      - name: Modify build file name
-        run: cp ./build/libs/*SNAPSHOT.jar ./keodam-main.jar
+    - name: Modify build file name
+      run: cp ./build/libs/*SNAPSHOT.jar ./keodam-main.jar
 
-      - name: Set Docker permissions (해결 1️⃣)
-        run: |
-          sudo chmod 666 /var/run/docker.sock
+    - name: Login to Amazon ECR
+      run: |
+        aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY }}
 
-      - name: Login to Amazon ECR (해결 2️⃣)
-        run: |
-          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY }}
-
-      - name: Build and Push Docker Image
-        run: |
-          docker build -t keodam-backend .
-          docker tag keodam-backend:latest ${{ secrets.ECR_REPOSITORY }}/keodam-backend:latest
-          docker push ${{ secrets.ECR_REPOSITORY }}/keodam-backend:latest
+    - name: Build and Push Docker Image
+      run: |
+        docker build -t keodam-backend .
+        docker tag keodam-backend:latest ${{ secrets.ECR_REPOSITORY }}/keodam:latest
+        docker push ${{ secrets.ECR_REPOSITORY }}/keodam:latest
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
 
     steps:
-      - name: Set Docker permissions (해결 1️⃣)
-        run: |
-          sudo chmod 666 /var/run/docker.sock
+    - name: Deploy to EC2 via SSH
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.KEODAM_BACKEND_SSH_IP }}
+        username: ${{ secrets.KEODAM_BACKEND_SSH_ID }}
+        key: ${{ secrets.KEODAM_BACKEND_SECRET }}
+        script: |
+          # 기존 컨테이너 중지 및 제거
+          sudo docker stop keodam-backend || true
+          sudo docker rm keodam-backend || true
 
-      - name: Deploy to EC2 via SSH (해결 3️⃣)
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.KEODAM_BACKEND_SSH_IP }}
-          username: ${{ secrets.KEODAM_BACKEND_SSH_ID }}
-          key: ${{ secrets.KEODAM_BACKEND_SECRET }}
-          script: |
-            # 기존 컨테이너 중지 및 제거
-            docker stop keodam-backend || true
-            docker rm keodam-backend || true
-            
-            # 최신 Docker 이미지 Pull (해결 2️⃣ + 3️⃣)
-            aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY }} --no-tty
-            docker pull ${{ secrets.ECR_REPOSITORY }}/keodam-backend:latest
+          # 최신 Docker 이미지 Pull
+          sudo aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY }}
+          sudo docker pull ${{ secrets.ECR_REPOSITORY }}/keodam-backend:latest
 
-            # 새 컨테이너 실행
-            docker run -d --name keodam-backend -p 8080:8080 ${{ secrets.ECR_REPOSITORY }}/keodam-backend:latest
+          # 새 컨테이너 실행
+          sudo docker run -d --name keodam-backend -p 8080:8080 ${{ secrets.ECR_REPOSITORY }}/keodam-backend:latest
