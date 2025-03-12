@@ -51,18 +51,17 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2  # 원하는 리전으로 변경
 
-      # AWS ECR 로그인 명령
+      # Docker 로그인
       - name: Login to Amazon ECR
-        id: login-ecr
         run: |
-          aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_REPOSITORY }}.dkr.ecr.ap-northeast-2.amazonaws.com
+          docker login -u AWS -p $(aws ecr get-login-password --region ap-northeast-2) ${{ secrets.AWS_ECR_REPOSITORY }}
 
       # Docker 이미지 빌드 및 태깅
       - name: Build and tag Docker image
         run: |
-          docker build -t ${{ secrets.AWS_ECR_REPOSITORY }}.dkr.ecr.ap-northeast-2.amazonaws.com/keodam-backend:latest .
+          docker build -t ${{ secrets.AWS_ECR_REPOSITORY }}:latest .
 
       # Docker 이미지를 ECR로 푸시
       - name: Push Docker image to Amazon ECR
         run: |
-          docker push ${{ secrets.AWS_ECR_REPOSITORY }}.dkr.ecr.ap-northeast-2.amazonaws.com/keodam-backend:latest
+          docker push ${{ secrets.AWS_ECR_REPOSITORY }}:latest
