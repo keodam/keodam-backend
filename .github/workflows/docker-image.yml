@@ -43,8 +43,8 @@ jobs:
     - name: Build and Push Docker Image
       run: |
         docker build -t keodam-backend .
-        docker tag keodam-backend:latest ${{ secrets.ECR_REPOSITORY }}:latest
-        docker push ${{ secrets.ECR_REPOSITORY }}:latest
+        docker tag keodam-backend:latest ${{ secrets.ECR_REPOSITORY }}/keodam-backend:latest
+        docker push ${{ secrets.ECR_REPOSITORY }}/keodam-backend:latest
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -63,6 +63,6 @@ jobs:
           sudo docker rm keodam-backend || true
           # 최신 Docker 이미지 Pull
           sudo aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY }}
-          sudo docker pull ${{ secrets.ECR_REPOSITORY }}:latest
+          sudo docker pull ${{ secrets.ECR_REPOSITORY }}/keodam-backend:latest
           # 새 컨테이너 실행
-          sudo docker run -d --name keodam-backend -p 8080:8080 ${{ secrets.ECR_REPOSITORY }}:latest
+          sudo docker run -d --name keodam-backend -p 8080:8080 ${{ secrets.ECR_REPOSITORY }}/keodam-backend:latest
