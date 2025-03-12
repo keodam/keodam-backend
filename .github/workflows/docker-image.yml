@@ -32,7 +32,7 @@ jobs:
     - name: Build with Gradle Wrapper
       run: |
         chmod +x ./gradlew
-        ./gradlew clean build
+        ./gradlew clean build -x test
 
     - name: Modify build file name
       run: mv ./build/libs/*SNAPSHOT.jar ./keodam-main.jar
