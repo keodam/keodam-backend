@@ -43,8 +43,8 @@ jobs:
     - name: Build and Push Docker Image
       run: |
         docker build -t keodam-backend .
-        docker tag keodam-backend:latest ${{ secrets.ECR_REPOSITORY }}/keodam:latest
-        docker push ${{ secrets.ECR_REPOSITORY }}/keodam:latest
+        docker tag keodam-backend:latest ${{ secrets.ECR_REPOSITORY }}:latest
+        docker push ${{ secrets.ECR_REPOSITORY }}:latest
   deploy:
     needs: build
     runs-on: ubuntu-latest
