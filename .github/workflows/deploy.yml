@@ -65,8 +65,11 @@ jobs:
             sudo docker stop keodam-backend || true
             sudo docker rm keodam-backend || true
             
-            # 최신 Docker 이미지 Pull
+            # Docker 인증 초기화 및 재로그인
+            sudo docker logout ${{ secrets.ECR_REPOSITORY }} || true
             sudo aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY }}
+
+            # 최신 Docker 이미지 Pull
             sudo docker pull ${{ secrets.ECR_REPOSITORY }}/keodam-backend:latest
             
             # 새 컨테이너 실행
