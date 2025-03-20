@@ -2,7 +2,7 @@ package com.keodam.keodam_backend.oauth.domain;
 
 import com.keodam.keodam_backend.app.domain.RoleType;
 import com.keodam.keodam_backend.app.domain.SocialType;
-import com.keodam.keodam_backend.app.domain.User;
+import com.keodam.keodam_backend.app.user.domain.User;
 import com.keodam.keodam_backend.oauth.domain.userinfo.AppleUserInfo;
 import com.keodam.keodam_backend.oauth.domain.userinfo.GoogleUserInfo;
 import com.keodam.keodam_backend.oauth.domain.userinfo.KakaoUserInfo;
@@ -10,7 +10,6 @@ import com.keodam.keodam_backend.oauth.domain.userinfo.UserInfo;
 import lombok.Getter;
 
 import java.util.Map;
-import java.util.Objects;
 
 @Getter
 public class IdTokenAttributes {

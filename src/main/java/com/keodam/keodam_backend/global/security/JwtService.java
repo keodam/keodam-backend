@@ -1,7 +1,7 @@
 package com.keodam.keodam_backend.global.security;
 
 import com.auth0.jwt.algorithms.Algorithm;
-import com.keodam.keodam_backend.app.repository.UserRepository;
+import com.keodam.keodam_backend.app.user.repository.UserRepository;
 import jakarta.servlet.http.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
