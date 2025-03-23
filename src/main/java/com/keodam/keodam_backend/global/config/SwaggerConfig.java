@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SwaggerConfig {
+
     @Bean
     public OpenAPI openAPI() {
         String jwt = "JWT";
@@ -21,10 +22,9 @@ public class SwaggerConfig {
                 .bearerFormat("JWT")
         );
         return new OpenAPI()
-                .components(new Components())
+                .components(components)
                 .info(apiInfo())
-                .addSecurityItem(securityRequirement)
-                .components(components);
+                .addSecurityItem(securityRequirement);
     }
     private Info apiInfo() {
         return new Info()
