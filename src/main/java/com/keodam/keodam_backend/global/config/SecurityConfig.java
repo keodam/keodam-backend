@@ -44,11 +44,15 @@ public class SecurityConfig {
                 // 세션 사용X, JWT 사용
                 .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/signup").authenticated())
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/**").permitAll());
-
-
+                .authorizeHttpRequests(auth -> auth
+                                .requestMatchers(
+                                        "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**",
+                                        "/swagger-resources/**", "/webjars/**"
+                                ).permitAll()
+                                .requestMatchers("/signup").authenticated()
+                                .anyRequest().permitAll()
+                        // 개발 편의성을 위해 한시적으로 permitAll로 관리함.
+                );
         http .addFilterBefore(requestHeaderAuthenticationFilter(), BasicAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthenticationProcessingFilter(), RequestHeaderAuthenticationFilter.class);
         return http.build();
@@ -74,7 +78,6 @@ public class SecurityConfig {
             String token = (String) authentication.getPrincipal();
             try {
                 CustomIdTokenUser user = idTokenService.loadUserByAccessToken(token);
-
                 // PreAuthenticatedAuthenticationToken 생성
                 return new PreAuthenticatedAuthenticationToken(
                         user,
