@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserVerifyCodeRequestDto {
     private String phoneNumber;
-    private Boolean userSex;
+    private Boolean userGender;
     private String userRealName;
     private String userBirth;
     private String userName;

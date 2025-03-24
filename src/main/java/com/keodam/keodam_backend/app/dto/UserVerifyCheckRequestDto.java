@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 public class UserVerifyCheckRequestDto {
     private String phoneNumber;
     private String code;
-    private Boolean userSex;
+    private Boolean userGender;
     private String userRealName;
     private String userBirth;
     private String userName;
