@@ -10,6 +10,7 @@ import com.keodam.keodam_backend.global.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,8 +23,14 @@ public class UserController {
     @PatchMapping("/nickname")
     public ResponseEntity<ApiResponse<UserResponseDto>> updateNickname(
             @RequestBody NicknameRequestDto request,
-            @AuthenticationPrincipal CustomOAuth2User userDetails) {
-        User user = userDetails.getUser();
+            @AuthenticationPrincipal OAuth2User oAuth2User) {
+
+        String oauthId = oAuth2User.getName();
+        String email = oAuth2User.getAttribute("email");
+
+        User user = userService.findByOAuthId(oauthId)
+                .orElseGet(() -> userService.createUser(oauthId, email));
+
         UserResponseDto updatedUser = userService.updateNickname(user, request.nickname());
 
         return ResponseEntity.ok(ApiResponse.onSuccess(updatedUser));
@@ -33,9 +40,13 @@ public class UserController {
     @PatchMapping("/role")
     public ResponseEntity<ApiResponse<UserResponseDto>> selectRole(
             @RequestBody RoleRequestDto request,
-            @AuthenticationPrincipal CustomOAuth2User userDetails) {
+            @AuthenticationPrincipal OAuth2User oAuth2User) {
 
-        User user = userDetails.getUser();
+
+        String oauthId = oAuth2User.getName();
+        User user = userService.findByOAuthId(oauthId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
         UserResponseDto updatedUser = userService.updateRole(user, request.roleType());
 
         return ResponseEntity.ok(ApiResponse.onSuccess(updatedUser));
@@ -44,9 +55,12 @@ public class UserController {
     // 회원가입 진행 상태 확인
     @GetMapping("/status")
     public ResponseEntity<ApiResponse<SignupStatusResponseDto>> checkSignupStatus(
-            @AuthenticationPrincipal CustomOAuth2User userDetails
+            @AuthenticationPrincipal  OAuth2User oAuth2User
     ) {
-        User user = userDetails.getUser();
+        String oauthId = oAuth2User.getName();  // OAuth2 ID 가져오기
+        User user = userService.findByOAuthId(oauthId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
         SignupStatusResponseDto response = userService.checkSignupStatus(user);
 
         return ResponseEntity.ok(ApiResponse.onSuccess(response));

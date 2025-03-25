@@ -1,6 +1,8 @@
 package com.keodam.keodam_backend.app.user.repository;
 
 import com.keodam.keodam_backend.app.user.domain.User;
+import org.springframework.data.domain.Limit;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,4 +14,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Transactional(readOnly = true)
     Optional<User> findByRefreshToken(String refreshToken);
     Boolean existsByNickname(String nickname);
+
+    Optional<User> findByOauthId(String oAuthId);
 }

@@ -27,7 +27,7 @@ public class IdTokenAttributes {
     public User toUser() {
         return User.builder()
                 .socialType(socialType)
-                .oAuthId(userInfo.getId())
+                .oauthId(userInfo.getId())
                 .nickname("")
                 .profileUrl(null)
                 .email(userInfo.getEmail())

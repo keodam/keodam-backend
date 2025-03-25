@@ -44,7 +44,7 @@ public class IdTokenService {
         }
         return new CustomIdTokenUser(
                 Collections.singleton(new SimpleGrantedAuthority(findUser.getRoleType().toString())),
-                findUser.getOAuthId(),
+                findUser.getOauthId(),
                 findUser.getPassword(),
                 findUser.getEmail(),
                 findUser.getRoleType()

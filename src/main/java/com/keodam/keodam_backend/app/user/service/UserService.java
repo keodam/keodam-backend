@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -85,5 +87,15 @@ public class UserService {
                 .hasProfileImage(user.getProfileUrl() != null)
                 .hasRole(user.getRoleType() != null && !user.getRoleType().equals("GUEST"))
                 .build();
+    }
+
+    public Optional<User> findByOAuthId(String oauthId) {
+        return userRepository.findByOauthId(oauthId);
+    }
+
+    @Transactional
+    public User createUser(String oauthId, String email) {
+        User newUser = new User(oauthId, email);
+        return userRepository.save(newUser);
     }
 }

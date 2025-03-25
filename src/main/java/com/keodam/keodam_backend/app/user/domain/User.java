@@ -30,7 +30,7 @@ public class User{
     @Column(name="role_type")
     private RoleType roleType;
     @Column(name="oauth_id")
-    private String oAuthId;
+    private String oauthId;
     @Column(name="refresh_token")
     private String refreshToken;
     @Enumerated(EnumType.STRING)
@@ -44,13 +44,13 @@ public class User{
     private String badge;
 
     @Builder
-    public User(String nickname, String email, String profileUrl, SocialType socialType, RoleType roleType, String oAuthId) {
+    public User(String nickname, String email, String profileUrl, SocialType socialType, RoleType roleType, String oauthId) {
         this.nickname = nickname;
         this.email = email;
         this.profileUrl = profileUrl;
         this.roleType = roleType;
         this.socialType = socialType;
-        this.oAuthId = oAuthId;
+        this.oauthId = oauthId;
         this.password = UUID.randomUUID().toString();
         this.coffeeCoupon = 0;
         this.rouletteCoupon = 0;
@@ -63,6 +63,11 @@ public class User{
         this.email = email;
         this.profileUrl = profileUrl;
         this.roleType = roleType;
+    }
+
+    public User(String oauthId, String email) {
+        this.oauthId = oauthId;
+        this.email = email;
     }
 
     // 닉네임, 프로필 사진, 역할 변경
