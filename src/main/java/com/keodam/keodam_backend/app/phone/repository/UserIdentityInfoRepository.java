@@ -1,6 +1,6 @@
-package com.keodam.keodam_backend.app.repository;
+package com.keodam.keodam_backend.app.phone.repository;
 
-import com.keodam.keodam_backend.app.domain.UserIdentityInfo;
+import com.keodam.keodam_backend.app.phone.domain.UserIdentityInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 

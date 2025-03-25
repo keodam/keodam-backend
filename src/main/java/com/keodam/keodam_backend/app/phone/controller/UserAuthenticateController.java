@@ -1,8 +1,8 @@
-package com.keodam.keodam_backend.app.controller;
+package com.keodam.keodam_backend.app.phone.controller;
 
-import com.keodam.keodam_backend.app.dto.UserVerifyCheckRequestDto;
-import com.keodam.keodam_backend.app.dto.UserVerifyCodeRequestDto;
-import com.keodam.keodam_backend.app.service.UserAuthenticateService;
+import com.keodam.keodam_backend.app.phone.dto.UserVerifyCheckRequestDto;
+import com.keodam.keodam_backend.app.phone.dto.UserVerifyCodeRequestDto;
+import com.keodam.keodam_backend.app.phone.service.UserAuthenticateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

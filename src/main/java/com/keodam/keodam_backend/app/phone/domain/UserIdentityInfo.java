@@ -1,4 +1,4 @@
-package com.keodam.keodam_backend.app.domain;
+package com.keodam.keodam_backend.app.phone.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -22,8 +22,6 @@ public class UserIdentityInfo {
     private String phoneNumber; // 휴대폰 번호 숫자 : 휴대폰 인증에서 저장한
     @Column(name = "user_birth", nullable = false)
     private String userBirth; // 생년월일 6자리 숫자 : 휴대폰 인증에서 저장한
-    @Column(name = "user_name")
-    private String userName;  // 소셜에서 가져온 이름
     @Column(name = "user_real_name", nullable = false)
     private String userRealName; // 실명 : 휴대폰 인증에서 저장한
     @Column(name = "user_gender", nullable = false)
@@ -35,19 +33,17 @@ public class UserIdentityInfo {
     private Boolean isActive; // 탈퇴/비활성 상태 여부 (true = 활성, false = 탈퇴)
 
     @Builder
-    public UserIdentityInfo(String phoneNumber, String userBirth, String userName, String userRealName, Boolean userGender, LocalDateTime verifiedAt, Boolean isActive) {
+    public UserIdentityInfo(String phoneNumber, String userBirth, String userRealName, Boolean userGender, LocalDateTime verifiedAt, Boolean isActive) {
         this.phoneNumber = phoneNumber;
         this.userBirth = userBirth;
-        this.userName = userName;
         this.userRealName = userRealName;
         this.userGender = userGender;
         this.verifiedAt = verifiedAt;
         this.isActive = isActive;
     }
 
-    public void updateInfo(String birth, String name, String realName, Boolean gender) {
+    public void updateInfo(String birth, String realName, Boolean gender) {
         this.userBirth = birth;
-        this.userName = name;
         this.userRealName = realName;
         this.userGender = gender;
         this.verifiedAt = LocalDateTime.now();

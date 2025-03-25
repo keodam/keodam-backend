@@ -1,4 +1,4 @@
-package com.keodam.keodam_backend.app.dto;
+package com.keodam.keodam_backend.app.phone.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,5 +10,4 @@ public class UserVerifyCodeRequestDto {
     private Boolean userGender;
     private String userRealName;
     private String userBirth;
-    private String userName;
 }
