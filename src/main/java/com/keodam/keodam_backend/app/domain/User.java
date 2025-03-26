@@ -44,8 +44,8 @@ public class User{
     @Column(name="badge")
     private String badge;
     @Setter
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "identity_info_id")
+    @OneToOne
+    @JoinColumn(name = "identity_info_id", unique = true)
     private UserIdentityInfo identityInfo;
 
 
