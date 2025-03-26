@@ -1,5 +1,6 @@
 package com.keodam.keodam_backend.app.domain;
 
+import com.keodam.keodam_backend.app.phone.domain.UserIdentityInfo;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Cleanup;
@@ -7,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.UUID;
+import lombok.Setter;
 
 @Table(name = "user")
 @Entity
@@ -41,6 +43,11 @@ public class User{
     private Integer coffeeCoupon;
     @Column(name="badge")
     private String badge;
+    @Setter
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "identity_info_id")
+    private UserIdentityInfo identityInfo;
+
 
     @Builder
     public User(String nickname, String email, String profileUrl, SocialType socialType, RoleType roleType, String oAuthId) {

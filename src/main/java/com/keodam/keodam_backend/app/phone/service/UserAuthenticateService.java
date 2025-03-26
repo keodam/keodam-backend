@@ -1,9 +1,11 @@
 package com.keodam.keodam_backend.app.phone.service;
 
+import com.keodam.keodam_backend.app.domain.User;
 import com.keodam.keodam_backend.app.phone.domain.UserIdentityInfo;
 import com.keodam.keodam_backend.app.phone.dto.UserVerifyCheckRequestDto;
 import com.keodam.keodam_backend.app.phone.dto.UserVerifyCodeRequestDto;
 import com.keodam.keodam_backend.app.phone.repository.UserIdentityInfoRepository;
+import com.keodam.keodam_backend.app.repository.UserRepository;
 import com.keodam.keodam_backend.global.config.TwilioConfig;
 import com.keodam.keodam_backend.global.util.TwilioUtils;
 import com.twilio.exception.ApiException;
@@ -26,10 +28,17 @@ public class UserAuthenticateService {
 
     private final TwilioConfig twilioConfig;
     private final UserIdentityInfoRepository userIdentityInfoRepository;
+    private final UserRepository userRepository;
+
     // 휴대폰별 최근 인증 요청 시간 저장 (메모리캐시)
     private final Map<String, LocalDateTime> recentRequests = new ConcurrentHashMap<>();
 
-    public ResponseEntity<Object> startVerification(UserVerifyCodeRequestDto dto) {
+    public ResponseEntity<Object> startVerification(UserVerifyCodeRequestDto dto, String email) {
+        if (email == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("인증 정보가 없습니다. 로그인 후 시도해주세요.");
+        }
+
         String phone = dto.getPhoneNumber();
         String e164 = TwilioUtils.formatPhone(phone);
         // 번호유효성검증
@@ -63,16 +72,23 @@ public class UserAuthenticateService {
         }
     }
 
-    public ResponseEntity<Object> checkVerification(UserVerifyCheckRequestDto dto) {
+    public ResponseEntity<Object> checkVerification(UserVerifyCheckRequestDto dto, String email) {
+        if (email == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("인증 정보가 없습니다. 로그인 후 시도해주세요.");
+        }
+
         String phone = dto.getPhoneNumber();
         String e164 = TwilioUtils.formatPhone(phone);
         // 이름유효성검증
         if (dto.getUserRealName() == null || !dto.getUserRealName().matches("^[A-Za-z]{1,12}$|^[가-힣]{1,6}$")) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이름은 한글 1~6자 또는 영문 1~12자만 입력 가능합니다.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("이름은 한글 1~6자 또는 영문 1~12자만 입력 가능합니다.");
         }
         // 생년월일유효성검증
         if (!dto.getUserBirth().matches("^\\d{6}$")) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("생년월일은 6자리 숫자여야 합니다.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("생년월일은 6자리 숫자여야 합니다.");
         }
 
         try {
@@ -83,18 +99,19 @@ public class UserAuthenticateService {
 
             if ("approved".equals(check.getStatus())) {
                 Optional<UserIdentityInfo> existing = userIdentityInfoRepository.findByPhoneNumber(phone);
+                UserIdentityInfo userInfo;
+
                 if (existing.isPresent()) {
-                    UserIdentityInfo user = existing.get();
-                    user.updateInfo(
+                    userInfo = existing.get();
+                    userInfo.updateInfo(
                             dto.getUserBirth(),
                             dto.getUserRealName(),
                             dto.getUserGender()
                     );
-                    user.setVerifiedAt(LocalDateTime.now());
-                    userIdentityInfoRepository.save(user);
-                    return ResponseEntity.ok("기존 사용자 정보 업데이트 완료");
+                    userInfo.setVerifiedAt(LocalDateTime.now());
+                    userIdentityInfoRepository.save(userInfo);
                 } else {
-                    UserIdentityInfo user = UserIdentityInfo.builder()
+                    userInfo = UserIdentityInfo.builder()
                             .phoneNumber(phone)
                             .userRealName(dto.getUserRealName())
                             .userBirth(dto.getUserBirth())
@@ -102,9 +119,15 @@ public class UserAuthenticateService {
                             .verifiedAt(LocalDateTime.now())
                             .isActive(true)
                             .build();
-                    userIdentityInfoRepository.save(user);
-                    return ResponseEntity.ok("인증 성공 및 사용자 정보 저장 완료");
+                    userIdentityInfoRepository.save(userInfo);
                 }
+
+                User user = userRepository.findByEmail(email)
+                        .orElseThrow(() -> new RuntimeException("사용자 정보를 찾을 수 없습니다."));
+                user.setIdentityInfo(userInfo);
+                userRepository.save(user);
+
+                return ResponseEntity.ok("인증 성공 및 사용자 정보 저장 완료");
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증 실패: 잘못된 코드입니다.");
             }
