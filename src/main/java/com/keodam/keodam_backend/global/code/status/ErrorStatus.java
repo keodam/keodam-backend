@@ -29,8 +29,8 @@ public enum ErrorStatus implements BaseErrorCode {
     INVALID_PHONE_FORMAT(HttpStatus.BAD_REQUEST, "PHONE4001", "휴대폰번호 형식을 확인해주세요. "),
     NAME_INVALID(HttpStatus.BAD_REQUEST, "PHONE4002", "이름을 확인해주세요."),
     BIRTH_INVALID(HttpStatus.BAD_REQUEST, "PHONE4003", "생년월일을 확인해주세요."),
-    TOO_MANY_REQUEST(HttpStatus.TOO_MANY_REQUESTS, "PHONE4004", "인증번호 요청은 2분마다 가능합니다."),
-    VERIFICATION_FAILED(HttpStatus.UNAUTHORIZED, "PHONE4005", "인증번호가 일치하지 않습니다."),
+    VERIFICATION_FAILED(HttpStatus.UNAUTHORIZED, "PHONE4004", "인증번호가 일치하지 않습니다."),
+    TOO_MANY_REQUEST(HttpStatus.TOO_MANY_REQUESTS, "PHONE4291", "인증번호 요청은 2분마다 가능합니다."),
     //S3
     S3_FAILED(HttpStatus.INTERNAL_SERVER_ERROR,"S34001","사진 업로드에 실패했습니다."),
     S3_FORMAT(HttpStatus.BAD_REQUEST, "S34002","잘못된 형식의 파일입니다."),
