@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import lombok.Setter;
 
 @Entity
 @Table(name = "user_identity_info")
@@ -26,7 +25,6 @@ public class UserIdentityInfo {
     private String userRealName; // 실명 : 휴대폰 인증에서 저장한
     @Column(name = "user_gender", nullable = false)
     private Boolean userGender;  // 성별 : false(0) = 여성 | true(1) = 남성
-    @Setter
     @Column(name = "verified_at")
     private LocalDateTime verifiedAt; // 인증 완료 시간
     @Column(name = "is_active", nullable = false)
@@ -46,6 +44,10 @@ public class UserIdentityInfo {
         this.userBirth = birth;
         this.userRealName = realName;
         this.userGender = gender;
+        this.verifiedAt = LocalDateTime.now();
+    }
+
+    public void markVerifiedNow() {
         this.verifiedAt = LocalDateTime.now();
     }
 

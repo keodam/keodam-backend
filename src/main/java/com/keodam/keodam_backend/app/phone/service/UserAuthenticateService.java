@@ -80,13 +80,11 @@ public class UserAuthenticateService {
 
         String phone = dto.getPhoneNumber();
         String e164 = TwilioUtils.formatPhone(phone);
-
         // 이름유효성검증
         if (dto.getUserRealName() == null || !dto.getUserRealName().matches("^[A-Za-z]{1,12}$|^[가-힣]{1,6}$")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("이름은 한글 1~6자 또는 영문 1~12자만 입력 가능합니다.");
         }
-
         // 생년월일유효성검증
         if (!dto.getUserBirth().matches("^\\d{6}$")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -109,13 +107,12 @@ public class UserAuthenticateService {
                 if (existing.isPresent()) {
                     userInfo = existing.get();
                     userInfo.updateInfo(dto.getUserBirth(), dto.getUserRealName(), dto.getUserGender());
-                    userInfo.setVerifiedAt(LocalDateTime.now());
+                    userInfo.markVerifiedNow();
                     userIdentityInfoRepository.save(userInfo);
-
                     // 기존에 연결된 다른 사용자 정보가 있다면 해제
                     Optional<User> otherUser = userRepository.findByIdentityInfo(userInfo);
                     if (otherUser.isPresent() && !otherUser.get().getEmail().equals(user.getEmail())) {
-                        otherUser.get().setIdentityInfo(null);
+                        otherUser.get().unlinkIdentityInfo();
                         userRepository.save(otherUser.get());
                     }
 
@@ -131,7 +128,7 @@ public class UserAuthenticateService {
                     userIdentityInfoRepository.save(userInfo);
                 }
 
-                user.setIdentityInfo(userInfo);
+                user.linkIdentityInfo(userInfo);
                 userRepository.save(user);
 
                 return ResponseEntity.ok("인증 성공 및 사용자 정보 저장 완료");

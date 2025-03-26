@@ -28,7 +28,7 @@ public class AuthTestController {
     @PostMapping("/test-login")
     @Operation(summary = "로그인 이후 테스트용 코드", description = "소셜 로그인 API BYPASS 목적의 임시 토큰발급")
     @Parameter(name = "email", description = "Bearer 토큰 발급을 위한 임시 이메일주소", required = true, in = ParameterIn.QUERY)
-    public ResponseEntity<?> testLogin(@RequestParam String email) {
+    public ResponseEntity<String> testLogin(@RequestParam String email) {
 
         User user = userRepository.findByEmail(email).orElseGet(() -> {
             User newUser = User.builder()
@@ -48,6 +48,6 @@ public class AuthTestController {
         return ResponseEntity.ok(Map.of(
                 "accessToken", accessToken,
                 "refreshToken", refreshToken
-        ));
+        ).toString());
     }
 }
