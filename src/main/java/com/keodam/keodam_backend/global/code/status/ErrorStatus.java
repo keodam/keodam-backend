@@ -40,9 +40,8 @@ public enum ErrorStatus implements BaseErrorCode {
 
     //code
     INVALID_VERIFICATION_CODE(HttpStatus.NOT_FOUND, "CODE4001", "인증코드가 일치하지 않습니다."),
+    EXPIRED_CODE(HttpStatus.GONE, "CODE4002", "인증코드가 만료되었습니다.");
 
-    //quiz
-    QUIZ_NOT_FOUND(HttpStatus.NOT_FOUND,"QUIZ4001","퀴즈를 찾을 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -45,15 +46,18 @@ public class UserVerification {
     @Enumerated(EnumType.STRING)
     private VerificationStatus status;
 
+    private LocalDateTime expiresAt; // 만료 시간 필드 추가
+
     @Builder
     public UserVerification(User user, DocumentType documentType,
                             String documentFilePath, String verificationEmail,
-                            String verificationCode) {
+                            String verificationCode, LocalDateTime expiresAt) {
         this.user = user;
         this.documentType = documentType;
         this.documentFilePath = documentFilePath;
         this.verificationEmail = verificationEmail;
         this.status = VerificationStatus.PENDING;
         this.verificationCode = verificationCode;
+        this.expiresAt = expiresAt;
     }
 }

@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.mail.javamail.JavaMailSender;
+
+import java.time.LocalDateTime;
 import java.util.Random;
 
 @Service
@@ -59,6 +61,7 @@ public class MailSendService {
                 .documentType(documentType)
                 .verificationEmail(emailRequestDto.getEmail())
                 .verificationCode(code)
+                .expiresAt(LocalDateTime.now().plusMinutes(3))
                 .build()); //처음엔 보류상태로
 
         return EmailResponseDto.builder()
@@ -95,6 +98,11 @@ public class MailSendService {
 
         if (!userVerification.getVerificationCode().equals(code)) {
             throw new GeneralException(ErrorStatus.INVALID_VERIFICATION_CODE);
+        }
+
+        if (userVerification.getExpiresAt().isBefore(LocalDateTime.now())) {
+            userVerificationRepository.delete(userVerification);
+            throw new GeneralException(ErrorStatus.EXPIRED_CODE);
         }
         return true;
     }
