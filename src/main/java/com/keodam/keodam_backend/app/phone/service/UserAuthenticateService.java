@@ -35,8 +35,8 @@ public class UserAuthenticateService {
 
     public ResponseEntity<Object> startVerification(UserVerifyCodeRequestDto dto, String email) {
         if (email == null) {
-            return ResponseEntity.status(ErrorStatus._UNAUTHORIZED.getHttpStatus())
-                    .body(ErrorStatus._UNAUTHORIZED.getReasonHttpStatus());
+            return ResponseEntity.status(ErrorStatus.UNAUTHORIZED.getHttpStatus())
+                    .body(ErrorStatus.UNAUTHORIZED.getReasonHttpStatus());
         }
 
         String phone = dto.getPhoneNumber();
@@ -69,15 +69,15 @@ public class UserAuthenticateService {
             return ResponseEntity.status(SuccessStatus._OK.getHttpStatus())
                     .body(SuccessStatus._OK.getReasonHttpStatus());
         } catch (Exception e) {
-            return ResponseEntity.status(ErrorStatus._BAD_REQUEST.getHttpStatus())
-                    .body(ErrorStatus._BAD_REQUEST.getReasonHttpStatus());
+            return ResponseEntity.status(ErrorStatus.BAD_REQUEST.getHttpStatus())
+                    .body(ErrorStatus.BAD_REQUEST.getReasonHttpStatus());
         }
     }
 
     public ResponseEntity<Object> checkVerification(UserVerifyCheckRequestDto dto, String email) {
         if (email == null) {
-            return ResponseEntity.status(ErrorStatus._UNAUTHORIZED.getHttpStatus())
-                    .body(ErrorStatus._UNAUTHORIZED.getReasonHttpStatus());
+            return ResponseEntity.status(ErrorStatus.UNAUTHORIZED.getHttpStatus())
+                    .body(ErrorStatus.UNAUTHORIZED.getReasonHttpStatus());
         }
 
         String phone = dto.getPhoneNumber();
@@ -145,11 +145,11 @@ public class UserAuthenticateService {
                 return ResponseEntity.status(ErrorStatus.VERIFICATION_FAILED.getHttpStatus())
                         .body(ErrorStatus.VERIFICATION_FAILED.getReasonHttpStatus());
             }
-            return ResponseEntity.status(ErrorStatus._BAD_REQUEST.getHttpStatus())
-                    .body(ErrorStatus._BAD_REQUEST.getReasonHttpStatus());
+            return ResponseEntity.status(ErrorStatus.BAD_REQUEST.getHttpStatus())
+                    .body(ErrorStatus.BAD_REQUEST.getReasonHttpStatus());
         } catch (Exception e) {
-            return ResponseEntity.status(ErrorStatus._INTERNAL_SERVER_ERROR.getHttpStatus())
-                    .body(ErrorStatus._INTERNAL_SERVER_ERROR.getReasonHttpStatus());
+            return ResponseEntity.status(ErrorStatus.INTERNAL_SERVER_ERROR.getHttpStatus())
+                    .body(ErrorStatus.INTERNAL_SERVER_ERROR.getReasonHttpStatus());
         }
     }
 }
