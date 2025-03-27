@@ -5,11 +5,14 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
-@Getter
 public class EmailRequestDto {
 
-    @NotNull
-    @Email
-    @NotEmpty(message = "이메일을 입력해 주세요.")
-    private String email;
+    @Getter
+    public static class EmailSenderDto {
+        @NotNull
+        @Email
+        @NotEmpty(message = "이메일을 입력해 주세요.")
+        private String email;
+        private String documentType;
+    }
 }

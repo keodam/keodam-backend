@@ -25,7 +25,9 @@ public class AwsS3Service {
 
     public String uploadFile(MultipartFile multipartFile) {
 
-        if (validateUploadFile(multipartFile)) return null;
+        if (validateUploadFile(multipartFile)) {
+            return null;
+        }
 
         String fileName = createFileName(multipartFile.getOriginalFilename());
         ObjectMetadata objectMetadata = new ObjectMetadata();

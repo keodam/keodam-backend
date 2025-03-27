@@ -34,6 +34,9 @@ public enum ErrorStatus implements BaseErrorCode {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND,"USER4001","회원 정보를 찾을 수 없습니다."),
     FAMILY_ALREADY(HttpStatus.BAD_REQUEST,"FAMILY4002", "이미 가입한 가족이 존재합니다."),
 
+    //code
+    INVALID_VERIFICATION_CODE(HttpStatus.NOT_FOUND, "CODE4001", "인증코드가 일치하지 않습니다."),
+
     //quiz
     QUIZ_NOT_FOUND(HttpStatus.NOT_FOUND,"QUIZ4001","퀴즈를 찾을 수 없습니다.");
 

@@ -1,6 +1,14 @@
 package com.keodam.keodam_backend.mypage.service;
 
+import com.keodam.keodam_backend.app.domain.User;
+import com.keodam.keodam_backend.app.repository.UserRepository;
+import com.keodam.keodam_backend.exception.GeneralException;
+import com.keodam.keodam_backend.global.code.status.ErrorStatus;
+import com.keodam.keodam_backend.mypage.domain.DocumentType;
+import com.keodam.keodam_backend.mypage.domain.UserVerification;
+import com.keodam.keodam_backend.mypage.dto.request.EmailRequestDto;
 import com.keodam.keodam_backend.mypage.dto.response.EmailResponseDto;
+import com.keodam.keodam_backend.mypage.repository.UserVerificationRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -16,24 +24,20 @@ public class MailSendService {
 
     private static final int AUTH_CODE_LENGTH = 6;
     private static final Random random = new Random();
+
     private final JavaMailSender mailSender;
+    private final UserVerificationRepository userVerificationRepository;
+    private final UserRepository userRepository;
+
     private int authNumber;
 
     @Value("${spring.mail.username}")
     private String mailUsername;
 
-    public void generateAuthCode() {
-        String randomNumber = "";
-        for (int i = 0; i < AUTH_CODE_LENGTH; i++) {
-            randomNumber += Integer.toString(random.nextInt(10));
-        }
-        authNumber = Integer.parseInt(randomNumber);
-    }
-
-    public EmailResponseDto checkEmail(String email) {
+    public EmailResponseDto checkEmail(String idTokenUserEmail, EmailRequestDto.EmailSenderDto emailRequestDto) {
         generateAuthCode();
         String setFrom = mailUsername;
-        String toMail = email;
+        String toMail = emailRequestDto.getEmail();
         String title = "[keodam] 인증메일입니다.";
         String content =
                 "<br><br>" +
@@ -43,10 +47,23 @@ public class MailSendService {
         mailSend(setFrom, toMail, title, content);
         String code = Integer.toString(authNumber);
 
+
+        User user = userRepository.findByEmail(idTokenUserEmail)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        DocumentType documentType = DocumentType.valueOf(emailRequestDto.getDocumentType().toUpperCase());
+
+
+        userVerificationRepository.save(UserVerification.builder()
+                .user(user)
+                .documentType(documentType)
+                .verificationEmail(emailRequestDto.getEmail())
+                .verificationCode(code)
+                .build()); //처음엔 보류상태로
+
         return EmailResponseDto.builder()
                 .code(code)
                 .build();
-
     }
 
     public void mailSend(String setFrom, String toMail, String title, String content) {
@@ -61,5 +78,24 @@ public class MailSendService {
         } catch (MessagingException e) {
             e.printStackTrace();
         }
+    }
+
+    public void generateAuthCode() {
+        String randomNumber = "";
+        for (int i = 0; i < AUTH_CODE_LENGTH; i++) {
+            randomNumber += Integer.toString(random.nextInt(10));
+        }
+        authNumber = Integer.parseInt(randomNumber);
+    }
+
+    public boolean checkCode(String email, String code) {
+
+        UserVerification userVerification = userVerificationRepository.findByUser_Email(email)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        if (!userVerification.getVerificationCode().equals(code)) {
+            throw new GeneralException(ErrorStatus.INVALID_VERIFICATION_CODE);
+        }
+        return true;
     }
 }
