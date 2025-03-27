@@ -1,8 +1,8 @@
 package com.keodam.keodam_backend.app.domain;
 
+import com.keodam.keodam_backend.app.phone.domain.UserIdentityInfo;
 import jakarta.persistence.*;
 import lombok.Builder;
-import lombok.Cleanup;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +12,6 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor
-
 public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,6 +40,10 @@ public class User{
     private Integer coffeeCoupon;
     @Column(name="badge")
     private String badge;
+    @OneToOne
+    @JoinColumn(name = "identity_info_id", unique = true)
+    private UserIdentityInfo identityInfo;
+
 
     @Builder
     public User(String nickname, String email, String profileUrl, SocialType socialType, RoleType roleType, String oAuthId) {
@@ -57,5 +60,13 @@ public class User{
 
     public void updateRefreshToken(String refreshToken){
         this.refreshToken = refreshToken;
+    }
+
+    public void linkIdentityInfo(UserIdentityInfo identityInfo) {
+        this.identityInfo = identityInfo;
+    }
+
+    public void unlinkIdentityInfo() {
+        this.identityInfo = null;
     }
 }

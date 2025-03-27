@@ -45,6 +45,8 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	implementation 'com.twilio.sdk:twilio:9.13.1'
+	implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.30'
 }
 
 tasks.named('test') {

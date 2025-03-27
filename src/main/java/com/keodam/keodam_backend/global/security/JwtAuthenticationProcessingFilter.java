@@ -26,15 +26,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
-        String path = request.getRequestURI();
-        // Swagger 관련 경로는 필터 적용 제외
-        if (path.startsWith("/swagger") || path.startsWith("/v3/api-docs") || path.startsWith("/webjars") || path.startsWith("/favicon.ico")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        System.out.println("Filter1");
+        //System.out.println("Filter1");
         if (request.getRequestURI().equals("/auth/login")) {
             filterChain.doFilter(request, response); // "/login" 요청이 들어오면, 다음 필터 호출
             return; // return으로 이후 현재 필터 진행 막기 (안해주면 아래로 내려가서 계속 필터 진행시킴)
