@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.mail.javamail.JavaMailSender;
-
 import java.time.LocalDateTime;
 import java.util.Random;
 import java.util.regex.Pattern;
@@ -52,7 +51,6 @@ public class MailSendService {
                         "인증번호를 정확히 입력해주세요";
         mailSend(setFrom, toMail, title, content);
         String code = Integer.toString(authNumber);
-
 
         saveVerificationInfo(idTokenUserEmail, emailRequestDto, code);
 
