@@ -19,6 +19,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 
 import java.time.LocalDateTime;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +38,9 @@ public class MailSendService {
     private String mailUsername;
 
     public EmailResponseDto checkEmail(String idTokenUserEmail, EmailRequestDto.EmailSenderDto emailRequestDto) {
+
+        validateEmailFormat(emailRequestDto);
+
         generateAuthCode();
         String setFrom = mailUsername;
         String toMail = emailRequestDto.getEmail();
@@ -50,19 +54,7 @@ public class MailSendService {
         String code = Integer.toString(authNumber);
 
 
-        User user = userRepository.findByEmail(idTokenUserEmail)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
-
-        DocumentType documentType = DocumentType.valueOf(emailRequestDto.getDocumentType().toUpperCase());
-
-
-        userVerificationRepository.save(UserVerification.builder()
-                .user(user)
-                .documentType(documentType)
-                .verificationEmail(emailRequestDto.getEmail())
-                .verificationCode(code)
-                .expiresAt(LocalDateTime.now().plusMinutes(3))
-                .build()); //처음엔 보류상태로
+        saveVerificationInfo(idTokenUserEmail, emailRequestDto, code);
 
         return EmailResponseDto.builder()
                 .code(code)
@@ -83,14 +75,6 @@ public class MailSendService {
         }
     }
 
-    public void generateAuthCode() {
-        String randomNumber = "";
-        for (int i = 0; i < AUTH_CODE_LENGTH; i++) {
-            randomNumber += Integer.toString(random.nextInt(10));
-        }
-        authNumber = Integer.parseInt(randomNumber);
-    }
-
     public boolean checkCode(String email, String code) {
 
         UserVerification userVerification = userVerificationRepository.findByUser_Email(email)
@@ -105,5 +89,38 @@ public class MailSendService {
             throw new GeneralException(ErrorStatus.EXPIRED_CODE);
         }
         return true;
+    }
+
+    private void saveVerificationInfo(String idTokenUserEmail, EmailRequestDto.EmailSenderDto emailRequestDto, String code) {
+        User user = userRepository.findByEmail(idTokenUserEmail)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        DocumentType documentType = DocumentType.valueOf(emailRequestDto.getDocumentType().toUpperCase());
+
+
+        userVerificationRepository.save(UserVerification.builder()
+                .user(user)
+                .documentType(documentType)
+                .verificationEmail(emailRequestDto.getEmail())
+                .verificationCode(code)
+                .expiresAt(LocalDateTime.now().plusMinutes(3))
+                .build()); //처음엔 보류상태로
+    }
+
+    private void generateAuthCode() {
+        String randomNumber = "";
+        for (int i = 0; i < AUTH_CODE_LENGTH; i++) {
+            randomNumber += Integer.toString(random.nextInt(10));
+        }
+        authNumber = Integer.parseInt(randomNumber);
+    }
+
+    private void validateEmailFormat(EmailRequestDto.EmailSenderDto emailRequestDto) {
+        String EMAIL_REGEX =
+                "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
+
+        if (!Pattern.matches(EMAIL_REGEX, emailRequestDto.getEmail())) {
+            throw new GeneralException(ErrorStatus.INVALID_EMAIL_FORMAT);
+        }
     }
 }
