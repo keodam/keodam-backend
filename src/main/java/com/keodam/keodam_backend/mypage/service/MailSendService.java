@@ -36,7 +36,7 @@ public class MailSendService {
     @Value("${spring.mail.username}")
     private String mailUsername;
 
-    public EmailResponseDto checkEmail(String idTokenUserEmail, EmailRequestDto.EmailSenderDto emailRequestDto) {
+    public EmailResponseDto checkEmail(String userEmail, EmailRequestDto.EmailSenderDto emailRequestDto) {
 
         validateEmailFormat(emailRequestDto);
 
@@ -46,13 +46,15 @@ public class MailSendService {
         String title = "[keodam] 인증메일입니다.";
         String content =
                 "<br><br>" +
-                        "인증 번호는 " + authNumber + "입니다." +
+                        "인증 번호는 <strong>" + authNumber + "</strong>입니다." +
                         "<br>" +
-                        "인증번호를 정확히 입력해주세요";
+                        "인증번호를 정확히 입력해주세요." +
+                        "<br>" +
+                        "이 인증번호는 3분 이내에 입력하셔야 유효합니다.";
         mailSend(setFrom, toMail, title, content);
         String code = Integer.toString(authNumber);
 
-        saveVerificationInfo(idTokenUserEmail, emailRequestDto, code);
+        saveVerificationInfo(userEmail, emailRequestDto, code);
 
         return EmailResponseDto.builder()
                 .code(code)
