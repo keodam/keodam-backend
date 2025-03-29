@@ -5,6 +5,7 @@ import com.keodam.keodam_backend.app.repository.UserRepository;
 import com.keodam.keodam_backend.exception.GeneralException;
 import com.keodam.keodam_backend.global.code.status.ErrorStatus;
 import com.keodam.keodam_backend.mypage.domain.DocumentType;
+import com.keodam.keodam_backend.mypage.domain.EmailTitle;
 import com.keodam.keodam_backend.mypage.domain.UserVerification;
 import com.keodam.keodam_backend.mypage.dto.request.EmailRequestDto;
 import com.keodam.keodam_backend.mypage.dto.response.EmailResponseDto;
@@ -46,7 +47,6 @@ public class MailSendService {
         generateAuthCode();
         String setFrom = mailUsername;
         String toMail = emailRequestDto.getEmail();
-        String title = "[keodam] 인증메일입니다.";
         String content =
                 "<br><br>" +
                         "인증 번호는 <strong>" + authNumber + "</strong>입니다." +
@@ -54,7 +54,7 @@ public class MailSendService {
                         "인증번호를 정확히 입력해주세요." +
                         "<br>" +
                         "이 인증번호는 3분 이내에 입력하셔야 유효합니다.";
-        mailSend(setFrom, toMail, title, content);
+        mailSend(setFrom, toMail, EmailTitle.EMAIL_VERIFICATION.getFullTitle(), content);
         String code = Integer.toString(authNumber);
 
         saveVerificationInfo(userEmail, emailRequestDto, code);
