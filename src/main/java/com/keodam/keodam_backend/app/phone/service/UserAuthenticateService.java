@@ -116,8 +116,8 @@ public class UserAuthenticateService {
                 // 7일 이내 탈퇴 재가입 제한
                 if (!oldInfo.getIsActive() && oldInfo.getDeletedAt() != null &&
                         Duration.between(oldInfo.getDeletedAt(), LocalDateTime.now()).toDays() < 7) {
-                    return ResponseEntity.status(ErrorStatus._BAD_REQUEST.getHttpStatus())
-                            .body(ErrorStatus._BAD_REQUEST.getReasonHttpStatus());
+                    return ResponseEntity.status(ErrorStatus.BAD_REQUEST.getHttpStatus())
+                            .body(ErrorStatus.BAD_REQUEST.getReasonHttpStatus());
                 }
 
                 // 기 존재 유저의 인증 재요청 케이스 : 정보업데이트
@@ -151,8 +151,8 @@ public class UserAuthenticateService {
                     int nextSuffix = maxSuffix + 1;
                     if (nextSuffix > 1000) {
                         return ResponseEntity
-                                .status(ErrorStatus._BAD_REQUEST.getHttpStatus())
-                                .body(ErrorStatus._BAD_REQUEST.getReasonHttpStatus());
+                                .status(ErrorStatus.BAD_REQUEST.getHttpStatus())
+                                .body(ErrorStatus.BAD_REQUEST.getReasonHttpStatus());
                     }
 
                     String archivedPhone = nextSuffix == 1 ? baseArchivedPhone : baseArchivedPhone + "-" + nextSuffix;
