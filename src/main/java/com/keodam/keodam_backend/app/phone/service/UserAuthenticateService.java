@@ -13,6 +13,7 @@ import com.keodam.keodam_backend.global.util.TwilioUtils;
 import com.twilio.exception.ApiException;
 import com.twilio.rest.verify.v2.service.Verification;
 import com.twilio.rest.verify.v2.service.VerificationCheck;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -134,18 +135,27 @@ public class UserAuthenticateService {
                     String originalPhone = oldInfo.getPhoneNumber();
                     String baseArchivedPhone = "ARCHIVED-" + originalPhone;
 
-                    // 중복 방지를 위한 번호 생성
-                    int suffix = 1;
-                    String archivedPhone = baseArchivedPhone;
-                    while (userIdentityInfoRepository.existsByPhoneNumber(archivedPhone)) {
-                        suffix++;
-                        if (suffix > 1000) {
-                            return ResponseEntity
-                                    .status(ErrorStatus._BAD_REQUEST.getHttpStatus())
-                                    .body(ErrorStatus._BAD_REQUEST.getReasonHttpStatus());
+                    List<String> archivedPhones = userIdentityInfoRepository.findAllArchivedPhones(baseArchivedPhone);
+                    int maxSuffix = 0;
+                    for (String archived : archivedPhones) {
+                        if (archived.equals(baseArchivedPhone)) {
+                            maxSuffix = Math.max(maxSuffix, 1);
+                        } else if (archived.startsWith(baseArchivedPhone + "-")) {
+                            try {
+                                int suffix = Integer.parseInt(archived.substring((baseArchivedPhone + "-").length()));
+                                maxSuffix = Math.max(maxSuffix, suffix);
+                            } catch (NumberFormatException ignored) {}
                         }
-                        archivedPhone = baseArchivedPhone + "-" + suffix;
                     }
+
+                    int nextSuffix = maxSuffix + 1;
+                    if (nextSuffix > 1000) {
+                        return ResponseEntity
+                                .status(ErrorStatus._BAD_REQUEST.getHttpStatus())
+                                .body(ErrorStatus._BAD_REQUEST.getReasonHttpStatus());
+                    }
+
+                    String archivedPhone = nextSuffix == 1 ? baseArchivedPhone : baseArchivedPhone + "-" + nextSuffix;
 
                     oldInfo.unlinkUser();
                     oldInfo.deactivate("NEWUSER:휴대폰 번호 갱신됨");
