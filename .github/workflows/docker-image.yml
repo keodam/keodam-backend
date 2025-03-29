@@ -69,4 +69,4 @@ jobs:
             --instance-ids ${{ secrets.EC2_INSTANCE_ID }} \
             --document-name "AWS-RunShellScript" \
             --comment "Deploy Docker container" \
-            --parameters 'commands=["docker pull ${{ secrets.ECR_REPOSITORY }}:latest", "docker stop keodam", "docker rm keodam", "docker run -d --name keodam ${{ secrets.ECR_REPOSITORY }}:latest"]'
+            --parameters 'commands=["docker pull ${{ secrets.ECR_REPOSITORY }}/keodam:latest", "docker stop keodam", "docker rm keodam", "docker run -d --name keodam ${{ secrets.ECR_REPOSITORY }}/keodam:latest"]'
