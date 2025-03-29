@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/mypage")
+@RequestMapping("/api/mypage/authenticate")
 @Tag(name = "EMAIL Verify", description = "EMAIL Verify API")
 public class EmailController {
 
