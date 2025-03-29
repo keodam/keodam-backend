@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name = "User_verification")
+@Table(name = "user_verification")
 @EntityListeners(AuditingEntityListener.class)
 public class UserVerification {
 
