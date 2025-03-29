@@ -61,12 +61,12 @@ jobs:
 
     steps:
       - name: Configure AWS credentials using IAM role
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v2
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE }}  # EC2 역할 ARN
+          role-to-assume: ${{ secrets.AWS_SSM_ROLE }}  # EC2 역할 ARN
           region: ap-northeast-2
           role-session-name: GitHubActions
-
+          
       - name: Run Docker container on EC2 via SSM
         run: |
           aws ssm send-command \
