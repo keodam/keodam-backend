@@ -27,6 +27,10 @@ jobs:
           echo "${{ secrets.APPLICATION_YML }}" > ./src/main/resources/application.yml
           echo "${{ secrets.APPLICATION_PROPERTIES }}" > ./src/main/resources/application.properties
 
+      - name: Login to AWS ECR
+        run: |
+          aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY }}
+          
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582
 
@@ -69,4 +73,4 @@ jobs:
             --instance-ids ${{ secrets.EC2_INSTANCE_ID }} \
             --document-name "AWS-RunShellScript" \
             --comment "Deploy Docker container" \
-            --parameters 'commands=["docker pull ${{ secrets.ECR_REPOSITORY }}/keodam:latest", "docker stop keodam", "docker rm keodam", "docker run -d --name keodam ${{ secrets.ECR_REPOSITORY }}/keodam:latest"]'
+            --parameters 'commands=["docker pull ${{ secrets.ECR_REPOSITORY }}/keodam:latest", "docker stop keodam", "docker rm keodam", "docker run -d --name keodam -p 3306:3306 ${{ secrets.ECR_REPOSITORY }}/keodam:latest"]'
