@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.mail.javamail.JavaMailSender;
+
 import java.time.LocalDateTime;
 import java.util.Random;
 import java.util.regex.Pattern;
@@ -26,6 +27,8 @@ public class MailSendService {
 
     private static final int AUTH_CODE_LENGTH = 6;
     private static final Random random = new Random();
+    private static final String EMAIL_REGEX =
+            "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
 
     private final JavaMailSender mailSender;
     private final UserVerificationRepository userVerificationRepository;
@@ -116,9 +119,6 @@ public class MailSendService {
     }
 
     private void validateEmailFormat(EmailRequestDto.EmailSenderDto emailRequestDto) {
-        String EMAIL_REGEX =
-                "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
-
         if (!Pattern.matches(EMAIL_REGEX, emailRequestDto.getEmail())) {
             throw new GeneralException(ErrorStatus.INVALID_EMAIL_FORMAT);
         }
