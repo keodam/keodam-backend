@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/user/authenticate")
+@RequestMapping("/api/user/authenticate") // /code, /check
 @RequiredArgsConstructor
 @Tag(name = "PHONE Verify", description = "PHONE Verify API")
 public class UserAuthenticateController {
