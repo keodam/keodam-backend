@@ -26,6 +26,7 @@ public enum ErrorStatus implements BaseErrorCode {
     JWT_SIGNATURE_INVALID(HttpStatus.UNAUTHORIZED, "AUTH001", "JWT 서명이 올바르지 않습니다."),
     JWT_EXPIRED(HttpStatus.UNAUTHORIZED, "AUTH002", "JWT 토큰이 만료되었습니다."),
     JWT_MALFORMED(HttpStatus.UNAUTHORIZED, "AUTH003", "JWT 토큰이 올바르지 않은 형식입니다."),
+
     //UserVerifyCode
     INVALID_PHONE_FORMAT(HttpStatus.BAD_REQUEST, "PHONE4001", "휴대폰번호 형식을 확인해주세요. "),
     NAME_INVALID(HttpStatus.BAD_REQUEST, "PHONE4002", "이름을 확인해주세요."),
@@ -44,7 +45,10 @@ public enum ErrorStatus implements BaseErrorCode {
 
     //code
     INVALID_VERIFICATION_CODE(HttpStatus.NOT_FOUND, "CODE4001", "인증코드가 일치하지 않습니다."),
-    EXPIRED_CODE(HttpStatus.GONE, "CODE4002", "인증코드가 만료되었습니다.");
+    EXPIRED_CODE(HttpStatus.GONE, "CODE4002", "인증코드가 만료되었습니다."),
+
+    //document
+    INVALID_DOCUMENT_TYPE(HttpStatus.BAD_REQUEST, "S34002", "유효하지 않은 문서 타입입니다.");
 
 
     private final HttpStatus httpStatus;

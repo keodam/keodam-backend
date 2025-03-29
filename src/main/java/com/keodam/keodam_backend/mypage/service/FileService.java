@@ -24,7 +24,7 @@ public class FileService {
 
     public FileResponseDto createFile(String email, MultipartFile img, FileRequestDto fileRequestDto) {
         String imgUrl = awsS3Service.uploadFile(img);
-        DocumentType documentType = DocumentType.valueOf(fileRequestDto.getDocumentType().toUpperCase());
+        DocumentType documentType = getDocumentType(fileRequestDto.getDocumentType());
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
@@ -38,5 +38,13 @@ public class FileService {
         userVerificationRepository.save(userVerification);
 
         return FileResponseDto.from(userVerification);
+    }
+
+    private DocumentType getDocumentType(String documentTypeStr) {
+        try {
+            return DocumentType.valueOf(documentTypeStr.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new GeneralException(ErrorStatus.INVALID_DOCUMENT_TYPE);
+        }
     }
 }
