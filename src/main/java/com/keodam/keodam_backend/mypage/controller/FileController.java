@@ -17,13 +17,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/mypage/file")
+@RequestMapping("/api/mypage/authenticate")
 @Tag(name = "FILE Verify", description = "FILE Verify API")
 public class FileController {
 
     private final FileService fileService;
 
-    @PostMapping(consumes = "multipart/form-data")
+    @PostMapping(value = "/file", consumes = "multipart/form-data")
     @Operation(summary = "파일로 인증 요청", description = "파일이미지 기반 인증요청 API", security = @SecurityRequirement(name = "Authorization"))
     public ApiResponse<FileResponseDto> createFile(Authentication authentication,
                                                    @RequestPart(name = "ImageFile", required = true) MultipartFile file,
