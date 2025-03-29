@@ -70,7 +70,11 @@ jobs:
       - name: Run Docker container on EC2 via SSM
         run: |
           aws ssm send-command \
+            aws ssm send-command \
             --instance-ids ${{ secrets.EC2_INSTANCE_ID }} \
             --document-name "AWS-RunShellScript" \
             --comment "Deploy Docker container" \
-            --parameters 'commands=["sudo docker pull ${{ secrets.ECR_REPOSITORY }}/keodam:latest", "sudo docker stop keodam", "sudo docker rm keodam", "sudo docker run -d --name keodam -p 8080:8080 ${{ secrets.ECR_REPOSITORY }}/keodam:latest"]'
+            --parameters 'commands=["sudo docker pull '${{ secrets.ECR_REPOSITORY }}'/keodam:latest", "sudo docker stop keodam", "sudo docker rm keodam", "sudo docker run -d --name keodam -p 8080:8080 '${{ secrets.ECR_REPOSITORY }}'/keodam:latest"]' \
+            --timeout-seconds 600 \
+            --max-concurrency "50" \
+            --max-errors "1"
