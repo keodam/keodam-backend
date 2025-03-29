@@ -43,10 +43,6 @@ public class User{
     private Integer coffeeCoupon;
     @Column(name="badge")
     private String badge;
-    @OneToOne
-    @JoinColumn(name = "identity_info_id", unique = true)
-    private UserIdentityInfo identityInfo;
-
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserVerification> verifications = new ArrayList<>();
@@ -66,13 +62,5 @@ public class User{
 
     public void updateRefreshToken(String refreshToken){
         this.refreshToken = refreshToken;
-    }
-
-    public void linkIdentityInfo(UserIdentityInfo identityInfo) {
-        this.identityInfo = identityInfo;
-    }
-
-    public void unlinkIdentityInfo() {
-        this.identityInfo = null;
     }
 }

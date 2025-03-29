@@ -32,6 +32,7 @@ public enum ErrorStatus implements BaseErrorCode {
     NAME_INVALID(HttpStatus.BAD_REQUEST, "PHONE4002", "이름을 확인해주세요."),
     BIRTH_INVALID(HttpStatus.BAD_REQUEST, "PHONE4003", "생년월일을 확인해주세요."),
     VERIFICATION_FAILED(HttpStatus.UNAUTHORIZED, "PHONE4004", "인증번호가 일치하지 않습니다."),
+    ARCHIVE_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "PHONE4005", "이 전화번호로 생성된 인증 정보가 너무 많습니다."),
     TOO_MANY_REQUEST(HttpStatus.TOO_MANY_REQUESTS, "PHONE4291", "인증번호 요청은 2분마다 가능합니다."),
 
     //S3

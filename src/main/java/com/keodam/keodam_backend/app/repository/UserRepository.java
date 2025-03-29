@@ -12,6 +12,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
     @Transactional(readOnly = true)
     Optional<User> findByRefreshToken(String refreshToken);
-
-    Optional<User> findByIdentityInfo(UserIdentityInfo userInfo);
 }

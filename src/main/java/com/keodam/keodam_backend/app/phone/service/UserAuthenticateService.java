@@ -13,6 +13,7 @@ import com.keodam.keodam_backend.global.util.TwilioUtils;
 import com.twilio.exception.ApiException;
 import com.twilio.rest.verify.v2.service.Verification;
 import com.twilio.rest.verify.v2.service.VerificationCheck;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -58,7 +59,7 @@ public class UserAuthenticateService {
         }
 
         LocalDateTime last = recentRequests.get(phone);
-        if (last != null && Duration.between(last, LocalDateTime.now()).toMinutes() < 2) {
+        if (last != null && Duration.between(last, LocalDateTime.now()).toMinutes() < 1) {
             return ResponseEntity.status(ErrorStatus.TOO_MANY_REQUEST.getHttpStatus())
                     .body(ErrorStatus.TOO_MANY_REQUEST.getReasonHttpStatus());
         }
@@ -108,34 +109,74 @@ public class UserAuthenticateService {
                     .orElseThrow(() -> new RuntimeException("사용자 정보를 찾을 수 없습니다."));
 
             Optional<UserIdentityInfo> existing = userIdentityInfoRepository.findByPhoneNumber(phone);
-            UserIdentityInfo userInfo;
 
             if (existing.isPresent()) {
-                userInfo = existing.get();
-                userInfo.updateInfo(dto.getUserBirth(), dto.getUserRealName(), dto.getUserGender());
-                userInfo.markVerifiedNow();
-                userIdentityInfoRepository.save(userInfo);
+                UserIdentityInfo oldInfo = existing.get();
 
-                Optional<User> otherUser = userRepository.findByIdentityInfo(userInfo);
-                if (otherUser.isPresent() && !otherUser.get().getEmail().equals(user.getEmail())) {
-                    otherUser.get().unlinkIdentityInfo();
-                    userRepository.save(otherUser.get());
+                // 7일 이내 탈퇴 재가입 제한
+                if (!oldInfo.getIsActive() && oldInfo.getDeletedAt() != null &&
+                        Duration.between(oldInfo.getDeletedAt(), LocalDateTime.now()).toDays() < 7) {
+                    return ResponseEntity.status(ErrorStatus.BAD_REQUEST.getHttpStatus())
+                            .body(ErrorStatus.BAD_REQUEST.getReasonHttpStatus());
                 }
 
-            } else {
-                userInfo = UserIdentityInfo.builder()
-                        .phoneNumber(phone)
-                        .userRealName(dto.getUserRealName())
-                        .userBirth(dto.getUserBirth())
-                        .userGender(dto.getUserGender())
-                        .verifiedAt(LocalDateTime.now())
-                        .isActive(true)
-                        .build();
-                userIdentityInfoRepository.save(userInfo);
-            }
+                // 기 존재 유저의 인증 재요청 케이스 : 정보업데이트
+                if (oldInfo.getUser() != null && oldInfo.getUser().getId().equals(user.getId())) {
+                    oldInfo.updateInfo(dto.getUserBirth(), dto.getUserRealName(), dto.getUserGender());
+                    oldInfo.markVerifiedNow();
+                    userIdentityInfoRepository.save(oldInfo);
 
-            user.linkIdentityInfo(userInfo);
-            userRepository.save(user);
+                    return ResponseEntity.status(SuccessStatus._OK.getHttpStatus())
+                            .body(SuccessStatus._OK.getReasonHttpStatus());
+                }
+
+                // 다른 유저와 연결된 인증 정보에 요청한 케이스 : unlink + soft delete + number archiving
+                if (oldInfo.getUser() != null && !oldInfo.getUser().getId().equals(user.getId())) {
+                    String originalPhone = oldInfo.getPhoneNumber();
+                    String baseArchivedPhone = "ARCHIVED-" + originalPhone;
+
+                    List<String> archivedPhones = userIdentityInfoRepository.findAllArchivedPhones(baseArchivedPhone);
+                    int maxSuffix = 0;
+                    for (String archived : archivedPhones) {
+                        if (archived.equals(baseArchivedPhone)) {
+                            maxSuffix = Math.max(maxSuffix, 1);
+                        } else if (archived.startsWith(baseArchivedPhone + "-")) {
+                            try {
+                                int suffix = Integer.parseInt(archived.substring((baseArchivedPhone + "-").length()));
+                                maxSuffix = Math.max(maxSuffix, suffix);
+                            } catch (NumberFormatException ignored) {}
+                        }
+                    }
+
+                    int nextSuffix = maxSuffix + 1;
+                    if (nextSuffix > 1000) {
+                        return ResponseEntity
+                                .status(ErrorStatus.BAD_REQUEST.getHttpStatus())
+                                .body(ErrorStatus.BAD_REQUEST.getReasonHttpStatus());
+                    }
+
+                    String archivedPhone = nextSuffix == 1 ? baseArchivedPhone : baseArchivedPhone + "-" + nextSuffix;
+
+                    oldInfo.unlinkUser();
+                    oldInfo.deactivate("NEWUSER:휴대폰 번호 갱신됨");
+                    oldInfo.setDeletedAt(LocalDateTime.now());
+                    oldInfo.setPhoneNumber(archivedPhone);
+
+                    userIdentityInfoRepository.save(oldInfo);
+                }
+            }
+            // 새로운 인증 정보 생성
+            UserIdentityInfo newInfo = UserIdentityInfo.builder()
+                    .phoneNumber(phone)
+                    .userRealName(dto.getUserRealName())
+                    .userBirth(dto.getUserBirth())
+                    .userGender(dto.getUserGender())
+                    .verifiedAt(LocalDateTime.now())
+                    .isActive(true)
+                    .build();
+
+            newInfo.linkUser(user);
+            userIdentityInfoRepository.save(newInfo);
 
             return ResponseEntity.status(SuccessStatus._OK.getHttpStatus())
                     .body(SuccessStatus._OK.getReasonHttpStatus());
