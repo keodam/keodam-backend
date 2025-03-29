@@ -64,7 +64,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: ${{ secrets.AWS_SSM_ROLE }}  # EC2 역할 ARN
-          region: ap-northeast-2
+          aws-region: ap-northeast-2
           role-session-name: GitHubActions
           
       - name: Run Docker container on EC2 via SSM
