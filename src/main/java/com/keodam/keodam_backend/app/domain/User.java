@@ -1,11 +1,14 @@
 package com.keodam.keodam_backend.app.domain;
 
+import com.keodam.keodam_backend.mypage.domain.UserVerification;
 import com.keodam.keodam_backend.app.phone.domain.UserIdentityInfo;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Table(name = "user")
@@ -40,6 +43,9 @@ public class User{
     private Integer coffeeCoupon;
     @Column(name="badge")
     private String badge;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserVerification> verifications = new ArrayList<>();
 
     @Builder
     public User(String nickname, String email, String profileUrl, SocialType socialType, RoleType roleType, String oAuthId) {
