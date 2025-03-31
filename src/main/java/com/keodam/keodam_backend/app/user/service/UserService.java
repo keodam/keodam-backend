@@ -98,4 +98,8 @@ public class UserService {
         User newUser = new User(oauthId, email);
         return userRepository.save(newUser);
     }
+
+    public boolean isNicknameAvailable(String nickname) {
+        return !userRepository.existsByNickname(nickname);
+    }
 }

@@ -7,6 +7,7 @@ import com.keodam.keodam_backend.app.user.dto.res.SignupStatusResponseDto;
 import com.keodam.keodam_backend.app.user.dto.res.UserResponseDto;
 import com.keodam.keodam_backend.app.user.service.UserService;
 import com.keodam.keodam_backend.global.ApiResponse;
+import com.keodam.keodam_backend.global.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -36,6 +37,28 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.onSuccess(updatedUser));
     }
 
+    @GetMapping("/nickname/check")
+    public ResponseEntity<ApiResponse<String>> checkNickname(@RequestParam String nickname) {
+        if (nickname == null || nickname.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body(ApiResponse.onFailure(
+                    ErrorStatus.NICKNAME_NOT_EXIST.getCode(),
+                    ErrorStatus.NICKNAME_NOT_EXIST.getMessage(),
+                    null
+            ));
+        }
+
+        boolean isAvailable = userService.isNicknameAvailable(nickname);
+        if (isAvailable) {
+            return ResponseEntity.ok(ApiResponse.onSuccess("사용 가능한 닉네임입니다."));
+        } else {
+            return ResponseEntity.badRequest().body(ApiResponse.onFailure(
+                    ErrorStatus.USER_NOT_FOUND.getCode(),
+                    "이미 사용 중인 닉네임입니다.",
+                    null
+            ));
+        }
+
+    }
 
     @PatchMapping("/role")
     public ResponseEntity<ApiResponse<UserResponseDto>> selectRole(
