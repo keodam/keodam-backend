@@ -1,6 +1,6 @@
 package com.keodam.keodam_backend.global.config;
 
-import com.keodam.keodam_backend.app.user.repository.UserRepository;
+import com.keodam.keodam_backend.app.repository.UserRepository;
 import com.keodam.keodam_backend.global.security.JwtAuthenticationProcessingFilter;
 import com.keodam.keodam_backend.global.security.JwtService;
 import com.keodam.keodam_backend.oauth.domain.CustomIdTokenUser;
@@ -14,6 +14,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -36,8 +38,6 @@ public class SecurityConfig {
     private final UserRepository userRepository;
     private final IdTokenService idTokenService;
 
-
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -49,11 +49,15 @@ public class SecurityConfig {
                 // 세션 사용X, JWT 사용
                 .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/signup").authenticated()
-                                .requestMatchers("/auth/**", "/oauth2/**").permitAll())
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/**").permitAll());
-
+                .authorizeHttpRequests(auth -> auth
+                                .requestMatchers(
+                                        "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**",
+                                        "/swagger-resources/**", "/webjars/**", "/api-test/**"
+                                ).permitAll()
+                                .requestMatchers("/signup").authenticated()
+                                .anyRequest().permitAll()
+                        // 개발 편의성을 위해 한시적으로 permitAll로 관리함.
+                );
         http .addFilterBefore(requestHeaderAuthenticationFilter(), BasicAuthenticationFilter.class);
         http.addFilterBefore(jwtAuthenticationProcessingFilter(), RequestHeaderAuthenticationFilter.class);
         return http.build();
@@ -79,7 +83,6 @@ public class SecurityConfig {
             String token = (String) authentication.getPrincipal();
             try {
                 CustomIdTokenUser user = idTokenService.loadUserByAccessToken(token);
-
                 // PreAuthenticatedAuthenticationToken 생성
                 return new PreAuthenticatedAuthenticationToken(
                         user,
@@ -94,7 +97,11 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
-        JwtAuthenticationProcessingFilter jwtAuthenticationFilter = new JwtAuthenticationProcessingFilter(jwtService, userRepository);
-        return jwtAuthenticationFilter;
+        return new JwtAuthenticationProcessingFilter(jwtService, userRepository);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 }

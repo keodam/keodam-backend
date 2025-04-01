@@ -10,15 +10,16 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ErrorStatus implements BaseErrorCode {
 
-    _INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON500", "서버 에러, 관리자에게 문의 바랍니다."),
-    _BAD_REQUEST(HttpStatus.BAD_REQUEST,"COMMON400","잘못된 요청입니다."),
-    _UNAUTHORIZED(HttpStatus.UNAUTHORIZED,"COMMON401","인증이 필요합니다."),
-    _FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다."),
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON500", "서버 에러, 관리자에게 문의 바랍니다."),
+    BAD_REQUEST(HttpStatus.BAD_REQUEST,"COMMON400","잘못된 요청입니다."),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED,"COMMON401","인증이 필요합니다."),
+    FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다."),
 
     MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4001", "사용자가 없습니다."),
     EMAIL_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4003", "이메일이 없습니다."),
     NICKNAME_NOT_EXIST(HttpStatus.BAD_REQUEST, "MEMBER4002", "닉네임은 필수 입니다."),
     EMAIL_FAILED(HttpStatus.BAD_REQUEST, "MEMBER4004","이메일 전송에 실패하였습니다"),
+    INVALID_EMAIL_FORMAT(HttpStatus.BAD_REQUEST, "MEMBER4005", "이메일 형식이 올바르지 않습니다."),
 
     PASSWORD_VALIDATION_FAILED(HttpStatus.BAD_REQUEST,"PASSWORD4001","비밀번호는 영어 대/소문자, 숫자 중 2종류 이상을 조합해야 합니다."),
 
@@ -26,6 +27,13 @@ public enum ErrorStatus implements BaseErrorCode {
     JWT_EXPIRED(HttpStatus.UNAUTHORIZED, "AUTH002", "JWT 토큰이 만료되었습니다."),
     JWT_MALFORMED(HttpStatus.UNAUTHORIZED, "AUTH003", "JWT 토큰이 올바르지 않은 형식입니다."),
 
+    //UserVerifyCode
+    INVALID_PHONE_FORMAT(HttpStatus.BAD_REQUEST, "PHONE4001", "휴대폰번호 형식을 확인해주세요. "),
+    NAME_INVALID(HttpStatus.BAD_REQUEST, "PHONE4002", "이름을 확인해주세요."),
+    BIRTH_INVALID(HttpStatus.BAD_REQUEST, "PHONE4003", "생년월일을 확인해주세요."),
+    VERIFICATION_FAILED(HttpStatus.UNAUTHORIZED, "PHONE4004", "인증번호가 일치하지 않습니다."),
+    ARCHIVE_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "PHONE4005", "이 전화번호로 생성된 인증 정보가 너무 많습니다."),
+    TOO_MANY_REQUEST(HttpStatus.TOO_MANY_REQUESTS, "PHONE4291", "인증번호 요청은 2분마다 가능합니다."),
 
     //S3
     S3_FAILED(HttpStatus.INTERNAL_SERVER_ERROR,"S34001","사진 업로드에 실패했습니다."),
@@ -52,7 +60,6 @@ public enum ErrorStatus implements BaseErrorCode {
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;
-
 
     @Override
     public ErrorReasonDTO getReason() {
