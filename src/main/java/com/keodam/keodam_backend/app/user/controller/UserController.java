@@ -9,6 +9,8 @@ import com.keodam.keodam_backend.app.user.service.UserService;
 import com.keodam.keodam_backend.exception.GeneralException;
 import com.keodam.keodam_backend.global.ApiResponse;
 import com.keodam.keodam_backend.global.code.status.ErrorStatus;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,11 +20,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
+@Tag(name = "User", description = "User API")
 public class UserController {
 
     private final UserService userService;
 
     @PatchMapping("/nickname")
+    @Operation(summary = "닉네임 설정 및 수정", description = "닉네임 설정 및 수정 API")
     public ResponseEntity<ApiResponse<UserResponseDto>> updateNickname(
             @RequestBody NicknameRequestDto request,
             @AuthenticationPrincipal OAuth2User oAuth2User) {
@@ -38,12 +42,14 @@ public class UserController {
     }
 
     @GetMapping("/nickname/check")
+    @Operation(summary = "닉네임 중복 확인", description = "닉네임 검증 API")
     public ResponseEntity<ApiResponse<String>> checkNickname(@RequestParam String nickname) {
         userService.validateNickname(nickname);
         return ResponseEntity.ok(ApiResponse.onSuccess("사용 가능한 닉네임입니다."));
     }
 
     @PatchMapping("/role")
+    @Operation(summary = "역할 설정 및 수정", description = "역할 설정 및 수정 API")
     public ResponseEntity<ApiResponse<UserResponseDto>> selectRole(
             @RequestBody RoleRequestDto request,
             @AuthenticationPrincipal OAuth2User oAuth2User) {
@@ -56,12 +62,12 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.onSuccess(updatedUser));
     }
 
-    // 회원가입 진행 상태 확인
     @GetMapping("/status")
+    @Operation(summary = "회원가입 상태 확인", description = "회원가입 상태 확인 API")
     public ResponseEntity<ApiResponse<SignupStatusResponseDto>> checkSignupStatus(
             @AuthenticationPrincipal  OAuth2User oAuth2User
     ) {
-        String oauthId = oAuth2User.getName();  // OAuth2 ID 가져오기
+        String oauthId = oAuth2User.getName();
         User user = userService.findByOAuthId(oauthId)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
 
