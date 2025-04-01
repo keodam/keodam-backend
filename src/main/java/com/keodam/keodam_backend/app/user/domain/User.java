@@ -2,11 +2,14 @@ package com.keodam.keodam_backend.app.user.domain;
 
 import com.keodam.keodam_backend.app.domain.RoleType;
 import com.keodam.keodam_backend.app.domain.SocialType;
+import com.keodam.keodam_backend.exception.GeneralException;
+import com.keodam.keodam_backend.global.code.status.ErrorStatus;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Table(name = "user")
@@ -42,6 +45,16 @@ public class User{
     private Integer coffeeCoupon;
     @Column(name="badge")
     private String badge;
+    @Column(name="nickname_changed")
+    private boolean nicknameChanged = false;
+    @Column(name="nickname_changed_at")
+    private LocalDateTime nicknameChangedAt;
+
+    public boolean canChangeNickname() {
+        if (this.nickname == null) return true; // 최초 설정
+        if (this.nicknameChangedAt == null) return true;
+        return LocalDateTime.now().isAfter(this.nicknameChangedAt.plusDays(30));
+    }
 
     @Builder
     public User(String nickname, String email, String profileUrl, SocialType socialType, RoleType roleType, String oauthId) {
@@ -56,30 +69,25 @@ public class User{
         this.rouletteCoupon = 0;
     }
 
-    public User(Long id, String nickname, String password, String email, String profileUrl, RoleType roleType) {
-        this.id = id;
-        this.nickname = nickname;
-        this.password = password;
-        this.email = email;
-        this.profileUrl = profileUrl;
-        this.roleType = roleType;
-    }
-
     public User(String oauthId, String email) {
         this.oauthId = oauthId;
         this.email = email;
     }
 
-    // 닉네임, 프로필 사진, 역할 변경
-    public User update(String nickname, String profileUrl, RoleType roleType) {
-        return new User(
-                this.id,
-                nickname != null ? nickname : this.nickname,
-                this.password,
-                this.email,
-                profileUrl != null ? profileUrl : this.profileUrl,
-                roleType != null ? roleType : this.roleType
-        );
+    // 닉네임 변경 - 30일 이후 변경 가능 검증 추가
+    public void updateNickname(String newNickname) {
+        if (this.nickname != null && !canChangeNickname()) {
+            throw new GeneralException(ErrorStatus.NICKNAME_ALREADY_CHANGED);
+        }
+        this.nickname = newNickname;
+        this.nicknameChangedAt = LocalDateTime.now();
+        this.nicknameChanged = true;
+    }
+
+    // 프로필 사진, 역할 변경
+    public void update(String profileUrl, RoleType roleType) {
+        if(profileUrl != null) this.profileUrl = profileUrl;
+        if(roleType != null) this.roleType = roleType;
     }
 
     public void updateRefreshToken(String refreshToken){
