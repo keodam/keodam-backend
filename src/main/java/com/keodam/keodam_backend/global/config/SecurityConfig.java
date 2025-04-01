@@ -1,6 +1,7 @@
 package com.keodam.keodam_backend.global.config;
 
-import com.keodam.keodam_backend.app.repository.UserRepository;
+
+import com.keodam.keodam_backend.app.user.repository.UserRepository;
 import com.keodam.keodam_backend.global.security.JwtAuthenticationProcessingFilter;
 import com.keodam.keodam_backend.global.security.JwtService;
 import com.keodam.keodam_backend.oauth.domain.CustomIdTokenUser;

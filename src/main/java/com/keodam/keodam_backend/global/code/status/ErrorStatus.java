@@ -34,10 +34,15 @@ public enum ErrorStatus implements BaseErrorCode {
     VERIFICATION_FAILED(HttpStatus.UNAUTHORIZED, "PHONE4004", "인증번호가 일치하지 않습니다."),
     ARCHIVE_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "PHONE4005", "이 전화번호로 생성된 인증 정보가 너무 많습니다."),
     TOO_MANY_REQUEST(HttpStatus.TOO_MANY_REQUESTS, "PHONE4291", "인증번호 요청은 2분마다 가능합니다."),
+    INVALID_VERIFICATION_CODE(HttpStatus.UNAUTHORIZED, "PHONE4006", "인증번호가 올바르지 않습니다."),
+    EXPIRED_CODE(HttpStatus.UNAUTHORIZED, "PHONE4007", "인증번호가 만료되었습니다."),
+
+    INVALID_DOCUMENT_TYPE(HttpStatus.BAD_REQUEST, "DOC4001", "지원하지 않는 문서 유형입니다."),
 
     //S3
     S3_FAILED(HttpStatus.INTERNAL_SERVER_ERROR,"S34001","사진 업로드에 실패했습니다."),
     S3_FORMAT(HttpStatus.BAD_REQUEST, "S34002","잘못된 형식의 파일입니다."),
+    S3_EMPTY_FILE(HttpStatus.BAD_REQUEST, "S34003", "업로드할 파일이 비어 있습니다."),
 
     //user
     USER_NOT_FOUND(HttpStatus.NOT_FOUND,"USER4001","회원 정보를 찾을 수 없습니다."),

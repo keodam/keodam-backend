@@ -1,3 +1,10 @@
+package com.keodam.keodam_backend.app.domain;
+
+import com.keodam.keodam_backend.mypage.domain.UserVerification;
+import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
