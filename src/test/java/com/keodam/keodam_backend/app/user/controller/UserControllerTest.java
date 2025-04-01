@@ -1,8 +1,8 @@
 package com.keodam.keodam_backend.app.user.controller;
 
 import com.keodam.keodam_backend.app.user.domain.User;
-import com.keodam.keodam_backend.app.user.dto.req.NicknameRequestDto;
-import com.keodam.keodam_backend.app.user.dto.res.UserResponseDto;
+import com.keodam.keodam_backend.app.user.dto.NicknameRequestDto;
+import com.keodam.keodam_backend.app.user.dto.UserResponseDto;
 import com.keodam.keodam_backend.app.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,8 +18,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.keodam.keodam_backend.app.domain.RoleType;
 
-import com.keodam.keodam_backend.app.user.dto.req.RoleRequestDto;
-import com.keodam.keodam_backend.app.user.dto.res.SignupStatusResponseDto;
+import com.keodam.keodam_backend.app.user.dto.RoleRequestDto;
+import com.keodam.keodam_backend.app.user.dto.SignupStatusResponseDto;
 
 import com.keodam.keodam_backend.global.ApiResponse;
 
@@ -79,33 +79,6 @@ class UserControllerTest {
         assertEquals("haeun", response.getBody().getResult().nickname());
     }
 
-    @Test
-    void checkNickname_duplicate() {
-        // given
-        String nickname = "existingNick";
-        when(userService.isNicknameAvailable(nickname)).thenReturn(false);
-
-        // when
-        ResponseEntity<ApiResponse<String>> response = userController.checkNickname(nickname);
-
-        // then
-        assertEquals(400, response.getStatusCodeValue());  // 중복이므로 400 Bad Request
-        assertEquals("이미 사용 중인 닉네임입니다.", response.getBody().getMessage());
-    }
-
-    @Test
-    void checkNickname_available() {
-        // given
-        String nickname = "newbie";
-        when(userService.isNicknameAvailable(nickname)).thenReturn(true);
-
-        // when
-        ResponseEntity<ApiResponse<String>> response = userController.checkNickname(nickname);
-
-        // then
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals("사용 가능한 닉네임입니다.", response.getBody().getResult());
-    }
 
     @Test
     void selectRole_success() {

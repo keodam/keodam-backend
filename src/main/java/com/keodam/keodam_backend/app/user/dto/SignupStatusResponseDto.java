@@ -1,4 +1,4 @@
-package com.keodam.keodam_backend.app.user.dto.res;
+package com.keodam.keodam_backend.app.user.dto;
 
 public record SignupStatusResponseDto (
         boolean hasNickname,
