@@ -1,7 +1,7 @@
 package com.keodam.keodam_backend.global.security;
 
 import com.auth0.jwt.algorithms.Algorithm;
-import com.keodam.keodam_backend.app.user.repository.UserRepository;
+import com.keodam.keodam_backend.app.repository.UserRepository;
 import jakarta.servlet.http.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -38,14 +38,16 @@ public class JwtService {
     private static final String ACCESS_TOKEN = "AccessToken";
     private static final String REFRESH_TOKEN = "RefreshToken";
     private static final String EMAIL_CLAIM = "email";
+    private static final String USERID_CLAIM = "userId";
     private static final String BEARER = "Bearer ";
 
-    public String createAccessToken(String email) {
+    public String createAccessToken(String email, Long userId) {
         Date now = new Date();
         return JWT.create()
                 .withSubject(ACCESS_TOKEN)
                 .withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))
                 .withClaim(EMAIL_CLAIM, email)
+                .withClaim(USERID_CLAIM, userId)
                 .sign(Algorithm.HMAC512(secretKey));
     }
 
@@ -99,6 +101,7 @@ public class JwtService {
 
     @Transactional
     public void updateRefreshToken(String email, String refreshToken) {
+
         userRepository.findByEmail(email)
                 .ifPresentOrElse(
                         user -> {user.updateRefreshToken(refreshToken); },
