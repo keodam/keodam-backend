@@ -69,7 +69,7 @@ public class UserController {
     ) {
         String oauthId = oAuth2User.getName();
         User user = userService.findByOAuthId(oauthId)
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
         SignupStatusResponseDto response = userService.checkSignupStatus(user);
 
