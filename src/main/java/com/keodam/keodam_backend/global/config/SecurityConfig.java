@@ -1,6 +1,7 @@
 package com.keodam.keodam_backend.global.config;
 
-import com.keodam.keodam_backend.app.repository.UserRepository;
+
+import com.keodam.keodam_backend.app.user.repository.UserRepository;
 import com.keodam.keodam_backend.global.security.JwtAuthenticationProcessingFilter;
 import com.keodam.keodam_backend.global.security.JwtService;
 import com.keodam.keodam_backend.oauth.domain.CustomIdTokenUser;
@@ -16,6 +17,9 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter;
@@ -34,6 +38,7 @@ public class SecurityConfig {
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final IdTokenService idTokenService;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 

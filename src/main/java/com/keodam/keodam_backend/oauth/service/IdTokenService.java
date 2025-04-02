@@ -3,16 +3,13 @@ package com.keodam.keodam_backend.oauth.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.keodam.keodam_backend.app.domain.SocialType;
-import com.keodam.keodam_backend.app.domain.User;
-import com.keodam.keodam_backend.app.repository.UserRepository;
+import com.keodam.keodam_backend.app.user.domain.User;
+import com.keodam.keodam_backend.app.user.repository.UserRepository;
 import com.keodam.keodam_backend.oauth.domain.CustomIdTokenUser;
 import com.keodam.keodam_backend.oauth.domain.IdTokenAttributes;
-import com.keodam.keodam_backend.oauth.domain.userinfo.KakaoUserInfo;
-import com.keodam.keodam_backend.oauth.domain.userinfo.UserInfo;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +44,7 @@ public class IdTokenService {
         }
         return new CustomIdTokenUser(
                 Collections.singleton(new SimpleGrantedAuthority(findUser.getRoleType().toString())),
-                findUser.getOAuthId(),
+                findUser.getOauthId(),
                 findUser.getPassword(),
                 findUser.getEmail(),
                 findUser.getRoleType()

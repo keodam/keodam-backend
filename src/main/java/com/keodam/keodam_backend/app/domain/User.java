@@ -1,7 +1,6 @@
 package com.keodam.keodam_backend.app.domain;
 
 import com.keodam.keodam_backend.mypage.domain.UserVerification;
-import com.keodam.keodam_backend.app.phone.domain.UserIdentityInfo;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

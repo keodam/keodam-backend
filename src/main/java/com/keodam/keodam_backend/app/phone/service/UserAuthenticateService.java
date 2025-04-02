@@ -1,11 +1,13 @@
 package com.keodam.keodam_backend.app.phone.service;
 
-import com.keodam.keodam_backend.app.domain.User;
+
 import com.keodam.keodam_backend.app.phone.domain.UserIdentityInfo;
 import com.keodam.keodam_backend.app.phone.dto.UserVerifyCheckRequestDto;
 import com.keodam.keodam_backend.app.phone.dto.UserVerifyCodeRequestDto;
 import com.keodam.keodam_backend.app.phone.repository.UserIdentityInfoRepository;
-import com.keodam.keodam_backend.app.repository.UserRepository;
+
+import com.keodam.keodam_backend.app.user.domain.User;
+import com.keodam.keodam_backend.app.user.repository.UserRepository;
 import com.keodam.keodam_backend.global.code.status.ErrorStatus;
 import com.keodam.keodam_backend.global.code.status.SuccessStatus;
 import com.keodam.keodam_backend.global.config.TwilioConfig;

@@ -1,7 +1,7 @@
 package com.keodam.keodam_backend.mypage.service;
 
-import com.keodam.keodam_backend.app.domain.User;
-import com.keodam.keodam_backend.app.repository.UserRepository;
+import com.keodam.keodam_backend.app.user.domain.User;
+import com.keodam.keodam_backend.app.user.repository.UserRepository;
 import com.keodam.keodam_backend.exception.GeneralException;
 import com.keodam.keodam_backend.global.aws.AwsS3Service;
 import com.keodam.keodam_backend.global.code.status.ErrorStatus;

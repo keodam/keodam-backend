@@ -1,6 +1,6 @@
 package com.keodam.keodam_backend.mypage.domain;
 
-import com.keodam.keodam_backend.app.domain.User;
+import com.keodam.keodam_backend.app.user.domain.User;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
