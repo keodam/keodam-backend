@@ -67,8 +67,8 @@ public class UserService {
                 .build();
     }
 
-    public Optional<User> findByOAuthId(String oauthId) {
-        return userRepository.findByOauthId(oauthId);
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     @Transactional
