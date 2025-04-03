@@ -29,14 +29,14 @@ public class UserController {
     @PatchMapping("/nickname")
     @Operation(summary = "닉네임 설정 및 수정", description = "닉네임 설정 및 수정 API")
     public ResponseEntity<ApiResponse<UserResponseDto>> updateNickname(
-            @RequestBody NicknameRequestDto request,
+            @RequestBody NicknameRequestDto nicknameRequestDto,
             Authentication authentication) {
         String email = authentication.getName();
 
         User user = userService.findByEmail(email)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
-        UserResponseDto updatedUser = userService.updateNickname(user, request.nickname());
+        UserResponseDto updatedUser = userService.updateNickname(user, nicknameRequestDto.nickname());
 
         return ResponseEntity.ok(ApiResponse.onSuccess(updatedUser));
     }
@@ -51,13 +51,14 @@ public class UserController {
     @PatchMapping("/role")
     @Operation(summary = "역할 설정 및 수정", description = "역할 설정 및 수정 API")
     public ResponseEntity<ApiResponse<UserResponseDto>> selectRole(
-            @RequestBody RoleRequestDto request,
-            @AuthenticationPrincipal OAuth2User oAuth2User) {
-        String oauthId = oAuth2User.getName();
-        User user = userService.findByOAuthId(oauthId)
+            @RequestBody RoleRequestDto roleRequestDto,
+            Authentication authentication) {
+        String email = authentication.getName();
+
+        User user = userService.findByEmail(email)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
-        UserResponseDto updatedUser = userService.updateRole(user, request.roleType());
+        UserResponseDto updatedUser = userService.updateRole(user, roleRequestDto.roleType());
 
         return ResponseEntity.ok(ApiResponse.onSuccess(updatedUser));
     }

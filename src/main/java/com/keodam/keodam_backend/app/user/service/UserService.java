@@ -36,7 +36,7 @@ public class UserService {
         if (roleType != RoleType.MENTOR && roleType != RoleType.MENTEE) {
             throw new GeneralException(ErrorStatus.INVALID_ROLE_TYPE);
         }
-        user.update(null, roleType);
+        user.updateRole(roleType);
         return createUserResponseDto(user);
     }
 

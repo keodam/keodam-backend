@@ -95,8 +95,7 @@ public class User {
         this.nicknameChanged = true;
     }
 
-    public void update(String profileUrl, RoleType roleType) {
-        if (profileUrl != null) this.profileUrl = profileUrl;
+    public void updateRole(RoleType roleType) {
         if (roleType != null) this.roleType = roleType;
     }
 
