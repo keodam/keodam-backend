@@ -41,18 +41,6 @@ public class UserService {
     }
 
     /**
-     * 회원가입 상태 확인
-     */
-    @Transactional(readOnly = true)
-    public SignupStatusResponseDto checkSignupStatus(User user) {
-        return new SignupStatusResponseDto(
-                user.getNickname() != null,
-                user.getProfileUrl() != null,
-                user.getRoleType() != null && user.getRoleType()!=RoleType.GUEST
-        );
-    }
-
-    /**
      * UserResponse 생성 메서드 (중복 로직 제거)
      */
     private UserResponseDto createUserResponseDto(User user) {
@@ -71,11 +59,6 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    @Transactional
-    public User createUser(String oauthId, String email) {
-        User newUser = new User(oauthId, email);
-        return userRepository.save(newUser);
-    }
 
     private boolean containsSpecialChar(String nickname) {
         // 한글, 영어, 숫자만 허용. 그 외는 특수문자

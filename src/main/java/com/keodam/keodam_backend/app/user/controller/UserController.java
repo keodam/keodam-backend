@@ -62,18 +62,4 @@ public class UserController {
 
         return ResponseEntity.ok(ApiResponse.onSuccess(updatedUser));
     }
-
-    @GetMapping("/status")
-    @Operation(summary = "회원가입 상태 확인", description = "회원가입 상태 확인 API")
-    public ResponseEntity<ApiResponse<SignupStatusResponseDto>> checkSignupStatus(
-            @AuthenticationPrincipal  OAuth2User oAuth2User
-    ) {
-        String oauthId = oAuth2User.getName();
-        User user = userService.findByOAuthId(oauthId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
-
-        SignupStatusResponseDto response = userService.checkSignupStatus(user);
-
-        return ResponseEntity.ok(ApiResponse.onSuccess(response));
-    }
 }
