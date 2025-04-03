@@ -1,14 +1,12 @@
 package com.keodam.keodam_backend.mypage.domain;
 
-import com.keodam.keodam_backend.app.user.domain.User;
+import com.keodam.keodam_backend.app.domain.User;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity

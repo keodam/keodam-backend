@@ -1,6 +1,6 @@
 package com.keodam.keodam_backend.mypage.service;
 
-import com.keodam.keodam_backend.app.user.domain.User;
+import com.keodam.keodam_backend.app.domain.User;
 import com.keodam.keodam_backend.app.user.repository.UserRepository;
 import com.keodam.keodam_backend.exception.GeneralException;
 import com.keodam.keodam_backend.global.code.status.ErrorStatus;
@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.mail.javamail.JavaMailSender;
-
 import java.time.LocalDateTime;
 import java.util.Random;
 import java.util.regex.Pattern;
