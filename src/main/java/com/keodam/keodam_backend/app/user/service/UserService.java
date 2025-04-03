@@ -1,7 +1,7 @@
 package com.keodam.keodam_backend.app.user.service;
 
 import com.keodam.keodam_backend.app.domain.RoleType;
-import com.keodam.keodam_backend.app.user.domain.User;
+import com.keodam.keodam_backend.app.domain.User;
 import com.keodam.keodam_backend.app.user.dto.SignupStatusResponseDto;
 import com.keodam.keodam_backend.app.user.repository.UserRepository;
 import com.keodam.keodam_backend.app.user.dto.UserResponseDto;
@@ -10,7 +10,6 @@ import com.keodam.keodam_backend.global.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -37,20 +36,8 @@ public class UserService {
         if (roleType != RoleType.MENTOR && roleType != RoleType.MENTEE) {
             throw new GeneralException(ErrorStatus.INVALID_ROLE_TYPE);
         }
-        user.update(null, roleType);
+        user.updateRole(roleType);
         return createUserResponseDto(user);
-    }
-
-    /**
-     * 회원가입 상태 확인
-     */
-    @Transactional(readOnly = true)
-    public SignupStatusResponseDto checkSignupStatus(User user) {
-        return new SignupStatusResponseDto(
-                user.getNickname() != null,
-                user.getProfileUrl() != null,
-                user.getRoleType() != null && user.getRoleType()!=RoleType.GUEST
-        );
     }
 
     /**
@@ -68,15 +55,10 @@ public class UserService {
                 .build();
     }
 
-    public Optional<User> findByOAuthId(String oauthId) {
-        return userRepository.findByOauthId(oauthId);
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
-    @Transactional
-    public User createUser(String oauthId, String email) {
-        User newUser = new User(oauthId, email);
-        return userRepository.save(newUser);
-    }
 
     private boolean containsSpecialChar(String nickname) {
         // 한글, 영어, 숫자만 허용. 그 외는 특수문자
