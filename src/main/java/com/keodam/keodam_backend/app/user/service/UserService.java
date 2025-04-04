@@ -2,7 +2,6 @@ package com.keodam.keodam_backend.app.user.service;
 
 import com.keodam.keodam_backend.app.domain.RoleType;
 import com.keodam.keodam_backend.app.domain.User;
-import com.keodam.keodam_backend.app.user.dto.SignupStatusResponseDto;
 import com.keodam.keodam_backend.app.user.repository.UserRepository;
 import com.keodam.keodam_backend.app.user.dto.UserResponseDto;
 import com.keodam.keodam_backend.exception.GeneralException;
@@ -17,6 +16,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
 
+    private final BannedWordsService bannedWordsService;
     private final UserRepository userRepository;
 
     /**
@@ -70,8 +70,7 @@ public class UserService {
     }
 
     private boolean containsBadWord(String nickname) {
-        List<String> badWords = List.of("씨발","시이발","니애미","느금마","빨갱이","윤석열","바보","멍청이","존나","좆같네");
-        return badWords.stream().anyMatch(nickname::contains);
+        return bannedWordsService.isBannedWord(nickname);
     }
 
     /**
