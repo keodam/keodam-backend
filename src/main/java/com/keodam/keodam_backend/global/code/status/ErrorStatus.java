@@ -56,7 +56,11 @@ public enum ErrorStatus implements BaseErrorCode {
     NICKNAME_CONTAINS_BAD_WORD(HttpStatus.BAD_REQUEST, "NICKNAME4005", "닉네임에 비속어는 포함할 수 없어요."),
 
     // role type
-    INVALID_ROLE_TYPE(HttpStatus.BAD_REQUEST, "ROLE4001", "잘못된 역할 선택입니다.");
+    INVALID_ROLE_TYPE(HttpStatus.BAD_REQUEST, "ROLE4001", "잘못된 역할 선택입니다."),
+
+    //api
+    EMPTY_RESPONSE(HttpStatus.NO_CONTENT, "API4001", "API 응답이 비어있어요."),
+    INVALID_JSON_RESPONSE(HttpStatus.INTERNAL_SERVER_ERROR, "API4002", "JSON 응답 형식 오류입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
