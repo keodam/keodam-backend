@@ -5,9 +5,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 import static com.keodam.keodam_backend.global.code.status.ErrorStatus.BAD_REQUEST;
@@ -37,12 +39,32 @@ public class BannedWordsService {
     }
 
     private String fetchApiResponse() {
-        RestTemplate restTemplate = new RestTemplate();
-        String url = apiUrl + "?page=" + MIN_VALUE + "&perPage=" + MAX_VALUE + "&serviceKey=" + apikey;
+        String urlStr = apiUrl + "?page=" + MIN_VALUE + "&perPage=" + MAX_VALUE + "&serviceKey=" + apikey;
 
-        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-        return response.getBody();
+        try {
+            URL url = new URL(urlStr);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(conn.getInputStream(), "UTF-8"));
+            StringBuilder sb = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+            reader.close();
+            conn.disconnect();
+
+            String result = sb.toString();
+            return result;
+
+        } catch (Exception e) {
+            throw new GeneralException(BAD_REQUEST);
+        }
     }
+
 
     private Set<String> parseBannedWords(String jsonResponse) throws JSONException {
         Set<String> bannedWords = new HashSet<>();
