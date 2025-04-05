@@ -78,9 +78,6 @@ public class User {
         this.rouletteCoupon = 0;
     }
 
-    public User(String oauthId, String email) {
-    }
-
     public boolean canChangeNickname() {
         if (this.nickname == null || this.nicknameChangedAt == null) return true;
         return LocalDateTime.now().isAfter(this.nicknameChangedAt.plusDays(30));
