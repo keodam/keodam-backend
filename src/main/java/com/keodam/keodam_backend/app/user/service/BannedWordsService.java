@@ -5,11 +5,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import java.net.URI;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import static com.keodam.keodam_backend.global.code.status.ErrorStatus.*;
@@ -36,36 +34,19 @@ public class BannedWordsService {
     }
 
     public boolean isBannedWord(String inputNicknameWord) {
-        Set<String> bannedWords = getBannedWordsFromCache();
-        return bannedWords.contains(inputNicknameWord);
-    }
-
-    private Set<String> getBannedWordsFromCache() {
-        ValueOperations<String, String> ops = redisTemplate.opsForValue();
-        String cached = ops.get(CACHE_KEY);
-
-        if (cached != null) {
-            String[] split = cached.split(",");
-            validateBannedWords(split);
-            return new HashSet<>(Arrays.asList(split));
-        }
-
-        return fetchFromApiAndCache();
-    }
-
-    private void validateBannedWords(String[] split) {
-        for (String word : split) {
-            if (word == null || word.isBlank()) {
-                throw new GeneralException(INVALID_JSON_RESPONSE);
+        if (Boolean.FALSE.equals(redisTemplate.hasKey(CACHE_KEY))) {
+            Set<String> bannedWords = fetchFromApi();
+            if (!bannedWords.isEmpty()) {
+                redisTemplate.opsForSet().add(CACHE_KEY, bannedWords.toArray(new String[0]));
             }
         }
+
+        return Boolean.TRUE.equals(redisTemplate.opsForSet().isMember(CACHE_KEY, inputNicknameWord));
     }
 
-    private Set<String> fetchFromApiAndCache() {
+    private Set<String> fetchFromApi() {
         String jsonResponse = fetchApiResponse();
-        Set<String> bannedWords = parseBannedWords(jsonResponse);
-        redisTemplate.opsForValue().set(CACHE_KEY, String.join(",", bannedWords));
-        return bannedWords;
+        return parseBannedWords(jsonResponse);
     }
 
     private String fetchApiResponse() {
@@ -99,8 +80,12 @@ public class BannedWordsService {
         for (int i = 0; i < dataArray.length(); i++) {
             JSONObject item = dataArray.getJSONObject(i);
             String bannedWord = item.getString("단어");
-            bannedWords.add(bannedWord);
+            if (bannedWord != null && !bannedWord.isBlank()) {
+                bannedWords.add(bannedWord);
+            }
         }
+
         return bannedWords;
     }
 }
+
