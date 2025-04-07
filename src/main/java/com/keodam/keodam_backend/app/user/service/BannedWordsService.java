@@ -1,7 +1,6 @@
 package com.keodam.keodam_backend.app.user.service;
 
 import com.keodam.keodam_backend.exception.GeneralException;
-import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,12 +36,8 @@ public class BannedWordsService {
     }
 
     public boolean isBannedWord(String inputNicknameWord) {
-        try {
-            Set<String> bannedWords = getBannedWordsFromCache();
-            return bannedWords.contains(inputNicknameWord);
-        } catch (Exception e) {
-            throw new GeneralException(BAD_REQUEST);
-        }
+        Set<String> bannedWords = getBannedWordsFromCache();
+        return bannedWords.contains(inputNicknameWord);
     }
 
     private Set<String> getBannedWordsFromCache() {
