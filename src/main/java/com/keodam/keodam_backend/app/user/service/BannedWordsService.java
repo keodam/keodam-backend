@@ -1,23 +1,24 @@
 package com.keodam.keodam_backend.app.user.service;
 
 import com.keodam.keodam_backend.exception.GeneralException;
+import jakarta.annotation.PostConstruct;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import java.net.URI;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
-import static com.keodam.keodam_backend.global.code.status.ErrorStatus.*;
+import static com.keodam.keodam_backend.global.code.status.ErrorStatus.BAD_REQUEST;
+import static com.keodam.keodam_backend.global.code.status.ErrorStatus.EMPTY_RESPONSE;
 
 @Service
 public class BannedWordsService {
 
+    private Set<String> bannedWords;
     private static final int MIN_VALUE = 1;
     private static final int MAX_VALUE = 2099;
-    private static final String CACHE_KEY = "bannedWords";
 
     @Value("${banned.word.url}")
     private String apiUrl;
@@ -26,27 +27,24 @@ public class BannedWordsService {
     private String apikey;
 
     private final WebClient webClient;
-    private final StringRedisTemplate redisTemplate;
 
-    public BannedWordsService(WebClient.Builder webClientBuilder, StringRedisTemplate redisTemplate) {
+    public BannedWordsService(WebClient.Builder webClientBuilder) {
         this.webClient = webClientBuilder.build();
-        this.redisTemplate = redisTemplate;
     }
 
-    public boolean isBannedWord(String inputNicknameWord) {
-        if (Boolean.FALSE.equals(redisTemplate.hasKey(CACHE_KEY))) {
-            Set<String> bannedWords = fetchFromApi();
-            if (!bannedWords.isEmpty()) {
-                redisTemplate.opsForSet().add(CACHE_KEY, bannedWords.toArray(new String[0]));
+    @PostConstruct
+    public void load() {
+        String jsonResponse = fetchApiResponse();
+        bannedWords = parseBannedWords(jsonResponse);
+    }
+
+    public boolean containsBannedWord(String input) {
+        for (String word : bannedWords) {
+            if (input.contains(word)) {
+                return true;
             }
         }
-
-        return Boolean.TRUE.equals(redisTemplate.opsForSet().isMember(CACHE_KEY, inputNicknameWord));
-    }
-
-    private Set<String> fetchFromApi() {
-        String jsonResponse = fetchApiResponse();
-        return parseBannedWords(jsonResponse);
+        return false;
     }
 
     private String fetchApiResponse() {
@@ -88,4 +86,3 @@ public class BannedWordsService {
         return bannedWords;
     }
 }
-
