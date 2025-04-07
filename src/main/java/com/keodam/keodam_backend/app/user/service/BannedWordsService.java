@@ -64,6 +64,7 @@ public class BannedWordsService {
             throw new GeneralException(BAD_REQUEST);
         }
     }
+
     private Set<String> parseBannedWords(String jsonResponse) {
         Set<String> bannedWords = new HashSet<>();
 
