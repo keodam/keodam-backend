@@ -3,23 +3,24 @@ package com.keodam.keodam_backend.app.user.service;
 import com.keodam.keodam_backend.exception.GeneralException;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import static com.keodam.keodam_backend.global.code.status.ErrorStatus.BAD_REQUEST;
-import static com.keodam.keodam_backend.global.code.status.ErrorStatus.EMPTY_RESPONSE;
+import static com.keodam.keodam_backend.global.code.status.ErrorStatus.*;
 
 @Service
-@Slf4j
 public class BannedWordsService {
 
     private static final int MIN_VALUE = 1;
     private static final int MAX_VALUE = 2099;
+    private static final String CACHE_KEY = "bannedWords";
 
     @Value("${banned.word.url}")
     private String apiUrl;
@@ -28,19 +29,40 @@ public class BannedWordsService {
     private String apikey;
 
     private final WebClient webClient;
+    private final StringRedisTemplate redisTemplate;
 
-    public BannedWordsService() {
-        this.webClient = WebClient.builder().build();
+    public BannedWordsService(WebClient.Builder webClientBuilder, StringRedisTemplate redisTemplate) {
+        this.webClient = webClientBuilder.build();
+        this.redisTemplate = redisTemplate;
     }
 
     public boolean isBannedWord(String inputNicknameWord) {
         try {
-            String jsonResponse = fetchApiResponse();
-            Set<String> bannedWords = parseBannedWords(jsonResponse);
-
+            Set<String> bannedWords = getBannedWordsFromCache();
             return bannedWords.contains(inputNicknameWord);
         } catch (Exception e) {
             throw new GeneralException(BAD_REQUEST);
+        }
+    }
+
+    private Set<String> getBannedWordsFromCache() {
+        ValueOperations<String, String> ops = redisTemplate.opsForValue();
+        String cached = ops.get(CACHE_KEY);
+
+        if (cached != null) {
+            String[] split = cached.split(",");
+            validateBannedWords(split);
+            return new HashSet<>(Arrays.asList(split));
+        }
+
+        return fetchFromApiAndCache();
+    }
+
+    private void validateBannedWords(String[] split) {
+        for (String word : split) {
+            if (word == null || word.isBlank()) {
+                throw new GeneralException(INVALID_JSON_RESPONSE);
+            }
         }
     }
 
@@ -62,7 +84,14 @@ public class BannedWordsService {
         }
     }
 
-    private Set<String> parseBannedWords(String jsonResponse) throws JSONException {
+    private Set<String> fetchFromApiAndCache() {
+        String jsonResponse = fetchApiResponse();
+        Set<String> bannedWords = parseBannedWords(jsonResponse);
+        redisTemplate.opsForValue().set(CACHE_KEY, String.join(",", bannedWords));
+        return bannedWords;
+    }
+
+    private Set<String> parseBannedWords(String jsonResponse) {
         Set<String> bannedWords = new HashSet<>();
 
         if (jsonResponse == null || jsonResponse.isEmpty()) {
@@ -77,7 +106,6 @@ public class BannedWordsService {
             String bannedWord = item.getString("단어");
             bannedWords.add(bannedWord);
         }
-
         return bannedWords;
     }
 }
