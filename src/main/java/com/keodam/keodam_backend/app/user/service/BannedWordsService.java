@@ -61,6 +61,13 @@ public class BannedWordsService {
         }
     }
 
+    private Set<String> fetchFromApiAndCache() {
+        String jsonResponse = fetchApiResponse();
+        Set<String> bannedWords = parseBannedWords(jsonResponse);
+        redisTemplate.opsForValue().set(CACHE_KEY, String.join(",", bannedWords));
+        return bannedWords;
+    }
+
     private String fetchApiResponse() {
         try {
             String fullUrl = apiUrl + "?page=" + MIN_VALUE +
@@ -77,13 +84,6 @@ public class BannedWordsService {
         } catch (Exception e) {
             throw new GeneralException(BAD_REQUEST);
         }
-    }
-
-    private Set<String> fetchFromApiAndCache() {
-        String jsonResponse = fetchApiResponse();
-        Set<String> bannedWords = parseBannedWords(jsonResponse);
-        redisTemplate.opsForValue().set(CACHE_KEY, String.join(",", bannedWords));
-        return bannedWords;
     }
 
     private Set<String> parseBannedWords(String jsonResponse) {
