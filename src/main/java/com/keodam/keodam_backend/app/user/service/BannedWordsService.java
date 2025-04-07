@@ -1,31 +1,37 @@
 package com.keodam.keodam_backend.app.user.service;
 
 import com.keodam.keodam_backend.exception.GeneralException;
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import org.springframework.web.reactive.function.client.WebClient;
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 import static com.keodam.keodam_backend.global.code.status.ErrorStatus.BAD_REQUEST;
 import static com.keodam.keodam_backend.global.code.status.ErrorStatus.EMPTY_RESPONSE;
 
 @Service
+@Slf4j
 public class BannedWordsService {
 
     private static final int MIN_VALUE = 1;
     private static final int MAX_VALUE = 2099;
 
+    @Value("${banned.word.url}")
+    private String apiUrl;
+
     @Value("${banned.word.key}")
     private String apikey;
 
-    @Value("${banned.word.url}")
-    private String apiUrl;
+    private final WebClient webClient;
+
+    public BannedWordsService() {
+        this.webClient = WebClient.builder().build();
+    }
 
     public boolean isBannedWord(String inputNicknameWord) {
         try {
@@ -39,32 +45,22 @@ public class BannedWordsService {
     }
 
     private String fetchApiResponse() {
-        String urlStr = apiUrl + "?page=" + MIN_VALUE + "&perPage=" + MAX_VALUE + "&serviceKey=" + apikey;
-
         try {
-            URL url = new URL(urlStr);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
+            String fullUrl = apiUrl + "?page=" + MIN_VALUE +
+                    "&perPage=" + MAX_VALUE +
+                    "&serviceKey=" + apikey;
 
-            BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(conn.getInputStream(), "UTF-8"));
-            StringBuilder sb = new StringBuilder();
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
-            }
-            reader.close();
-            conn.disconnect();
-
-            String result = sb.toString();
-            return result;
+            return webClient
+                    .get()
+                    .uri(URI.create(fullUrl))
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
 
         } catch (Exception e) {
             throw new GeneralException(BAD_REQUEST);
         }
     }
-
 
     private Set<String> parseBannedWords(String jsonResponse) throws JSONException {
         Set<String> bannedWords = new HashSet<>();
