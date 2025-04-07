@@ -9,7 +9,7 @@ import com.keodam.keodam_backend.global.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
+
 import java.util.Optional;
 
 @Service
@@ -70,7 +70,7 @@ public class UserService {
     }
 
     private boolean containsBadWord(String nickname) {
-        return bannedWordsService.isBannedWord(nickname);
+        return bannedWordsService.containsBannedWord(nickname);
     }
 
     /**
