@@ -51,6 +51,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     //json
     implementation 'org.json:json:20210307'
+    //redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    //webClient
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
 }
 
 
