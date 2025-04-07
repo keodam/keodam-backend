@@ -2,71 +2,91 @@ package com.keodam.keodam_backend.app.user.service;
 
 import com.keodam.keodam_backend.exception.GeneralException;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import org.springframework.web.reactive.function.client.WebClient;
+import java.net.URI;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import static com.keodam.keodam_backend.global.code.status.ErrorStatus.BAD_REQUEST;
-import static com.keodam.keodam_backend.global.code.status.ErrorStatus.EMPTY_RESPONSE;
+import static com.keodam.keodam_backend.global.code.status.ErrorStatus.*;
 
 @Service
 public class BannedWordsService {
 
     private static final int MIN_VALUE = 1;
     private static final int MAX_VALUE = 2099;
-
-    @Value("${banned.word.key}")
-    private String apikey;
+    private static final String CACHE_KEY = "bannedWords";
 
     @Value("${banned.word.url}")
     private String apiUrl;
 
-    public boolean isBannedWord(String inputNicknameWord) {
-        try {
-            String jsonResponse = fetchApiResponse();
-            Set<String> bannedWords = parseBannedWords(jsonResponse);
+    @Value("${banned.word.key}")
+    private String apikey;
 
-            return bannedWords.contains(inputNicknameWord);
-        } catch (Exception e) {
-            throw new GeneralException(BAD_REQUEST);
+    private final WebClient webClient;
+    private final StringRedisTemplate redisTemplate;
+
+    public BannedWordsService(WebClient.Builder webClientBuilder, StringRedisTemplate redisTemplate) {
+        this.webClient = webClientBuilder.build();
+        this.redisTemplate = redisTemplate;
+    }
+
+    public boolean isBannedWord(String inputNicknameWord) {
+        Set<String> bannedWords = getBannedWordsFromCache();
+        return bannedWords.contains(inputNicknameWord);
+    }
+
+    private Set<String> getBannedWordsFromCache() {
+        ValueOperations<String, String> ops = redisTemplate.opsForValue();
+        String cached = ops.get(CACHE_KEY);
+
+        if (cached != null) {
+            String[] split = cached.split(",");
+            validateBannedWords(split);
+            return new HashSet<>(Arrays.asList(split));
         }
+
+        return fetchFromApiAndCache();
+    }
+
+    private void validateBannedWords(String[] split) {
+        for (String word : split) {
+            if (word == null || word.isBlank()) {
+                throw new GeneralException(INVALID_JSON_RESPONSE);
+            }
+        }
+    }
+
+    private Set<String> fetchFromApiAndCache() {
+        String jsonResponse = fetchApiResponse();
+        Set<String> bannedWords = parseBannedWords(jsonResponse);
+        redisTemplate.opsForValue().set(CACHE_KEY, String.join(",", bannedWords));
+        return bannedWords;
     }
 
     private String fetchApiResponse() {
-        String urlStr = apiUrl + "?page=" + MIN_VALUE + "&perPage=" + MAX_VALUE + "&serviceKey=" + apikey;
-
         try {
-            URL url = new URL(urlStr);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
+            String fullUrl = apiUrl + "?page=" + MIN_VALUE +
+                    "&perPage=" + MAX_VALUE +
+                    "&serviceKey=" + apikey;
 
-            BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(conn.getInputStream(), "UTF-8"));
-            StringBuilder sb = new StringBuilder();
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
-            }
-            reader.close();
-            conn.disconnect();
-
-            String result = sb.toString();
-            return result;
+            return webClient
+                    .get()
+                    .uri(URI.create(fullUrl))
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
 
         } catch (Exception e) {
             throw new GeneralException(BAD_REQUEST);
         }
     }
 
-
-    private Set<String> parseBannedWords(String jsonResponse) throws JSONException {
+    private Set<String> parseBannedWords(String jsonResponse) {
         Set<String> bannedWords = new HashSet<>();
 
         if (jsonResponse == null || jsonResponse.isEmpty()) {
@@ -81,7 +101,6 @@ public class BannedWordsService {
             String bannedWord = item.getString("단어");
             bannedWords.add(bannedWord);
         }
-
         return bannedWords;
     }
 }
