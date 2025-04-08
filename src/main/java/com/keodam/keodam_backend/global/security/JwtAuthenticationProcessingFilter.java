@@ -1,7 +1,7 @@
 package com.keodam.keodam_backend.global.security;
 
 import com.keodam.keodam_backend.app.domain.User;
-import com.keodam.keodam_backend.app.repository.UserRepository;
+import com.keodam.keodam_backend.app.user.repository.UserRepository;
 import com.keodam.keodam_backend.oauth.domain.CustomUserDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -14,9 +14,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
 import java.util.Collections;
 

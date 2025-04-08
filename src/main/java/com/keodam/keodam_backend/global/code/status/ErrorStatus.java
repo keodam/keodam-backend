@@ -58,9 +58,9 @@ public enum ErrorStatus implements BaseErrorCode {
     // role type
     INVALID_ROLE_TYPE(HttpStatus.BAD_REQUEST, "ROLE4001", "잘못된 역할 선택입니다."),
 
-
-    //quiz
-    QUIZ_NOT_FOUND(HttpStatus.NOT_FOUND,"QUIZ4001","퀴즈를 찾을 수 없습니다.");
+    //api
+    EMPTY_RESPONSE(HttpStatus.NO_CONTENT, "API4001", "API 응답이 비어있어요."),
+    INVALID_JSON_RESPONSE(HttpStatus.INTERNAL_SERVER_ERROR, "API4002", "JSON 응답 형식 오류입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

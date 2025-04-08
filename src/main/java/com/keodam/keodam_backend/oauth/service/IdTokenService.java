@@ -4,7 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.keodam.keodam_backend.app.domain.SocialType;
 import com.keodam.keodam_backend.app.domain.User;
-import com.keodam.keodam_backend.app.repository.UserRepository;
+import com.keodam.keodam_backend.app.user.repository.UserRepository;
 import com.keodam.keodam_backend.oauth.domain.CustomUserDetails;
 import com.keodam.keodam_backend.oauth.domain.IdTokenAttributes;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
-
 import java.util.Collections;
 import java.util.Map;
 
