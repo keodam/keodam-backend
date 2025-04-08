@@ -5,14 +5,13 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.keodam.keodam_backend.app.domain.SocialType;
 import com.keodam.keodam_backend.app.domain.User;
 import com.keodam.keodam_backend.app.user.repository.UserRepository;
-import com.keodam.keodam_backend.oauth.domain.CustomIdTokenUser;
+import com.keodam.keodam_backend.oauth.domain.CustomUserDetails;
 import com.keodam.keodam_backend.oauth.domain.IdTokenAttributes;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
-
 import java.util.Collections;
 import java.util.Map;
 
@@ -26,12 +25,14 @@ public class IdTokenService {
     private final JwtDecoder appleJwtDecoder;
     private final UserRepository userRepository;
 
-    public CustomIdTokenUser loadUserByAccessToken(String accessToken){
+    public CustomUserDetails loadUserByAccessToken(String accessToken){
 
         DecodedJWT decodedJWT;
         SocialType socialType;
         User findUser;
+
         try {
+
             decodedJWT = JWT.decode(accessToken);
             socialType = checkIssuer(decodedJWT.getIssuer());
 
@@ -42,12 +43,11 @@ public class IdTokenService {
         } catch (Exception e) {
             throw new RuntimeException("엑세스 토큰 인증 오류 " + e.getMessage());
         }
-        return new CustomIdTokenUser(
+        return new CustomUserDetails(
                 Collections.singleton(new SimpleGrantedAuthority(findUser.getRoleType().toString())),
-                findUser.getOauthId(),
-                findUser.getPassword(),
                 findUser.getEmail(),
-                findUser.getRoleType()
+                findUser.getRoleType(),
+                findUser.getId()
         );
     }
 
