@@ -24,8 +24,10 @@ public class Payment {
     private String method; //지불수단
 
     @Enumerated(EnumType.STRING)
-    private PaymentStatus status;
+    @Column(name = "payment_status")
+    private PaymentStatus paymentStatus;
 
     @CreatedDate
+    @Column(name = "requested_at")
     private LocalDateTime requestedAt;
 }
