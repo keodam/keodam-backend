@@ -17,6 +17,7 @@ public class Payout {
     private int price;
 
     @Enumerated(EnumType.STRING)
+    @JoinColumn(name = "payout_status")
     private PayoutStatus payoutStatus;
 
     @OneToOne
