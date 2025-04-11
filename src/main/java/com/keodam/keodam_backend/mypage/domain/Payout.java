@@ -9,7 +9,8 @@ public class Payout {
     @Column(name = "order_id", nullable = false)
     private String orderId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     User mentor;
 
     @Column(name = "price", nullable = false)
