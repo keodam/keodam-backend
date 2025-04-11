@@ -23,6 +23,9 @@ public class Payment {
     @Column(name = "method",nullable = false)
     private String method; //지불수단
 
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus status;
+
     @CreatedDate
     private LocalDateTime requestedAt;
 }
