@@ -23,6 +23,11 @@ public class Payment {
     @Column(name = "method",nullable = false)
     private String method; //지불수단
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_status")
+    private PaymentStatus paymentStatus;
+
     @CreatedDate
+    @Column(name = "requested_at")
     private LocalDateTime requestedAt;
 }
