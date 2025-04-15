@@ -3,6 +3,7 @@ package com.keodam.keodam_backend.mypage.domain;
 import com.keodam.keodam_backend.app.domain.User;
 import jakarta.persistence.*;
 
+@Entity
 public class Payout {
 
     @Id
@@ -17,9 +18,10 @@ public class Payout {
     private int price;
 
     @Enumerated(EnumType.STRING)
-    @JoinColumn(name = "payout_status")
+    @Column(name = "payout_status")
     private PayoutStatus payoutStatus;
 
     @OneToOne
-    Payout payout;
+    @JoinColumn(name = "ticket_id")
+    private CoffeeChatTicket coffeeChatTicket;
 }
