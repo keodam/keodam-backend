@@ -1,18 +1,21 @@
-package com.keodam.keodam_backend.mypage.domain;
+package com.keodam.keodam_backend.mypage.payment.domain;
 
 import com.keodam.keodam_backend.app.domain.User;
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Payout {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id", nullable = false)
-    private String orderId;
+    private Long orderId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    User mentor;
+    private User mentor;
 
     @Column(name = "price", nullable = false)
     private int price;
@@ -21,7 +24,6 @@ public class Payout {
     @Column(name = "payout_status")
     private PayoutStatus payoutStatus;
 
-    @OneToOne
-    @JoinColumn(name = "ticket_id")
-    private CoffeeChatTicket coffeeChatTicket;
+    @OneToMany(mappedBy = "payout", cascade = CascadeType.ALL)
+    private List<BeanTransaction> transactionList = new ArrayList<>();
 }
