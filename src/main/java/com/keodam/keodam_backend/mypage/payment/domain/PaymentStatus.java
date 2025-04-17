@@ -1,4 +1,4 @@
-package com.keodam.keodam_backend.mypage.domain;
+package com.keodam.keodam_backend.mypage.payment.domain;
 
 public enum PaymentStatus {
     PENDING,
