@@ -49,8 +49,15 @@ public enum ErrorStatus implements BaseErrorCode {
     EXPIRED_CODE(HttpStatus.GONE, "CODE4002", "인증코드가 만료되었습니다."),
 
     //document
-    INVALID_DOCUMENT_TYPE(HttpStatus.BAD_REQUEST, "S34002", "유효하지 않은 문서 타입입니다.");
+    INVALID_DOCUMENT_TYPE(HttpStatus.BAD_REQUEST, "S34002", "유효하지 않은 문서 타입입니다."),
 
+    //bootpay
+    BOOTPAY_CONFIRM_FAILED(HttpStatus.BAD_REQUEST, "P1001", "Bootpay 승인 실패입니다."),
+    BOOTPAY_CONFIRM_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "P1002", "Bootpay 승인 중 예외 발생했습니다."),
+    BOOTPAY_TOKEN_FAILED(HttpStatus.BAD_REQUEST, "P1003", "Bootpay 토큰 발급 실패했습니다."),
+
+    //payment
+    ALREADY_PROCESSED_PAYMENT(HttpStatus.CONFLICT, "P1004", "이미 처리된 결제입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

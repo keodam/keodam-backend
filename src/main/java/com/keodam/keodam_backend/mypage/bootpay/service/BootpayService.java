@@ -1,5 +1,8 @@
 package com.keodam.keodam_backend.mypage.bootpay.service;
 
+import com.keodam.keodam_backend.exception.GeneralException;
+import com.keodam.keodam_backend.global.code.status.ErrorStatus;
+import com.keodam.keodam_backend.mypage.payment.dto.response.BootpayConfirmResponse;
 import jakarta.transaction.Transactional;
 import kr.co.bootpay.Bootpay;
 import lombok.RequiredArgsConstructor;
@@ -20,15 +23,16 @@ public class BootpayService {
     private String privateKey;
 
     @Transactional
-    public void confirm(String receiptId) {
+    public BootpayConfirmResponse confirm(String receiptId) {
         try {
             getBootpayToken();
-            HashMap confirm = bootpay.confirm(receiptId);
+            HashMap<String, Object> confirm = bootpay.confirm(receiptId);
             if (confirm.get("error_code") != null) {
-                throw new RuntimeException("Bootpay 승인 실패: " + confirm.get("message"));
+                throw new GeneralException(ErrorStatus.BOOTPAY_CONFIRM_FAILED);
             }
+            return BootpayConfirmResponse.from(confirm);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new GeneralException(ErrorStatus.BOOTPAY_CONFIRM_EXCEPTION);
         }
     }
 
@@ -36,7 +40,7 @@ public class BootpayService {
         this.bootpay = new Bootpay(applicationKey, privateKey);
         HashMap token = bootpay.getAccessToken();
         if (token.get("error_code") != null) {
-            throw new RuntimeException("Bootpay 토큰 발급 실패: " + token.get("message"));
+            throw new GeneralException(ErrorStatus.BOOTPAY_TOKEN_FAILED);
         }
     }
 
@@ -45,7 +49,7 @@ public class BootpayService {
             getBootpayToken();
             HashMap res = bootpay.getReceipt(receiptId);
             if (res.get("error_code") != null) {
-                System.out.println("goGetToken success" + res);
+                throw new GeneralException(ErrorStatus.BOOTPAY_CONFIRM_FAILED);
             }
         } catch (Exception e) {
             e.printStackTrace();
