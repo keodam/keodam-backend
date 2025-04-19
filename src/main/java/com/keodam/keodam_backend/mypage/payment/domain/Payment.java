@@ -3,12 +3,14 @@ package com.keodam.keodam_backend.mypage.payment.domain;
 import com.keodam.keodam_backend.app.domain.User;
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
 @Table(name = "payment")
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor
