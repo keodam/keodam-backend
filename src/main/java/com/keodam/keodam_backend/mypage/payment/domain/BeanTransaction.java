@@ -2,6 +2,8 @@ package com.keodam.keodam_backend.mypage.payment.domain;
 
 import jakarta.persistence.*;
 import com.keodam.keodam_backend.app.domain.User;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
@@ -9,6 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "bean_transaction")
 @EntityListeners(AuditingEntityListener.class)
+@NoArgsConstructor
 public class BeanTransaction {
 
     @Id
@@ -36,4 +39,13 @@ public class BeanTransaction {
     @CreatedDate
     @Column(name = "requested_at")
     private LocalDateTime requestedAt;
+
+    @Builder
+    public BeanTransaction(User user, Payment payment, Payout payout, BeanTransactionType type, int beanAmount) {
+        this.user = user;
+        this.payment = payment;
+        this.payout = payout;
+        this.type = type;
+        this.beanAmount = beanAmount;
+    }
 }
