@@ -5,10 +5,12 @@ import com.keodam.keodam_backend.app.domain.User;
 import com.keodam.keodam_backend.app.user.repository.UserRepository;
 import com.keodam.keodam_backend.app.user.dto.UserResponseDto;
 import com.keodam.keodam_backend.exception.GeneralException;
+import com.keodam.keodam_backend.global.aws.AwsS3Service;
 import com.keodam.keodam_backend.global.code.status.ErrorStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -18,6 +20,7 @@ public class UserService {
 
     private final BannedWordsService bannedWordsService;
     private final UserRepository userRepository;
+    private final AwsS3Service awsS3Service;
 
     /**
      * 닉네임 저장 및 중복 체크
@@ -51,14 +54,17 @@ public class UserService {
                 .profileUrl(user.getProfileUrl())
                 .roleType(user.getRoleType())
                 .hasProfileImage(user.getProfileUrl() != null)
-                .hasRole(user.getRoleType() != null && user.getRoleType()!=RoleType.GUEST)
+                .hasRole(user.getRoleType() != null && user.getRoleType() != RoleType.GUEST)
                 .build();
+    }
+
+    public void uploadProfileImage(User user, MultipartFile file) {
+        String imgUrl = awsS3Service.uploadFile(file);
     }
 
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
-
 
     private boolean containsSpecialChar(String nickname) {
         // 한글, 영어, 숫자만 허용. 그 외는 특수문자
