@@ -1,5 +1,6 @@
 package com.keodam.keodam_backend.app.domain;
 
+import com.keodam.keodam_backend.app.user.domain.ProfileStatus;
 import com.keodam.keodam_backend.exception.GeneralException;
 import com.keodam.keodam_backend.global.code.status.ErrorStatus;
 import com.keodam.keodam_backend.mypage.domain.UserVerification;
@@ -65,6 +66,10 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserVerification> verifications = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "profile_status")
+    private ProfileStatus profileStatus;
+
     @Builder
     public User(String nickname, String email, String profileUrl, SocialType socialType, RoleType roleType, String oauthId) {
         this.nickname = nickname;
@@ -94,6 +99,7 @@ public class User {
 
     public void updateProfileImage(String newProfileImage) {
         this.profileUrl = newProfileImage;
+        this.profileStatus = ProfileStatus.PENDING;
     }
 
     public void updateRole(RoleType roleType) {
