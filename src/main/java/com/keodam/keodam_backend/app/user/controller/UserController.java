@@ -8,6 +8,8 @@ import com.keodam.keodam_backend.app.user.service.UserService;
 import com.keodam.keodam_backend.exception.GeneralException;
 import com.keodam.keodam_backend.global.ApiResponse;
 import com.keodam.keodam_backend.global.code.status.ErrorStatus;
+import com.keodam.keodam_backend.mypage.dto.request.FileRequestDto;
+import com.keodam.keodam_backend.mypage.dto.response.FileResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/user")
@@ -40,7 +43,7 @@ public class UserController {
     }
 
     @GetMapping("/nickname/check")
-    @Operation(summary = "닉네임 중복 확인", description = "닉네임 검증 API",security = @SecurityRequirement(name = "Authorization"))
+    @Operation(summary = "닉네임 중복 확인", description = "닉네임 검증 API", security = @SecurityRequirement(name = "Authorization"))
     public ResponseEntity<ApiResponse<String>> checkNickname(@RequestParam String nickname) {
         userService.validateNickname(nickname);
         return ResponseEntity.ok(ApiResponse.onSuccess("사용 가능한 닉네임입니다."));
@@ -59,5 +62,16 @@ public class UserController {
         UserResponseDto updatedUser = userService.updateRole(user, roleRequestDto.roleType());
 
         return ResponseEntity.ok(ApiResponse.onSuccess(updatedUser));
+    }
+
+    @PostMapping(value = "file", consumes = "multipart/form-data")
+    @Operation(summary = "사용자 프로필 사진 등록", description = "파일이미지로 프로필 등록 API", security = @SecurityRequirement(name = "Authorization"))
+    public ResponseEntity<ApiResponse<UserResponseDto>> uploadProfileImage(Authentication authentication,
+                                                             @RequestPart(name = "ImageFile", required = true) MultipartFile file) {
+        String email = authentication.getName();
+        User user = userService.findByEmail(email)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        return ResponseEntity.ok(ApiResponse.onSuccess(userService.uploadProfileImage(user, file)));
     }
 }
