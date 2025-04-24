@@ -58,8 +58,21 @@ public class UserService {
                 .build();
     }
 
-    public void uploadProfileImage(User user, MultipartFile file) {
+    public UserResponseDto uploadProfileImage(User user, MultipartFile file) {
         String imgUrl = awsS3Service.uploadFile(file);
+
+        if (user.getProfileUrl() != null) {
+            awsS3Service.deleteFile(user.getProfileUrl());
+        }
+        user.updateProfileImage(imgUrl);
+        userRepository.save(user);
+
+        return UserResponseDto.builder()
+                .id(user.getId())
+                .nickname(user.getNickname())
+                .roleType(user.getRoleType())
+                .profileUrl(user.getProfileUrl())
+                .build();
     }
 
     public Optional<User> findByEmail(String email) {
