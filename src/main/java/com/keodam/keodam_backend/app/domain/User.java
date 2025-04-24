@@ -92,6 +92,10 @@ public class User {
         this.nicknameChanged = true;
     }
 
+    public void updateProfileImage(String newProfileImage) {
+        this.profileUrl = newProfileImage;
+    }
+
     public void updateRole(RoleType roleType) {
         if (roleType != null) this.roleType = roleType;
     }
