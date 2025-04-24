@@ -64,8 +64,8 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.onSuccess(updatedUser));
     }
 
-    @PostMapping(value = "file", consumes = "multipart/form-data")
-    @Operation(summary = "사용자 프로필 사진 등록", description = "파일이미지로 프로필 등록 API", security = @SecurityRequirement(name = "Authorization"))
+    @PatchMapping(value = "file", consumes = "multipart/form-data")
+    @Operation(summary = "사용자 프로필 사진 등록 및 수정", description = "파일이미지로 프로필 등록 API", security = @SecurityRequirement(name = "Authorization"))
     public ResponseEntity<ApiResponse<UserResponseDto>> uploadProfileImage(Authentication authentication,
                                                              @RequestPart(name = "ImageFile", required = true) MultipartFile file) {
         String email = authentication.getName();
