@@ -1,7 +1,7 @@
 package com.keodam.keodam_backend.global.security;
 
 import com.auth0.jwt.algorithms.Algorithm;
-import com.keodam.keodam_backend.app.repository.UserRepository;
+import com.keodam.keodam_backend.app.user.repository.UserRepository;
 import jakarta.servlet.http.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.auth0.jwt.*;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Date;
 import java.util.Optional;
 
@@ -33,7 +32,7 @@ public class JwtService {
     @Value("${jwt.refresh.header}")
     private String refreshHeader;
 
-    final private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     private static final String ACCESS_TOKEN = "AccessToken";
     private static final String REFRESH_TOKEN = "RefreshToken";
