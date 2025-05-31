@@ -4,7 +4,7 @@ import com.keodam.keodam_backend.exception.GeneralException;
 import com.keodam.keodam_backend.global.code.status.ErrorStatus;
 import com.keodam.keodam_backend.mypage.payment.dto.response.BootpayConfirmResponse;
 import jakarta.transaction.Transactional;
-import kr.co.bootpay.Bootpay;
+import kr.co.bootpay.pg.Bootpay;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
