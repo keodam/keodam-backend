@@ -57,7 +57,13 @@ public enum ErrorStatus implements BaseErrorCode {
     BOOTPAY_TOKEN_FAILED(HttpStatus.BAD_REQUEST, "P1003", "Bootpay 토큰 발급 실패했습니다."),
 
     //payment
-    ALREADY_PROCESSED_PAYMENT(HttpStatus.CONFLICT, "P1004", "이미 처리된 결제입니다.");
+    ALREADY_PROCESSED_PAYMENT(HttpStatus.CONFLICT, "P1004", "이미 처리된 결제입니다."),
+
+    //community
+    COMMUNITY_NOT_FOUND(HttpStatus.BAD_REQUEST, "COMMUNITY01", "존재하지 않는 커뮤니티 게시물입니다."),
+
+    //comment
+    COMMUNITY_COMMENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "COMMENT01", "존재하지 않는 커뮤니티 댓글입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
