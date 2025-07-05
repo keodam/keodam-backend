@@ -1,6 +1,7 @@
 package com.keodam.keodam_backend.community.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,5 +24,12 @@ public class CommunityHashTag {
     private HashTag hashtag;
 
     private boolean isMain;
+
+    @Builder
+    public CommunityHashTag(Community community, HashTag hashtag, boolean isMain) {
+        this.community = community;
+        this.hashtag = hashtag;
+        this.isMain = isMain;
+    }
 }
 
