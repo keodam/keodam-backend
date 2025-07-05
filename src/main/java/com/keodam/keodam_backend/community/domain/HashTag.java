@@ -1,6 +1,7 @@
 package com.keodam.keodam_backend.community.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,5 +16,10 @@ public class HashTag {
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private String HashTag;
+    private String name;
+
+    @Builder
+    public HashTag(String name) {
+        this.name = name;
+    }
 }
