@@ -81,4 +81,13 @@ public class CommunityService {
 
         return CommunityResponseDto.from(community, communityImages);
     }
+
+    public CommunityResponseDto getCommunityPost(Long communityId) {
+        Community community = communityRepository.findById(communityId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.COMMUNITY_NOT_FOUND));
+
+
+        List<CommunityImage> images = communityImageRepository.findByCommunityId(communityId);
+        return CommunityResponseDto.from(community, images);
+    }
 }
