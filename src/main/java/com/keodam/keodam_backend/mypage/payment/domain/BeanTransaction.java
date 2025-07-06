@@ -40,6 +40,10 @@ public class BeanTransaction {
     @Column(name = "requested_at")
     private LocalDateTime requestedAt;
 
+    @ManyToOne
+    @JoinColumn(name = "wallet_id")
+    private BeanWallet wallet;
+
     @Builder
     public BeanTransaction(User user, Payment payment, Payout payout, BeanTransactionType type, int beanAmount) {
         this.user = user;
