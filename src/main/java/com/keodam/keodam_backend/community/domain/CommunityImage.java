@@ -17,7 +17,7 @@ public class CommunityImage {
     private String imgUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "communtiryId")
+    @JoinColumn(name = "community_id")
     private Community community;
 
     @Builder
