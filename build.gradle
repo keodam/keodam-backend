@@ -49,12 +49,8 @@ dependencies {
     implementation 'com.twilio.sdk:twilio:9.13.1'
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.30'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
-    //json
-    implementation 'org.json:json:20210307'
-    //redis
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-    //webClient
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    //bootpay
+    implementation 'io.github.bootpay:backend:+'
 }
 
 
