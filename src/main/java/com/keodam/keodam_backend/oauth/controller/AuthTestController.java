@@ -1,9 +1,9 @@
 package com.keodam.keodam_backend.oauth.controller;
 
+import com.keodam.keodam_backend.app.domain.User;
 import com.keodam.keodam_backend.app.domain.RoleType;
 import com.keodam.keodam_backend.app.domain.SocialType;
-import com.keodam.keodam_backend.app.domain.User;
-import com.keodam.keodam_backend.app.repository.UserRepository;
+import com.keodam.keodam_backend.app.user.repository.UserRepository;
 import com.keodam.keodam_backend.global.security.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.UUID;
 
 @RestController
@@ -36,12 +35,12 @@ public class AuthTestController {
                     .profileUrl(null)
                     .roleType(RoleType.GUEST)
                     .socialType(SocialType.GOOGLE)
-                    .oAuthId("TEST-" + UUID.randomUUID())
+                    .oauthId("TEST-" + UUID.randomUUID())
                     .build();
             return userRepository.save(newUser);
         });
 
-        String accessToken = jwtService.createAccessToken(user.getEmail());
+        String accessToken = jwtService.createAccessToken(user.getEmail(), user.getId());
         String refreshToken = jwtService.createRefreshToken();
 
         user.updateRefreshToken(refreshToken);

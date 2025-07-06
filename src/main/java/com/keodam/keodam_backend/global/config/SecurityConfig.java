@@ -1,9 +1,10 @@
 package com.keodam.keodam_backend.global.config;
 
-import com.keodam.keodam_backend.app.repository.UserRepository;
+
+import com.keodam.keodam_backend.app.user.repository.UserRepository;
 import com.keodam.keodam_backend.global.security.JwtAuthenticationProcessingFilter;
 import com.keodam.keodam_backend.global.security.JwtService;
-import com.keodam.keodam_backend.oauth.domain.CustomIdTokenUser;
+import com.keodam.keodam_backend.oauth.domain.CustomUserDetails;
 import com.keodam.keodam_backend.oauth.service.IdTokenService;
 import com.keodam.keodam_backend.oauth.service.handler.*;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ public class SecurityConfig {
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final IdTokenService idTokenService;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -78,7 +80,7 @@ public class SecurityConfig {
         return authentication -> {
             String token = (String) authentication.getPrincipal();
             try {
-                CustomIdTokenUser user = idTokenService.loadUserByAccessToken(token);
+                CustomUserDetails user = idTokenService.loadUserByAccessToken(token);
                 // PreAuthenticatedAuthenticationToken 생성
                 return new PreAuthenticatedAuthenticationToken(
                         user,

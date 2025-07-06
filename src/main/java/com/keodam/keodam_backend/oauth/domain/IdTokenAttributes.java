@@ -10,7 +10,6 @@ import com.keodam.keodam_backend.oauth.domain.userinfo.UserInfo;
 import lombok.Getter;
 
 import java.util.Map;
-import java.util.Objects;
 
 @Getter
 public class IdTokenAttributes {
@@ -28,7 +27,7 @@ public class IdTokenAttributes {
     public User toUser() {
         return User.builder()
                 .socialType(socialType)
-                .oAuthId(userInfo.getId())
+                .oauthId(userInfo.getId())
                 .nickname("")
                 .profileUrl(null)
                 .email(userInfo.getEmail())

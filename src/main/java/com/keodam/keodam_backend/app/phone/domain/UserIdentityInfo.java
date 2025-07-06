@@ -1,12 +1,12 @@
 package com.keodam.keodam_backend.app.phone.domain;
 
+
 import com.keodam.keodam_backend.app.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
 
 @Entity
