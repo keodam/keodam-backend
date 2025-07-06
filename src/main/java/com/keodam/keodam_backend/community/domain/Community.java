@@ -44,4 +44,8 @@ public class Community {
     public void addCommunityHashTag(CommunityHashTag communityHashTag) {
         this.communityHashTags.add(communityHashTag);
     }
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
 }
