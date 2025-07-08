@@ -3,7 +3,7 @@ package com.keodam.keodam_backend.app.domain;
 import com.keodam.keodam_backend.app.user.domain.ProfileStatus;
 import com.keodam.keodam_backend.exception.GeneralException;
 import com.keodam.keodam_backend.global.code.status.ErrorStatus;
-import com.keodam.keodam_backend.mypage.domain.UserVerification;
+import com.keodam.keodam_backend.mypage.certification.domain.UserVerification;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

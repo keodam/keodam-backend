@@ -35,4 +35,3 @@ public class IdTokenLoginSuccessHandler implements AuthenticationSuccessHandler 
         response.getWriter().flush();
     }
 }
-
