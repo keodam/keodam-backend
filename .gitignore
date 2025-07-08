@@ -39,3 +39,4 @@ out/
 **/*.properties
 !gradle/wrapper/gradle-wrapper.properties
 src/main/resources/application.yml
+/src/main/resources/
