@@ -8,8 +8,6 @@ import com.keodam.keodam_backend.app.user.service.UserService;
 import com.keodam.keodam_backend.exception.GeneralException;
 import com.keodam.keodam_backend.global.ApiResponse;
 import com.keodam.keodam_backend.global.code.status.ErrorStatus;
-import com.keodam.keodam_backend.mypage.dto.request.FileRequestDto;
-import com.keodam.keodam_backend.mypage.dto.response.FileResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;

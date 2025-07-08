@@ -1,7 +1,7 @@
 package com.keodam.keodam_backend.community.service;
 
 import com.keodam.keodam_backend.app.domain.User;
-import com.keodam.keodam_backend.app.repository.UserRepository;
+import com.keodam.keodam_backend.app.user.repository.UserRepository;
 import com.keodam.keodam_backend.community.domain.Community;
 import com.keodam.keodam_backend.community.domain.CommunityComment;
 import com.keodam.keodam_backend.community.dto.request.CommunityCommentRequestDto;

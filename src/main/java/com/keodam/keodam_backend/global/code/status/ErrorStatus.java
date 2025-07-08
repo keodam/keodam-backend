@@ -44,6 +44,13 @@ public enum ErrorStatus implements BaseErrorCode {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4001", "회원 정보를 찾을 수 없습니다."),
     FAMILY_ALREADY(HttpStatus.BAD_REQUEST, "FAMILY4002", "이미 가입한 가족이 존재합니다."),
 
+    // nickname
+    NICKNAME_SPECIAL_CHAR(HttpStatus.BAD_REQUEST, "NICKNAME4001", "특수문자는 닉네임에 포함될 수 없어요."),
+    NICKNAME_DUPLICATE(HttpStatus.BAD_REQUEST, "NICKNAME4002", "중복된 닉네임이에요."),
+    NICKNAME_ALREADY_CHANGED(HttpStatus.BAD_REQUEST, "NICKNAME4003", "닉네임은 최초 설정 후 한 번만 변경할 수 있어요."),
+    NICKNAME_CONTAINS_NAME(HttpStatus.BAD_REQUEST, "NICKNAME4004", "닉네임에 이름은 포함할 수 없어요."),
+    NICKNAME_CONTAINS_BAD_WORD(HttpStatus.BAD_REQUEST, "NICKNAME4005", "닉네임에 비속어는 포함할 수 없어요."),
+
     //code
     INVALID_VERIFICATION_CODE(HttpStatus.NOT_FOUND, "CODE4001", "인증코드가 일치하지 않습니다."),
     EXPIRED_CODE(HttpStatus.GONE, "CODE4002", "인증코드가 만료되었습니다."),
