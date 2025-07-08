@@ -51,6 +51,14 @@ public enum ErrorStatus implements BaseErrorCode {
     //document
     INVALID_DOCUMENT_TYPE(HttpStatus.BAD_REQUEST, "S34002", "유효하지 않은 문서 타입입니다."),
 
+
+    // role type
+    INVALID_ROLE_TYPE(HttpStatus.BAD_REQUEST, "ROLE4001", "잘못된 역할 선택입니다."),
+
+    //api
+    EMPTY_RESPONSE(HttpStatus.NO_CONTENT, "API4001", "API 응답이 비어있어요."),
+    INVALID_JSON_RESPONSE(HttpStatus.INTERNAL_SERVER_ERROR, "API4002", "JSON 응답 형식 오류입니다."),
+
     //bootpay
     BOOTPAY_CONFIRM_FAILED(HttpStatus.BAD_REQUEST, "P1001", "Bootpay 승인 실패입니다."),
     BOOTPAY_CONFIRM_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, "P1002", "Bootpay 승인 중 예외 발생했습니다."),
@@ -66,7 +74,6 @@ public enum ErrorStatus implements BaseErrorCode {
     //comment
     COMMUNITY_COMMENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "COMMENT01", "존재하지 않는 커뮤니티 댓글입니다."),
     UNAUTHORIZED_COMMENT_MODIFICATION(HttpStatus.FORBIDDEN, "COMMENT02", "해당 댓글을 수정하거나 삭제할 권한이 없습니다.");
-
 
     private final HttpStatus httpStatus;
     private final String code;
