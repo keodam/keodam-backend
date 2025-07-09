@@ -6,6 +6,7 @@ import com.keodam.keodam_backend.mypage.payment.domain.BeanTransactionType;
 import com.keodam.keodam_backend.mypage.payment.domain.BeanWallet;
 import com.keodam.keodam_backend.mypage.payment.repository.BeanTransactionRepository;
 import com.keodam.keodam_backend.mypage.payment.repository.BeanWalletRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ public class BeanWalletService {
     private final BeanWalletRepository beanWalletRepository;
     private final BeanTransactionRepository beanTransactionRepository;
 
+    @Transactional
     public void rewardReferralBeans(User user, int amount){
         BeanWallet wallet = beanWalletRepository.findByUser(user).orElseGet(() -> createWalletForUser(user));
         wallet.increaseReferral(amount);
