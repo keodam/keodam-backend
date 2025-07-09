@@ -18,29 +18,26 @@ public class ReferralService {
     private final ReferralRepository referralRepository;
     private final BeanWalletService beanWalletService;
 
-    public void registerReferral(Long inviteeId, String referrerNickname){
-        User invitee = userRepository.findById(inviteeId).orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
-
-        if (referralRepository.findByReferrer(invitee).isPresent()){
+    public void registerReferral(User sponsor, String refereeNickname) {
+        if (referralRepository.findBySponsor(sponsor).isPresent()) {
             throw new GeneralException(ErrorStatus.ALREADY_REGISTER_REFERRAL);
         }
 
-        User referrer = userRepository.findByNickname(referrerNickname)
+        User referee = userRepository.findByNickname(refereeNickname)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
-        if (invitee.getId().equals(referrer.getId())){
+        if (sponsor.getId().equals(referee.getId())) {
             throw new GeneralException(ErrorStatus.CANNOT_REFER_SELF);
         }
 
         Referral referral = Referral.builder()
-                .invitee(invitee)
-                .referrer(referrer)
+                .sponsor(sponsor)
+                .referee(referee)
                 .build();
 
         referralRepository.save(referral);
 
-
-        beanWalletService.rewardReferralBeans(invitee, 100);
-        beanWalletService.rewardReferralBeans(referrer, 100);
+        beanWalletService.rewardReferralBeans(sponsor, 100);
+        beanWalletService.rewardReferralBeans(referee, 100);
     }
 }

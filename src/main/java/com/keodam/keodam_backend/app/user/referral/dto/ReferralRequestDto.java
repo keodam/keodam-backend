@@ -4,6 +4,5 @@ import lombok.Getter;
 
 @Getter
 public class ReferralRequestDto {
-    private Long inviteeId;
-    private String referrerNickname;
+    private String refereeNickname;
 }

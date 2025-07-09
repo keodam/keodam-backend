@@ -2,6 +2,7 @@ package com.keodam.keodam_backend.app.user.referral.domain;
 
 import com.keodam.keodam_backend.app.domain.User;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -14,11 +15,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Table(name = "referral")
 @Getter
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Referral {
 
     @Id
@@ -26,19 +29,19 @@ public class Referral {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "invitee_id")
-    private User invitee;
+    @JoinColumn(name = "sponsor_id")
+    private User sponsor;
 
     @ManyToOne
-    @JoinColumn(name = "referrer_id")
-    private User referrer;
+    @JoinColumn(name = "referee_id")
+    private User referee;
 
     @CreatedDate
     private LocalDateTime createdAt;
 
     @Builder
-    public Referral(User invitee, User referrer) {
-        this.invitee = invitee;
-        this.referrer = referrer;
+    public Referral(User sponsor, User referee) {
+        this.sponsor = sponsor;
+        this.referee = referee;
     }
 }

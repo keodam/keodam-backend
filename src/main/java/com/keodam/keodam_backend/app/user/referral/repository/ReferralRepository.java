@@ -6,5 +6,5 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ReferralRepository extends JpaRepository<Referral, Long> {
-    Optional<Referral> findByReferrer(User referrer);
+    Optional<Referral> findBySponsor(User referrer);
 }
