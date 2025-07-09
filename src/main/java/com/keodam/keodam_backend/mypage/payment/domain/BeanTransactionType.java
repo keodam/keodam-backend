@@ -5,5 +5,6 @@ public enum BeanTransactionType {
     USE,
     REFUND,
     PROMOTION,
-    PAYOUT
+    PAYOUT,
+    REFERRAL_REWARD
 }

@@ -19,6 +19,8 @@ public class BeanWallet {
     private Long id;
 
     private int totalBeans; //현재 보유 원두
+    @Column(name = "bean_amount_referral", nullable = false)
+    private int beanAmountReferral = 0;
 
     @OneToOne
     @JoinColumn(name = "user_id")
@@ -33,6 +35,18 @@ public class BeanWallet {
 
     public void decrease(int amount) {
         this.totalBeans -= amount;
+    }
+
+    public void increaseReferral(int amount) {
+        this.beanAmountReferral += amount;
+    }
+
+    public boolean canUseReferralBeans(int amount){
+        return this.beanAmountReferral >= amount;
+    }
+
+    public void decreaseReferral(int amount) {
+        this.beanAmountReferral -= amount;
     }
 
     @Builder

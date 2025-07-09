@@ -12,9 +12,9 @@ import com.keodam.keodam_backend.mypage.payment.domain.Payment;
 import com.keodam.keodam_backend.mypage.payment.dto.request.PaymentRequestDto;
 import com.keodam.keodam_backend.mypage.payment.dto.response.BootpayConfirmResponse;
 import com.keodam.keodam_backend.mypage.payment.dto.response.PaymentResponseDto;
+import com.keodam.keodam_backend.mypage.payment.repository.BeanTransactionRepository;
+import com.keodam.keodam_backend.mypage.payment.repository.BeanWalletRepository;
 import com.keodam.keodam_backend.mypage.payment.repository.PaymentRepository;
-import com.keodam.keodam_backend.mypage.payment.repository.beanTransactionRepository;
-import com.keodam.keodam_backend.mypage.payment.repository.beanWalletRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +25,8 @@ public class PaymentService {
     private final BootpayService bootpayService;
     private final PaymentRepository paymentRepository;
     private final UserRepository userRepository;
-    private final beanWalletRepository beanWalletRepository;
-    private final beanTransactionRepository beanTransactionRepository;
+    private final BeanWalletRepository beanWalletRepository;
+    private final BeanTransactionRepository beanTransactionRepository;
 
     public PaymentResponseDto verifyAndSavePayment(PaymentRequestDto paymentRequestDto) {
 
