@@ -4,6 +4,7 @@ import com.keodam.keodam_backend.app.domain.User;
 import com.keodam.keodam_backend.app.user.referral.dto.ReferralRequestDto;
 import com.keodam.keodam_backend.app.user.referral.service.ReferralService;
 import com.keodam.keodam_backend.app.user.service.UserService;
+import com.keodam.keodam_backend.global.ApiResponse;
 import com.keodam.keodam_backend.global.code.status.ErrorStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -28,14 +29,25 @@ public class ReferralController {
             @RequestBody ReferralRequestDto referralRequestDto,
             Authentication authentication) {
 
-        String email = authentication.getName();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(ErrorStatus.UNAUTHORIZED.getHttpStatus())
+                    .body(ApiResponse.onFailure(
+                            ErrorStatus.UNAUTHORIZED.getCode(),
+                            ErrorStatus.UNAUTHORIZED.getMessage(),
+                            null
+                    ));
+        }
 
-        User sponsor = userService.findByEmail(email)
-                .orElse(null);
+        String email = authentication.getName();
+        User sponsor = userService.findByEmail(email).orElse(null);
 
         if (sponsor == null) {
             return ResponseEntity.status(ErrorStatus.USER_NOT_FOUND.getHttpStatus())
-                    .body(ErrorStatus.USER_NOT_FOUND.getReasonHttpStatus());
+                    .body(ApiResponse.onFailure(
+                            ErrorStatus.USER_NOT_FOUND.getCode(),
+                            ErrorStatus.USER_NOT_FOUND.getMessage(),
+                            null
+                    ));
         }
 
         return referralService.registerReferral(sponsor, referralRequestDto.getRefereeNickname());
