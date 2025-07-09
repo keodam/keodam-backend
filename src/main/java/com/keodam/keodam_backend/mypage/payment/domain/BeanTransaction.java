@@ -45,11 +45,12 @@ public class BeanTransaction {
     private BeanWallet wallet;
 
     @Builder
-    public BeanTransaction(User user, Payment payment, Payout payout, BeanTransactionType type, int beanAmount) {
+    public BeanTransaction(User user, Payment payment, Payout payout, BeanTransactionType type, int beanAmount, BeanWallet wallet) {
         this.user = user;
         this.payment = payment;
         this.payout = payout;
         this.type = type;
         this.beanAmount = beanAmount;
+        this.wallet = wallet;
     }
 }
