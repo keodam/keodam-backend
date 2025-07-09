@@ -17,14 +17,9 @@ public class BeanWalletService {
     private final BeanTransactionRepository beanTransactionRepository;
 
     public void rewardReferralBeans(User user, int amount){
-        // BeanWallet 조회,
         BeanWallet wallet = beanWalletRepository.findByUser(user).orElseGet(() -> createWalletForUser(user));
-
-        // 추천 원두 증가,
         wallet.increaseReferral(amount);
         beanWalletRepository.save(wallet);
-
-        // BeanTransaction 저장 (type REFERRAL_REWARD)
         beanTransactionRepository.save(
                 BeanTransaction.builder()
                         .user(user)
