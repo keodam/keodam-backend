@@ -43,6 +43,8 @@ public enum ErrorStatus implements BaseErrorCode {
     //user
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4001", "회원 정보를 찾을 수 없습니다."),
     FAMILY_ALREADY(HttpStatus.BAD_REQUEST, "FAMILY4002", "이미 가입한 가족이 존재합니다."),
+    ALREADY_REGISTER_REFERRAL(HttpStatus.BAD_REQUEST, "USER4003", "이미 추천인을 등록하셨습니다."),
+    CANNOT_REFER_SELF(HttpStatus.BAD_REQUEST, "USER4004", "자기 자신은 추천인으로 등록할 수 없습니다."),
 
     // nickname
     NICKNAME_SPECIAL_CHAR(HttpStatus.BAD_REQUEST, "NICKNAME4001", "특수문자는 닉네임에 포함될 수 없어요."),
@@ -57,7 +59,6 @@ public enum ErrorStatus implements BaseErrorCode {
 
     //document
     INVALID_DOCUMENT_TYPE(HttpStatus.BAD_REQUEST, "S34002", "유효하지 않은 문서 타입입니다."),
-
 
     // role type
     INVALID_ROLE_TYPE(HttpStatus.BAD_REQUEST, "ROLE4001", "잘못된 역할 선택입니다."),
