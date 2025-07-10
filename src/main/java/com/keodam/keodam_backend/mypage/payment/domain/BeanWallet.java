@@ -18,7 +18,8 @@ public class BeanWallet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int totalBeans; //현재 보유 원두
+    private int totalBeans;
+
     @Column(name = "bean_amount_referral", nullable = false)
     private int beanAmountReferral = 0;
 

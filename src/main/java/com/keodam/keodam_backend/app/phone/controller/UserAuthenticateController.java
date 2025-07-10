@@ -25,7 +25,7 @@ public class UserAuthenticateController {
     @PostMapping("/code")
     @Operation(summary = "인증번호 요청", description = "사용자 정보 기반 인증요청 API", security = @SecurityRequirement(name = "Authorization"))
     public ResponseEntity<Object> requestVerifyCode(Authentication authentication, @RequestBody UserVerifyCodeRequestDto dto) {
-        String email = authentication.getName(); // 여기서 이메일 추출
+        String email = authentication.getName();
         return userAuthenticateService.startVerification(dto, email);
     }
 
