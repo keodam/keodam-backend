@@ -36,8 +36,7 @@ jobs:
           ./gradlew clean build -x test
 
       - name: Modify build file name
-        run: cp ./build/libs/*SNAPSHOT.jar ./project.jar
-
+        run: cp ./build/libs/*SNAPSHOT.jar ./keodam-main.jar
 
       - name: Set up AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -77,7 +76,7 @@ jobs:
             --parameters 'commands=[
               "aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY }}",
               "sudo docker pull ${{ secrets.ECR_REPOSITORY }}/keodam:latest",
-              "sudo docker stop keodam || true",
-              "sudo docker rm keodam || true",
+              "sudo docker stop keodam",
+              "sudo docker rm keodam",
               "sudo docker run --pull always -d --name keodam -p 8080:8080 ${{ secrets.ECR_REPOSITORY }}/keodam:latest"
             ]'
