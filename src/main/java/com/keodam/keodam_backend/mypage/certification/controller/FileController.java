@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/mypage/authenticate")
-@Tag(name = "FILE Verify", description = "FILE Verify API")
+@Tag(name = "Verify File", description = "FILE Verify API")
 public class FileController {
 
     private final FileService fileService;

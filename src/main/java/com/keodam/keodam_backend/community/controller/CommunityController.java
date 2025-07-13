@@ -17,7 +17,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/community")
-@Tag(name = "COMMUNITY", description = "COMMUNITY API")
+@Tag(name = "User COMMUNITY", description = "COMMUNITY API")
 public class CommunityController {
 
     private final CommunityService communityService;

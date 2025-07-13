@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class AuthTestControllerDto {
+public class AuthTestControllerDto { // 실제 환경서는 삭제 예정
     private String accessToken;
     private String refreshToken;
 }

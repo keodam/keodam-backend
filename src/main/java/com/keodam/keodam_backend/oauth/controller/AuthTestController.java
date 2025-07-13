@@ -17,7 +17,7 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
-@Tag(name = "TEST Login", description = "TEST Login API")
+@Tag(name = "User TEST Login(실제 환경서는 삭제예정)", description = "TEST Login API")
 public class AuthTestController {
 
     private final UserRepository userRepository;
