@@ -1,6 +1,8 @@
 package com.keodam.keodam_backend.global.config;
 
 
+import com.keodam.keodam_backend.app.domain.admin.repository.AdminRepository;
+import com.keodam.keodam_backend.app.domain.admin.security.AdminJwtAuthenticationFilter;
 import com.keodam.keodam_backend.app.user.repository.UserRepository;
 import com.keodam.keodam_backend.global.security.JwtAuthenticationProcessingFilter;
 import com.keodam.keodam_backend.global.security.JwtService;
@@ -10,6 +12,7 @@ import com.keodam.keodam_backend.oauth.service.handler.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -37,6 +40,7 @@ public class SecurityConfig {
     private final IdTokenService idTokenService;
 
     @Bean
+    @Order(2) // Admin 체인 먼저 거치고 나서 User 체인 실행 (필수)
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
@@ -101,5 +105,52 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+    // admin only filter chain series
+    @Bean
+    public AdminJwtAuthenticationFilter adminJwtAuthenticationFilter(AdminRepository adminRepository) {
+        return new AdminJwtAuthenticationFilter(jwtService, adminRepository);
+    }
+
+    // super admin
+    @Bean
+    @Order(0)
+    public SecurityFilterChain superAdminFilterChain(HttpSecurity http, AdminJwtAuthenticationFilter adminFilter) throws Exception {
+        http
+                .securityMatcher("/admin/super/**")  // 이 경로만 처리
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().hasRole("SUPER_ADMIN")  // 오직 SUPER_ADMIN만 접근 가능
+                )
+                .addFilterBefore(adminFilter, BasicAuthenticationFilter.class);
+
+        return http.build();
+    }
+
+    // admin
+    @Bean
+    @Order(1)
+    public SecurityFilterChain adminFilterChain(HttpSecurity http, AdminJwtAuthenticationFilter adminFilter) throws Exception {
+        http
+                .securityMatcher("/admin/**")
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/admin/login",
+                                "/admin/register",
+                                "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**",
+                                "/swagger-resources/**", "/webjars/**", "/api-test/**"
+                        ).permitAll()
+                        .anyRequest().hasRole("ADMIN")
+                )
+
+                .addFilterBefore(adminFilter, BasicAuthenticationFilter.class);
+
+        return http.build();
     }
 }

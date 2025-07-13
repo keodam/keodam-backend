@@ -15,7 +15,7 @@ public class CustomAdminDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + admin.getRoleType().name()));
     }
 
     @Override
@@ -33,11 +33,11 @@ public class CustomAdminDetails implements UserDetails {
     @Override public boolean isCredentialsNonExpired() { return true; }
     @Override public boolean isEnabled() { return true; }
 
-    public Long getAdminId() {
-        return admin.getId();
-    }
-
     public String getName() {
         return admin.getName();
+    }
+
+    public Admin getAdmin() {
+        return this.admin;
     }
 }

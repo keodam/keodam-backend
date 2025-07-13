@@ -25,8 +25,10 @@ public class AdminJwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+        String requestURI = request.getRequestURI();
 
-        if (request.getRequestURI().equals("/admin/login")) {
+        // 로그인은 필터 제외
+        if (requestURI.equals("/admin/login") || requestURI.equals("/admin/register")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -34,8 +36,9 @@ public class AdminJwtAuthenticationFilter extends OncePerRequestFilter {
         Optional<String> accessToken = jwtService.extractAccessToken(request)
                 .filter(jwtService::isTokenValid);
 
-        accessToken.flatMap(s -> jwtService.extractEmail(s)
-                .flatMap(adminRepository::findByEmail)).ifPresent(this::saveAuthentication);
+        accessToken.flatMap(jwtService::extractEmail)
+                .flatMap(adminRepository::findByEmail)
+                .ifPresent(this::saveAuthentication);
 
         filterChain.doFilter(request, response);
     }
@@ -43,11 +46,12 @@ public class AdminJwtAuthenticationFilter extends OncePerRequestFilter {
     private void saveAuthentication(Admin admin) {
         CustomAdminDetails adminDetails = new CustomAdminDetails(admin);
 
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                adminDetails,
-                null,
-                adminDetails.getAuthorities()
-        );
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(
+                        adminDetails,
+                        null,
+                        adminDetails.getAuthorities()
+                );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }

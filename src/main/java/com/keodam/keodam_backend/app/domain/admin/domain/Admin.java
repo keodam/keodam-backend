@@ -26,7 +26,7 @@ public class Admin {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "admin_name", nullable = false)
+    @Column(name = "admin_name", nullable = false, unique = true)
     private String name;
 
     @Column(name = "admin_email", nullable = false, unique = true)
@@ -39,7 +39,18 @@ public class Admin {
     @Column(name = "role_type", nullable = false)
     private RoleTypeAdmin roleType;
 
+    @Column(name = "refresh_token")
+    private String refreshToken;
+
     public void changeRole(RoleTypeAdmin newRole) {
         this.roleType = newRole;
+    }
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public void updatePassword(String encodedPassword) {
+        this.password = encodedPassword;
     }
 }

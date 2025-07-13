@@ -1,10 +1,10 @@
 package com.keodam.keodam_backend.app.domain.admin.dto;
 
-import lombok.Getter;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
-@Getter
-public class AdminRegisterDto {
-    private String name;
-    private String password;
-    private String email;
-}
+public record AdminRegisterDto(
+        @NotBlank String name,
+        @Email String email,
+        @NotBlank String password
+) {}
