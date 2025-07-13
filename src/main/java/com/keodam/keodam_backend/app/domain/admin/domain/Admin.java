@@ -1,4 +1,4 @@
-package com.keodam.keodam_backend.app.domain.admin;
+package com.keodam.keodam_backend.app.domain.admin.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -38,4 +38,8 @@ public class Admin {
     @Enumerated(EnumType.STRING)
     @Column(name = "role_type", nullable = false)
     private RoleTypeAdmin roleType;
+
+    public void changeRole(RoleTypeAdmin newRole) {
+        this.roleType = newRole;
+    }
 }
