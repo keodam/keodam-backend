@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@Tag(name = "OIDC Login", description = "OIDC Login API")
+@Tag(name = "User OIDC Login", description = "OIDC Login API")
 public class AuthController {
 
     @GetMapping("/auth/login")

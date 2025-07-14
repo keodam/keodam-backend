@@ -116,4 +116,28 @@ public class JwtService {
             return false;
         }
     }
+
+    // admin only Token
+    public String createAdminAccessToken(String email, Long adminId, String role) {
+        Date now = new Date();
+        return JWT.create()
+                .withSubject(ACCESS_TOKEN)
+                .withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))
+                .withClaim(EMAIL_CLAIM, email)
+                .withClaim(USERID_CLAIM, adminId)
+                .withClaim("role", role)  // admin 전용 claim
+                .sign(Algorithm.HMAC512(secretKey));
+    }
+
+    public Optional<String> extractRole(String accessToken) {
+        try {
+            return Optional.ofNullable(JWT.require(Algorithm.HMAC512(secretKey))
+                    .build()
+                    .verify(accessToken)
+                    .getClaim("role")
+                    .asString());
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
 }

@@ -42,9 +42,13 @@ public enum ErrorStatus implements BaseErrorCode {
 
     //user
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4001", "회원 정보를 찾을 수 없습니다."),
-    FAMILY_ALREADY(HttpStatus.BAD_REQUEST, "FAMILY4002", "이미 가입한 가족이 존재합니다."),
     ALREADY_REGISTER_REFERRAL(HttpStatus.BAD_REQUEST, "USER4003", "이미 추천인을 등록하셨습니다."),
     CANNOT_REFER_SELF(HttpStatus.BAD_REQUEST, "USER4004", "자기 자신은 추천인으로 등록할 수 없습니다."),
+
+    // admin
+    ALREADY_REGISTER_ADMIN(HttpStatus.BAD_REQUEST, "ADMIN4001", "이미 가입한 기록이 존재합니다."),
+    INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "ADMIN4002", "비밀번호를 확인해주세요."),
+    ADMIN_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "ADMIN4011", "관리자의 승인이 필요합니다."),
 
     // nickname
     NICKNAME_SPECIAL_CHAR(HttpStatus.BAD_REQUEST, "NICKNAME4001", "특수문자는 닉네임에 포함될 수 없어요."),
