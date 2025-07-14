@@ -31,11 +31,6 @@ public class AdminService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
     }
 
-    public Admin getById(Long id) {
-        return adminRepository.findById(id)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
-    }
-
     @Transactional
     public void register(AdminRegisterDto dto) {
         if (adminRepository.existsByEmail(dto.email())) {
@@ -52,6 +47,7 @@ public class AdminService {
         adminRepository.save(newAdmin);
     }
 
+    @Transactional
     public AdminLoginResponseDto login(AdminLoginDto dto) {
         Admin admin = getByEmail(dto.email());
 
