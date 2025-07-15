@@ -1,0 +1,29 @@
+package com.keodam.keodam_backend.app.user.coffeeChatProfile.dto;
+
+import com.keodam.keodam_backend.app.user.coffeeChatProfile.domain.Mentee;
+import com.keodam.keodam_backend.app.user.coffeeChatProfile.domain.MenteeHashtag;
+import lombok.Builder;
+import lombok.Getter;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Getter
+@Builder
+public class MenteeResponseDto {
+    private String gradeMajor;
+    private String desiredCareer;
+    private String desiredMentoring;
+    private List<String> hashtags;
+
+    public static MenteeResponseDto from(Mentee mentee, List<MenteeHashtag> menteeHashtag) {
+        return MenteeResponseDto.builder()
+                .gradeMajor(mentee.getGradeMajor())
+                .desiredCareer(mentee.getDesiredCareer())
+                .desiredMentoring(mentee.getDesiredMentoring())
+                .hashtags(menteeHashtag.stream()
+                        .map(tag -> tag.getHashtag().getName())
+                        .collect(Collectors.toList()))
+                .build();
+    }
+}
