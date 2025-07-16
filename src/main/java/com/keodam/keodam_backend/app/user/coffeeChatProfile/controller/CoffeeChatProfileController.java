@@ -2,7 +2,10 @@ package com.keodam.keodam_backend.app.user.coffeeChatProfile.controller;
 
 import com.keodam.keodam_backend.app.user.coffeeChatProfile.dto.MenteeRequestDto;
 import com.keodam.keodam_backend.app.user.coffeeChatProfile.dto.MenteeResponseDto;
+import com.keodam.keodam_backend.app.user.coffeeChatProfile.dto.MentorRequestDto;
+import com.keodam.keodam_backend.app.user.coffeeChatProfile.dto.MentorResponseDto;
 import com.keodam.keodam_backend.app.user.coffeeChatProfile.service.MenteeProfileService;
+import com.keodam.keodam_backend.app.user.coffeeChatProfile.service.MentorProfileService;
 import com.keodam.keodam_backend.global.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CoffeeChatProfileController {
 
     private final MenteeProfileService menteeProfileService;
+    private final MentorProfileService mentorProfileService;
 
     @PatchMapping("/mentee")
     @Operation(summary = "커피챗 멘티 프로필 등록", description = "멘티 프로필 등록 API", security = @SecurityRequirement(name = "Authorization"))
@@ -28,5 +32,13 @@ public class CoffeeChatProfileController {
                                                        @RequestBody MenteeRequestDto menteeRequestDto) {
         String email = authentication.getName();
         return ApiResponse.onSuccess(menteeProfileService.updateMentee(email, menteeRequestDto));
+    }
+
+    @PatchMapping("/mentor")
+    @Operation(summary = "커피챗 멘토 프로필 등록", description = "멘토 프로필 등록 API", security = @SecurityRequirement(name = "Authorization"))
+    public ApiResponse<MentorResponseDto> updateMentor(Authentication authentication,
+                                                       @RequestBody MentorRequestDto mentorRequestDto) {
+        String email = authentication.getName();
+        return ApiResponse.onSuccess(mentorProfileService.updateMentor(email, mentorRequestDto));
     }
 }
