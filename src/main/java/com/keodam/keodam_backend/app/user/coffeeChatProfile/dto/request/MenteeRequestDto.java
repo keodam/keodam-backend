@@ -1,4 +1,4 @@
-package com.keodam.keodam_backend.app.user.coffeeChatProfile.dto;
+package com.keodam.keodam_backend.app.user.coffeeChatProfile.dto.request;
 
 import lombok.Getter;
 import java.util.List;

@@ -1,9 +1,9 @@
 package com.keodam.keodam_backend.app.user.coffeeChatProfile.controller;
 
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.dto.MenteeRequestDto;
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.dto.MenteeResponseDto;
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.dto.MentorRequestDto;
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.dto.MentorResponseDto;
+import com.keodam.keodam_backend.app.user.coffeeChatProfile.dto.request.MenteeRequestDto;
+import com.keodam.keodam_backend.app.user.coffeeChatProfile.dto.response.MenteeResponseDto;
+import com.keodam.keodam_backend.app.user.coffeeChatProfile.dto.request.MentorRequestDto;
+import com.keodam.keodam_backend.app.user.coffeeChatProfile.dto.response.MentorResponseDto;
 import com.keodam.keodam_backend.app.user.coffeeChatProfile.service.MenteeProfileService;
 import com.keodam.keodam_backend.app.user.coffeeChatProfile.service.MentorProfileService;
 import com.keodam.keodam_backend.global.ApiResponse;
