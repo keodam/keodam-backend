@@ -18,7 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,14 +36,24 @@ public class MentorProfileService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
-        Mentor mentor = Mentor.builder()
-                .user(user)
-                .major(mentorRequestDto.getMajor())
-                .mentoringTopics(mentorRequestDto.getMentoringTopics())
-                .company(mentorRequestDto.getCompany())
-                .selfIntroduction(mentorRequestDto.getSelfIntroduction())
-                .jobDescription(mentorRequestDto.getJobDescription())
-                .build();
+        Optional<Mentor> existingMentor = mentorRepository.findByUser(user);
+
+        Mentor mentor;
+
+        if (existingMentor.isPresent()) {
+            mentor = existingMentor.get();
+            mentor.updateFromDto(user, mentorRequestDto);
+        } else {
+            mentor = Mentor.builder()
+                    .user(user)
+                    .major(mentorRequestDto.getMajor())
+                    .mentoringTopics(mentorRequestDto.getMentoringTopics())
+                    .company(mentorRequestDto.getCompany())
+                    .selfIntroduction(mentorRequestDto.getSelfIntroduction())
+                    .jobDescription(mentorRequestDto.getJobDescription())
+                    .mentoringBeanAmount(mentorRequestDto.getMentoringBeanAmount())
+                    .build();
+        }
 
         mentorRepository.save(mentor);
 
@@ -52,9 +64,23 @@ public class MentorProfileService {
         return MentorResponseDto.from(mentor, helpMentorHashtag, selfMentorHashtag, evaluetedMentorHashtag);
     }
 
+    @Transactional(readOnly = true)
+    public MentorResponseDto getMentor(Long mentorId) {
+        Mentor mentor = mentorRepository.findById(mentorId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MENTOR_NOT_FOUND));
+
+        List<MentorHashtag> helpMentorHashtag = mentorHashtagRepository.findAllByMentorAndHashtagType(mentor, MentorHashtagType.HELP);
+        List<MentorHashtag> selfMentorHashtag = mentorHashtagRepository.findAllByMentorAndHashtagType(mentor, MentorHashtagType.SELF);
+        List<MentorHashtag> evaluatedMentorHashtag = mentorHashtagRepository.findAllByMentorAndHashtagType(mentor, MentorHashtagType.EVALUATED);
+
+        return MentorResponseDto.from(mentor, helpMentorHashtag, selfMentorHashtag, evaluatedMentorHashtag);
+    }
+
     private List<MentorHashtag> saveMentorHashtags(Mentor mentor, List<String> hashtags, MentorHashtagType mentorHashtagType) {
+        mentorHashtagRepository.deleteByMentorAndHashtagType(mentor, mentorHashtagType);
+
         List<MentorHashtag> mentorHashtags = new ArrayList<>();
-        if (hashtags == null || hashtags.isEmpty()) return null;
+        if (hashtags == null || hashtags.isEmpty()) return Collections.emptyList();
 
         for (int i = 0; i < hashtags.size(); i++) {
             String hashtagName = hashtags.get(i);
