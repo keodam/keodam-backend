@@ -17,7 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,34 +35,58 @@ public class MenteeProfileService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
-        Mentee menteeProfile = Mentee.builder()
-                .user(user)
-                .gradeMajor(menteeRequestDto.getGradeMajor())
-                .desiredCareer(menteeRequestDto.getDesiredCareer())
-                .desiredMentoring(menteeRequestDto.getDesiredMentoring())
-                .build();
+        Optional<Mentee> existingMentor = menteeRepository.findByUser(user);
 
-        menteeRepository.save(menteeProfile);
+        Mentee mentee;
+
+        if (existingMentor.isPresent()) {
+            mentee = existingMentor.get();
+            mentee.updateFromDto(user, menteeRequestDto);
+        } else {
+            mentee = Mentee.builder()
+                    .user(user)
+                    .gradeMajor(menteeRequestDto.getGradeMajor())
+                    .desiredCareer(menteeRequestDto.getDesiredCareer())
+                    .desiredMentoring(menteeRequestDto.getDesiredMentoring())
+                    .selfIntroduction(menteeRequestDto.getSelfIntroduction())
+                    .build();
+        }
+
+        menteeRepository.save(mentee);
+
+        List<MenteeHashtag> menteeHashtags = updateMenteeHashtags(mentee, menteeRequestDto.getHashtags());
+
+        return MenteeResponseDto.from(mentee, menteeHashtags);
+    }
+
+    @Transactional(readOnly = true)
+    public MenteeResponseDto getMentee(Long menteeId) {
+        Mentee mentee = menteeRepository.findById(menteeId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MENTEE_NOT_FOUND));
+
+        List<MenteeHashtag> menteeHashtags = menteeHashtagRepository.findAllByMentee(mentee);
+
+        return MenteeResponseDto.from(mentee, menteeHashtags);
+    }
+
+    private List<MenteeHashtag> updateMenteeHashtags(Mentee mentee, List<String> hashtags) {
+        menteeHashtagRepository.deleteByMentee(mentee);
+
+        if (hashtags == null || hashtags.isEmpty()) return Collections.emptyList();
 
         List<MenteeHashtag> menteeHashtags = new ArrayList<>();
-        if (menteeRequestDto.getHashtags() != null && !menteeRequestDto.getHashtags().isEmpty()) {
-            menteeRequestDto.getHashtags().forEach(hashtagName -> {
-                HashTag hashTag = hashTagRepository.findByName(hashtagName)
-                        .orElseGet(() -> hashTagRepository.save(
-                                HashTag.builder()
-                                        .name(hashtagName)
-                                        .build()));
+        for (String hashtag : hashtags) {
+            HashTag hashTag = hashTagRepository.findByName(hashtag)
+                    .orElseGet(() -> hashTagRepository.save(HashTag.builder().name(hashtag).build()));
 
-                MenteeHashtag menteeHashtag = MenteeHashtag
-                        .builder()
-                        .hashtag(hashTag)
-                        .mentee(menteeProfile)
-                        .build();
+            MenteeHashtag menteeHashtag = MenteeHashtag.builder()
+                    .mentee(mentee)
+                    .hashtag(hashTag)
+                    .build();
 
-                menteeHashtagRepository.save(menteeHashtag);
-                menteeHashtags.add(menteeHashtag);
-            });
+            menteeHashtagRepository.save(menteeHashtag);
+            menteeHashtags.add(menteeHashtag);
         }
-        return MenteeResponseDto.from(menteeProfile, menteeHashtags);
+        return menteeHashtags;
     }
 }
