@@ -14,6 +14,7 @@ public class MentorRequestDto {
     private List<String> helpHashtags;
     private List<String> selfHashtags;
     private List<String> evaluatedHashtags;
+    private int mentoringBeanAmount;
 
     @NotNull
     private String mentoringTopics;

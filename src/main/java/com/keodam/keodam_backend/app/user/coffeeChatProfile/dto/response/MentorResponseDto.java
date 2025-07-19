@@ -19,6 +19,7 @@ public class MentorResponseDto {
     private List<HashtagInfo> evaluatedHashtags;
     private String mentoringTopics;
     private String selfIntroduction;
+    private Integer mentoringBeanAmount;
 
     public static MentorResponseDto from(Mentor mentor,
                                          List<MentorHashtag> helpHashtag,
@@ -30,6 +31,7 @@ public class MentorResponseDto {
                 .jobDescription(mentor.getJobDescription())
                 .mentoringTopics(mentor.getMentoringTopics())
                 .selfIntroduction(mentor.getSelfIntroduction())
+                .mentoringBeanAmount(mentor.getMentoringBeanAmount())
                 .helpHashtags(toHashtagInfoList(helpHashtag))
                 .selfHashtags(toHashtagInfoList(selfHashtag))
                 .evaluatedHashtags(toHashtagInfoList(evaluatedHashtag))
