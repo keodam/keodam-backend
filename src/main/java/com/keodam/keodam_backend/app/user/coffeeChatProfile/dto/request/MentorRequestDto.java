@@ -7,7 +7,6 @@ import java.util.List;
 
 @Getter
 public class MentorRequestDto {
-
     private String major;
     private String company;
     private String jobDescription;
