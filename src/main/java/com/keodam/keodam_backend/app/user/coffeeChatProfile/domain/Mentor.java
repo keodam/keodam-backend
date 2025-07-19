@@ -1,6 +1,7 @@
 package com.keodam.keodam_backend.app.user.coffeeChatProfile.domain;
 
 import com.keodam.keodam_backend.app.domain.User;
+import com.keodam.keodam_backend.app.user.coffeeChatProfile.dto.request.MentorRequestDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,13 +34,27 @@ public class Mentor {
     @Column(name = "self_introduction")
     private String selfIntroduction;
 
+    @Column(name = "mentoring_bean_amount")
+    private Integer mentoringBeanAmount;
+
     @Builder
-    public Mentor(User user, String major, String company, String jobDescription, String mentoringTopics, String selfIntroduction) {
+    public Mentor(User user, String major, String company, String jobDescription, String mentoringTopics, String selfIntroduction, Integer mentoringBeanAmount) {
         this.user = user;
         this.major = major;
         this.company = company;
         this.jobDescription = jobDescription;
         this.mentoringTopics = mentoringTopics;
         this.selfIntroduction = selfIntroduction;
+        this.mentoringBeanAmount = mentoringBeanAmount;
+    }
+
+    public void updateFromDto(User user, MentorRequestDto mentorRequestDto) {
+        this.user = user;
+        this.major = mentorRequestDto.getMajor();
+        this.company = mentorRequestDto.getCompany();
+        this.jobDescription = mentorRequestDto.getJobDescription();
+        this.mentoringTopics = mentorRequestDto.getMentoringTopics();
+        this.selfIntroduction = mentorRequestDto.getSelfIntroduction();
+        this.mentoringBeanAmount = mentorRequestDto.getMentoringBeanAmount();
     }
 }
