@@ -14,6 +14,7 @@ public class MenteeResponseDto {
     private String gradeMajor;
     private String desiredCareer;
     private String desiredMentoring;
+    private String selfIntroduction;
     private List<String> hashtags;
 
     public static MenteeResponseDto from(Mentee mentee, List<MenteeHashtag> menteeHashtag) {
@@ -21,6 +22,7 @@ public class MenteeResponseDto {
                 .gradeMajor(mentee.getGradeMajor())
                 .desiredCareer(mentee.getDesiredCareer())
                 .desiredMentoring(mentee.getDesiredMentoring())
+                .selfIntroduction(mentee.getSelfIntroduction())
                 .hashtags(menteeHashtag.stream()
                         .map(tag -> tag.getHashtag().getName())
                         .collect(Collectors.toList()))
