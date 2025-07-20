@@ -3,12 +3,11 @@ package com.keodam.keodam_backend.global.security.oidc.service;
 import com.keodam.keodam_backend.app.domain.SocialType;
 import com.keodam.keodam_backend.app.domain.User;
 import com.keodam.keodam_backend.app.user.repository.UserRepository;
-import com.keodam.keodam_backend.exception.GeneralException;
-import com.keodam.keodam_backend.global.code.status.ErrorStatus;
 import com.keodam.keodam_backend.global.security.oidc.domain.CustomUserDetails;
 import com.keodam.keodam_backend.global.security.oidc.domain.IdTokenAttributes;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.ProviderNotFoundException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
@@ -32,16 +31,12 @@ public class IdTokenService {
         User findUser;
         IdTokenAttributes idTokenAttributes;
         Map<String, Object> attributes;
-        try {
 
-            socialType = checkIssuer(provider);
-            attributes = tokenToattributes(accessToken, socialType);
-            idTokenAttributes = new IdTokenAttributes(attributes, socialType);
+        socialType = checkIssuer(provider);
+        attributes = tokenToattributes(accessToken, socialType);
+        idTokenAttributes = new IdTokenAttributes(attributes, socialType);
 
-            findUser = checkUser(idTokenAttributes);
-        } catch (Exception e) {
-            throw new RuntimeException("엑세스 토큰 인증 오류 " + e.getMessage());
-        }
+        findUser = checkUser(idTokenAttributes);
 
         return new CustomUserDetails(
                 findUser.getEmail(),
@@ -57,7 +52,7 @@ public class IdTokenService {
             case "kakao" -> SocialType.KAKAO;
             case "google" -> SocialType.GOOGLE;
             case "apple" -> SocialType.APPLE;
-            default -> throw new GeneralException(ErrorStatus.UNSUPPORTED_PROVIDER);
+            default -> throw new ProviderNotFoundException("잘못된 제공 업체입니다. :" + provider);
         };
     }
 
