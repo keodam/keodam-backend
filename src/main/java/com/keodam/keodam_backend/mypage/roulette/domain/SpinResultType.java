@@ -1,4 +1,4 @@
-package com.keodam.keodam_backend.mypage.roullet.domain;
+package com.keodam.keodam_backend.mypage.roulette.domain;
 
 public enum SpinResultType {
     NONE,

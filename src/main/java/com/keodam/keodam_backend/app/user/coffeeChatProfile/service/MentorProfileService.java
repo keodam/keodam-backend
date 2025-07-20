@@ -1,6 +1,6 @@
 package com.keodam.keodam_backend.app.user.coffeeChatProfile.service;
 
-import com.keodam.keodam_backend.app.domain.User;
+import com.keodam.keodam_backend.app.user.domain.User;
 import com.keodam.keodam_backend.app.user.coffeeChatProfile.domain.Mentor;
 import com.keodam.keodam_backend.app.user.coffeeChatProfile.domain.MentorHashtag;
 import com.keodam.keodam_backend.app.user.coffeeChatProfile.domain.MentorHashtagType;

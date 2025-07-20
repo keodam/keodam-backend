@@ -1,10 +1,10 @@
-package com.keodam.keodam_backend.app.domain.admin.controller;
+package com.keodam.keodam_backend.app.admin.controller;
 
-import com.keodam.keodam_backend.app.domain.admin.domain.CustomAdminDetails;
-import com.keodam.keodam_backend.app.domain.admin.dto.AdminResponseDto;
-import com.keodam.keodam_backend.app.domain.admin.dto.SuperAdminPasswordResetDto;
-import com.keodam.keodam_backend.app.domain.admin.dto.SuperAdminRequestDto;
-import com.keodam.keodam_backend.app.domain.admin.service.AdminService;
+import com.keodam.keodam_backend.app.admin.domain.CustomAdminDetails;
+import com.keodam.keodam_backend.app.admin.dto.AdminResponseDto;
+import com.keodam.keodam_backend.app.admin.dto.SuperAdminPasswordResetDto;
+import com.keodam.keodam_backend.app.admin.dto.SuperAdminRequestDto;
+import com.keodam.keodam_backend.app.admin.service.AdminService;
 import com.keodam.keodam_backend.global.ApiResponse;
 import com.keodam.keodam_backend.global.code.status.SuccessStatus;
 import io.swagger.v3.oas.annotations.Operation;

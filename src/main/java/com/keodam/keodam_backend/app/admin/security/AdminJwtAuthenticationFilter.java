@@ -1,8 +1,8 @@
-package com.keodam.keodam_backend.app.domain.admin.security;
+package com.keodam.keodam_backend.app.admin.security;
 
-import com.keodam.keodam_backend.app.domain.admin.domain.Admin;
-import com.keodam.keodam_backend.app.domain.admin.domain.CustomAdminDetails;
-import com.keodam.keodam_backend.app.domain.admin.repository.AdminRepository;
+import com.keodam.keodam_backend.app.admin.domain.Admin;
+import com.keodam.keodam_backend.app.admin.domain.CustomAdminDetails;
+import com.keodam.keodam_backend.app.admin.repository.AdminRepository;
 import com.keodam.keodam_backend.global.security.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

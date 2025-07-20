@@ -1,7 +1,7 @@
 package com.keodam.keodam_backend.app.phone.domain;
 
 
-import com.keodam.keodam_backend.app.domain.User;
+import com.keodam.keodam_backend.app.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

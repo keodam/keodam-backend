@@ -1,8 +1,8 @@
-package com.keodam.keodam_backend.app.domain.admin.controller;
+package com.keodam.keodam_backend.app.admin.controller;
 
-import com.keodam.keodam_backend.app.domain.admin.domain.Admin;
-import com.keodam.keodam_backend.app.domain.admin.domain.RoleTypeAdmin;
-import com.keodam.keodam_backend.app.domain.admin.repository.AdminRepository;
+import com.keodam.keodam_backend.app.admin.domain.Admin;
+import com.keodam.keodam_backend.app.admin.domain.RoleTypeAdmin;
+import com.keodam.keodam_backend.app.admin.repository.AdminRepository;
 import com.keodam.keodam_backend.exception.GeneralException;
 import com.keodam.keodam_backend.global.code.status.ErrorStatus;
 import jakarta.annotation.PostConstruct;

@@ -1,6 +1,6 @@
 package com.keodam.keodam_backend.app.user.coffeeChatProfile.service;
 
-import com.keodam.keodam_backend.app.domain.User;
+import com.keodam.keodam_backend.app.user.domain.User;
 import com.keodam.keodam_backend.app.user.coffeeChatProfile.domain.Mentee;
 import com.keodam.keodam_backend.app.user.coffeeChatProfile.domain.MenteeHashtag;
 import com.keodam.keodam_backend.app.user.coffeeChatProfile.dto.request.MenteeRequestDto;

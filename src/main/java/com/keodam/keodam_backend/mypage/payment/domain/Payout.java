@@ -1,6 +1,6 @@
 package com.keodam.keodam_backend.mypage.payment.domain;
 
-import com.keodam.keodam_backend.app.domain.User;
+import com.keodam.keodam_backend.app.user.domain.User;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
