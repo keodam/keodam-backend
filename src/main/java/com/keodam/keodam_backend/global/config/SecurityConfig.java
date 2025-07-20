@@ -1,19 +1,23 @@
 package com.keodam.keodam_backend.global.config;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.keodam.keodam_backend.app.domain.admin.repository.AdminRepository;
 import com.keodam.keodam_backend.app.domain.admin.security.AdminJwtAuthenticationFilter;
 import com.keodam.keodam_backend.app.user.repository.UserRepository;
 import com.keodam.keodam_backend.global.security.JwtAuthenticationProcessingFilter;
 import com.keodam.keodam_backend.global.security.JwtService;
-import com.keodam.keodam_backend.oauth.domain.CustomUserDetails;
-import com.keodam.keodam_backend.oauth.service.IdTokenService;
-import com.keodam.keodam_backend.oauth.service.handler.*;
+import com.keodam.keodam_backend.global.security.oidc.filter.IdTokenAuthenticationFilter;
+import com.keodam.keodam_backend.global.security.oidc.handler.IdTokenLoginFailureHandler;
+import com.keodam.keodam_backend.global.security.oidc.handler.IdTokenLoginSuccessHandler;
+import com.keodam.keodam_backend.global.security.oidc.service.IdTokenAuthenticationProvider;
+import com.keodam.keodam_backend.global.security.oidc.service.IdTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -21,11 +25,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
-import org.springframework.security.web.authentication.preauth.RequestHeaderAuthenticationFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.RequestMatcher;
 
 
 @Configuration
@@ -38,6 +39,7 @@ public class SecurityConfig {
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final IdTokenService idTokenService;
+    private final ObjectMapper objectMapper;
 
     @Bean
     @Order(2) // Admin 체인 먼저 거치고 나서 User 체인 실행 (필수)
@@ -59,47 +61,32 @@ public class SecurityConfig {
                                 .requestMatchers("/signup").authenticated()
                                 .anyRequest().permitAll()
                         // 개발 편의성을 위해 한시적으로 permitAll로 관리함.
-                );
-        http .addFilterBefore(requestHeaderAuthenticationFilter(), BasicAuthenticationFilter.class);
-        http.addFilterBefore(jwtAuthenticationProcessingFilter(), RequestHeaderAuthenticationFilter.class);
+                )
+        .addFilterBefore(jwtAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(idTokenAuthenticationFilter(), JwtAuthenticationProcessingFilter.class);
         return http.build();
     }
-
-    @Bean
-    public RequestHeaderAuthenticationFilter requestHeaderAuthenticationFilter() {
-        RequestMatcher requestMatcher = new AntPathRequestMatcher("/auth/login");
-        RequestHeaderAuthenticationFilter filter = new RequestHeaderAuthenticationFilter();
-
-        filter.setRequiresAuthenticationRequestMatcher(requestMatcher);
-        filter.setPrincipalRequestHeader("id_token");
-        filter.setAuthenticationManager(authenticationManager());
-        filter.setAuthenticationSuccessHandler(idTokenLoginSuccessHandler);
-        filter.setAuthenticationFailureHandler(idTokenLoginFailureHandler);
-
-        return filter;
-    }
-
     @Bean
     public AuthenticationManager authenticationManager() {
-        return authentication -> {
-            String token = (String) authentication.getPrincipal();
-            try {
-                CustomUserDetails user = idTokenService.loadUserByAccessToken(token);
-                // PreAuthenticatedAuthenticationToken 생성
-                return new PreAuthenticatedAuthenticationToken(
-                        user,
-                        token,
-                        user.getAuthorities()
-                );
-            } catch (Exception e) {
-                throw new RuntimeException(e.getMessage());
-            }
-        };
+
+        IdTokenAuthenticationProvider provider = new IdTokenAuthenticationProvider(idTokenService);
+        return new ProviderManager(provider);
     }
 
     @Bean
     public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
         return new JwtAuthenticationProcessingFilter(jwtService, userRepository);
+    }
+
+    @Bean
+    public IdTokenAuthenticationFilter idTokenAuthenticationFilter(){
+
+        IdTokenAuthenticationFilter filter = new IdTokenAuthenticationFilter(authenticationManager(), objectMapper);
+
+        filter.setAuthenticationSuccessHandler(idTokenLoginSuccessHandler);
+        filter.setAuthenticationFailureHandler(idTokenLoginFailureHandler);
+
+        return filter;
     }
 
     @Bean
