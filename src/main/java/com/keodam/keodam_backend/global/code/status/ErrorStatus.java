@@ -87,6 +87,12 @@ public enum ErrorStatus implements BaseErrorCode {
     COMMUNITY_COMMENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "COMMENT01", "존재하지 않는 커뮤니티 댓글입니다."),
     UNAUTHORIZED_COMMENT_MODIFICATION(HttpStatus.FORBIDDEN, "COMMENT02", "해당 댓글을 수정하거나 삭제할 권한이 없습니다."),
 
+    //mentee
+    MENTEE_NOT_FOUND(HttpStatus.BAD_REQUEST, "MENTEE01", "존재하지 않는 멘티 프로필입니다."),
+
+    //mentor
+    MENTOR_NOT_FOUND(HttpStatus.BAD_REQUEST, "MENTOR01", "존재하지 않는 멘토 프로필입니다."),
+
     //oidc
     UNSUPPORTED_PROVIDER(HttpStatus.BAD_REQUEST, "LOGIN01", "지원하지 않는 제공 업체입니다.");
     private final HttpStatus httpStatus;
