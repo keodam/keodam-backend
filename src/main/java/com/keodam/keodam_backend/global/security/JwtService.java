@@ -40,13 +40,12 @@ public class JwtService {
     private static final String USERID_CLAIM = "userId";
     private static final String BEARER = "Bearer ";
 
-    public String createAccessToken(String email, Long userId) {
+    public String createAccessToken(String email) {
         Date now = new Date();
         return JWT.create()
                 .withSubject(ACCESS_TOKEN)
                 .withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))
                 .withClaim(EMAIL_CLAIM, email)
-                .withClaim(USERID_CLAIM, userId)
                 .sign(Algorithm.HMAC512(secretKey));
     }
 
