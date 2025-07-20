@@ -1,4 +1,4 @@
-package com.keodam.keodam_backend.oauth.service.handler;
+package com.keodam.keodam_backend.global.security.oidc.handler;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,7 +15,9 @@ import java.io.IOException;
 public class IdTokenLoginFailureHandler implements AuthenticationFailureHandler {
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         response.getWriter().write("소셜 로그인에 실패했습니다. 에러 메시지 : " + exception.getMessage());
+        response.getWriter().flush();
     }
 }

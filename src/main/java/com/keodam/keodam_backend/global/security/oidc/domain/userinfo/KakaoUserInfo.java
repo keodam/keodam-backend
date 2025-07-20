@@ -1,4 +1,4 @@
-package com.keodam.keodam_backend.oauth.domain.userinfo;
+package com.keodam.keodam_backend.global.security.oidc.domain.userinfo;
 import java.util.Map;
 
 public class KakaoUserInfo extends UserInfo{
