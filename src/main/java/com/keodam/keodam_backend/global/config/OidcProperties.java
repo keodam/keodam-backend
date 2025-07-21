@@ -11,4 +11,3 @@ public record OidcProperties(
 
     public record Provider(String issuer, List<String> audiences, String jwkSetUri) {}
 }
-
