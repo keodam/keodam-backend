@@ -1,4 +1,4 @@
-package com.keodam.keodam_backend.oauth.controller;
+package com.keodam.keodam_backend.oidc.controller;
 
 import com.keodam.keodam_backend.app.domain.User;
 import com.keodam.keodam_backend.app.domain.RoleType;
@@ -40,7 +40,7 @@ public class AuthTestController {
             return userRepository.save(newUser);
         });
 
-        String accessToken = jwtService.createAccessToken(user.getEmail(), user.getId());
+        String accessToken = jwtService.createAccessToken(user.getEmail());
         String refreshToken = jwtService.createRefreshToken();
 
         user.updateRefreshToken(refreshToken);

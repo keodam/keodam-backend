@@ -1,7 +1,7 @@
-package com.keodam.keodam_backend.oauth.service.handler;
+package com.keodam.keodam_backend.global.security.oidc.handler;
 
 import com.keodam.keodam_backend.global.security.JwtService;
-import com.keodam.keodam_backend.oauth.domain.CustomUserDetails;
+import com.keodam.keodam_backend.global.security.oidc.domain.CustomUserDetails;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,13 +25,17 @@ public class IdTokenLoginSuccessHandler implements AuthenticationSuccessHandler 
         CustomUserDetails idTokenUser = (CustomUserDetails) authentication.getPrincipal();
 
         response.setStatus(HttpServletResponse.SC_OK);
-        response.setHeader("page", String.valueOf(idTokenUser.getRoleType()));
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 
-        String accessToken = jwtService.createAccessToken(idTokenUser.getUsername(), idTokenUser.getUserId());
+        String json = "{\"page\": \"" + idTokenUser.getRoleType() + "\"}";
+        String accessToken = jwtService.createAccessToken(idTokenUser.getUsername());
         String refreshToken = jwtService.createRefreshToken();
 
         jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
         jwtService.updateRefreshToken(idTokenUser.getUsername(), refreshToken);
+
+        response.getWriter().write(json);
         response.getWriter().flush();
     }
 }

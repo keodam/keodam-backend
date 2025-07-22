@@ -1,4 +1,4 @@
-package com.keodam.keodam_backend.oauth.controller;
+package com.keodam.keodam_backend.oidc.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

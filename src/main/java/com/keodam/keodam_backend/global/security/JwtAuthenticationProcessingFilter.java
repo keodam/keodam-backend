@@ -2,7 +2,7 @@ package com.keodam.keodam_backend.global.security;
 
 import com.keodam.keodam_backend.app.domain.User;
 import com.keodam.keodam_backend.app.user.repository.UserRepository;
-import com.keodam.keodam_backend.oauth.domain.CustomUserDetails;
+import com.keodam.keodam_backend.global.security.oidc.domain.CustomUserDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,7 +28,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        if (request.getRequestURI().equals("/auth/login")) {
+        if (request.getRequestURI().equals("/api/auth/login")) {
             filterChain.doFilter(request, response); // "/login" 요청이 들어오면, 다음 필터 호출
             return; // return으로 이후 현재 필터 진행 막기 (안해주면 아래로 내려가서 계속 필터 진행시킴)
         }
@@ -42,10 +42,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
             return;
         }
 
-
-        if (refreshToken == null) {
-            checkAccessTokenAndAuthentication(request, response, filterChain);
-        }
+        checkAccessTokenAndAuthentication(request, response, filterChain);
     }
 
     public void checkRefreshTokenAndReIssueAccessToken(HttpServletResponse response, String refreshToken) {
@@ -53,7 +50,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         userRepository.findByRefreshToken(refreshToken)
                 .ifPresent(user -> {
                     String reIssuedRefreshToken = reIssueRefreshToken(user);
-                    jwtService.sendAccessAndRefreshToken(response, jwtService.createAccessToken(user.getEmail(), user.getId()),
+                    jwtService.sendAccessAndRefreshToken(response, jwtService.createAccessToken(user.getEmail()),
                             reIssuedRefreshToken);
                 });
     }
@@ -69,7 +66,9 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     public void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response,
                                                   FilterChain filterChain) throws ServletException, IOException {
         jwtService.extractAccessToken(request)
-                .filter(jwtService::isTokenValid).flatMap(accessToken -> jwtService.extractEmail(accessToken).flatMap(userRepository::findByEmail)).ifPresent(this::saveAuthentication);
+                .filter(jwtService::isTokenValid)
+                .flatMap(accessToken -> jwtService.extractEmail(accessToken)
+                        .flatMap(userRepository::findByEmail)).ifPresent(this::saveAuthentication);
 
         filterChain.doFilter(request, response);
     }
@@ -77,10 +76,10 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     public void saveAuthentication(User myUser) {
 
         CustomUserDetails userDetailsUser = new CustomUserDetails(
-                Collections.singleton(new SimpleGrantedAuthority(myUser.getRoleType().toString())),
                 myUser.getEmail(),
                 myUser.getRoleType(),
-                myUser.getId());
+                Collections.singleton(new SimpleGrantedAuthority(myUser.getRoleType().toString())),
+                Collections.emptyMap());
 
         Authentication authentication =
                 new UsernamePasswordAuthenticationToken(userDetailsUser, null,

@@ -91,7 +91,10 @@ public enum ErrorStatus implements BaseErrorCode {
     MENTEE_NOT_FOUND(HttpStatus.BAD_REQUEST, "MENTEE01", "존재하지 않는 멘티 프로필입니다."),
 
     //mentor
-    MENTOR_NOT_FOUND(HttpStatus.BAD_REQUEST, "MENTOR01", "존재하지 않는 멘토 프로필입니다.");
+    MENTOR_NOT_FOUND(HttpStatus.BAD_REQUEST, "MENTOR01", "존재하지 않는 멘토 프로필입니다."),
+
+    //oidc
+    UNSUPPORTED_PROVIDER(HttpStatus.BAD_REQUEST, "LOGIN01", "지원하지 않는 제공 업체입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
