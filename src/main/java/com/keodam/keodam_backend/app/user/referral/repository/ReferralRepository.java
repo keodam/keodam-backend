@@ -1,6 +1,6 @@
 package com.keodam.keodam_backend.app.user.referral.repository;
 
-import com.keodam.keodam_backend.app.domain.User;
+import com.keodam.keodam_backend.app.user.domain.User;
 import com.keodam.keodam_backend.app.user.referral.domain.Referral;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;

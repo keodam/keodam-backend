@@ -1,6 +1,6 @@
-package com.keodam.keodam_backend.app.domain.admin.dto;
+package com.keodam.keodam_backend.app.admin.dto;
 
-import com.keodam.keodam_backend.app.domain.admin.domain.RoleTypeAdmin;
+import com.keodam.keodam_backend.app.admin.domain.RoleTypeAdmin;
 
 public record AdminLoginResponseDto(
         String name,

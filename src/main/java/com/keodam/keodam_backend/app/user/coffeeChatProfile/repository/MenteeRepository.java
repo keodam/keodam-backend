@@ -1,6 +1,6 @@
 package com.keodam.keodam_backend.app.user.coffeeChatProfile.repository;
 
-import com.keodam.keodam_backend.app.domain.User;
+import com.keodam.keodam_backend.app.user.domain.User;
 import com.keodam.keodam_backend.app.user.coffeeChatProfile.domain.Mentee;
 import org.springframework.data.jpa.repository.JpaRepository;
 

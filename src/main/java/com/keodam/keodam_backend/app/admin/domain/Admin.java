@@ -1,4 +1,4 @@
-package com.keodam.keodam_backend.app.domain.admin.domain;
+package com.keodam.keodam_backend.app.admin.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

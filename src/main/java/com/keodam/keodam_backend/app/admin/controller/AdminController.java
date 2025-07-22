@@ -1,10 +1,13 @@
-package com.keodam.keodam_backend.app.domain.admin.controller;
+package com.keodam.keodam_backend.app.admin.controller;
 
-import com.keodam.keodam_backend.app.domain.admin.domain.CustomAdminDetails;
-import com.keodam.keodam_backend.app.domain.admin.service.AdminService;
+import com.keodam.keodam_backend.app.admin.domain.CustomAdminDetails;
+import com.keodam.keodam_backend.app.admin.dto.AdminLoginDto;
+import com.keodam.keodam_backend.app.admin.dto.AdminLoginResponseDto;
+import com.keodam.keodam_backend.app.admin.dto.AdminPasswordUpdateDto;
+import com.keodam.keodam_backend.app.admin.dto.AdminRegisterDto;
+import com.keodam.keodam_backend.app.admin.service.AdminService;
 import com.keodam.keodam_backend.global.ApiResponse;
 import com.keodam.keodam_backend.global.code.status.SuccessStatus;
-import com.keodam.keodam_backend.app.domain.admin.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

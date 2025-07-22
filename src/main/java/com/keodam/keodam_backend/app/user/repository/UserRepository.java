@@ -1,6 +1,6 @@
 package com.keodam.keodam_backend.app.user.repository;
 
-import com.keodam.keodam_backend.app.domain.User;
+import com.keodam.keodam_backend.app.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;

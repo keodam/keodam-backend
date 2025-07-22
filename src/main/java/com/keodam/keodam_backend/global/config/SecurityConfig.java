@@ -2,8 +2,8 @@ package com.keodam.keodam_backend.global.config;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.keodam.keodam_backend.app.domain.admin.repository.AdminRepository;
-import com.keodam.keodam_backend.app.domain.admin.security.AdminJwtAuthenticationFilter;
+import com.keodam.keodam_backend.app.admin.repository.AdminRepository;
+import com.keodam.keodam_backend.app.admin.security.AdminJwtAuthenticationFilter;
 import com.keodam.keodam_backend.app.user.repository.UserRepository;
 import com.keodam.keodam_backend.global.security.JwtAuthenticationProcessingFilter;
 import com.keodam.keodam_backend.global.security.JwtService;
@@ -62,7 +62,7 @@ public class SecurityConfig {
                                 .anyRequest().permitAll()
                         // 개발 편의성을 위해 한시적으로 permitAll로 관리함.
                 )
-        .addFilterBefore(jwtAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(idTokenAuthenticationFilter(), JwtAuthenticationProcessingFilter.class);
         return http.build();
     }

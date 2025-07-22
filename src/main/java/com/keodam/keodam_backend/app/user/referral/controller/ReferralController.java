@@ -1,6 +1,6 @@
 package com.keodam.keodam_backend.app.user.referral.controller;
 
-import com.keodam.keodam_backend.app.domain.User;
+import com.keodam.keodam_backend.app.user.domain.User;
 import com.keodam.keodam_backend.app.user.referral.dto.ReferralRequestDto;
 import com.keodam.keodam_backend.app.user.referral.service.ReferralService;
 import com.keodam.keodam_backend.app.user.service.UserService;

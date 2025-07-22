@@ -1,6 +1,6 @@
 package com.keodam.keodam_backend.global.security.oidc.domain;
 
-import com.keodam.keodam_backend.app.domain.RoleType;
+import com.keodam.keodam_backend.app.user.domain.RoleType;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;

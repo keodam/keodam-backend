@@ -1,6 +1,6 @@
-package com.keodam.keodam_backend.app.domain.admin.repository;
+package com.keodam.keodam_backend.app.admin.repository;
 
-import com.keodam.keodam_backend.app.domain.admin.domain.Admin;
+import com.keodam.keodam_backend.app.admin.domain.Admin;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 

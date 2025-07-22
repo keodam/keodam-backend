@@ -1,6 +1,6 @@
 package com.keodam.keodam_backend.app.phone.service;
 
-import com.keodam.keodam_backend.app.domain.User;
+import com.keodam.keodam_backend.app.user.domain.User;
 import com.keodam.keodam_backend.app.phone.domain.UserIdentityInfo;
 import com.keodam.keodam_backend.app.phone.dto.UserVerifyCheckRequestDto;
 import com.keodam.keodam_backend.app.phone.dto.UserVerifyCodeRequestDto;

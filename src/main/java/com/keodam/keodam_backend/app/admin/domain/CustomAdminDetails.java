@@ -1,4 +1,4 @@
-package com.keodam.keodam_backend.app.domain.admin.domain;
+package com.keodam.keodam_backend.app.admin.domain;
 
 import java.util.Collection;
 import java.util.List;

@@ -1,8 +1,8 @@
 package com.keodam.keodam_backend.global.security.oidc.domain;
 
-import com.keodam.keodam_backend.app.domain.RoleType;
-import com.keodam.keodam_backend.app.domain.SocialType;
-import com.keodam.keodam_backend.app.domain.User;
+import com.keodam.keodam_backend.app.user.domain.RoleType;
+import com.keodam.keodam_backend.app.user.domain.SocialType;
+import com.keodam.keodam_backend.app.user.domain.User;
 import com.keodam.keodam_backend.global.security.oidc.domain.userinfo.AppleUserInfo;
 import com.keodam.keodam_backend.global.security.oidc.domain.userinfo.GoogleUserInfo;
 import com.keodam.keodam_backend.global.security.oidc.domain.userinfo.KakaoUserInfo;
