@@ -62,7 +62,7 @@ public class SecurityConfig {
                                 .anyRequest().permitAll()
                         // 개발 편의성을 위해 한시적으로 permitAll로 관리함.
                 )
-        .addFilterBefore(jwtAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(idTokenAuthenticationFilter(), JwtAuthenticationProcessingFilter.class);
         return http.build();
     }

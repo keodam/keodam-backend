@@ -4,7 +4,6 @@ import com.keodam.keodam_backend.app.user.domain.RoleType;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
@@ -31,16 +30,6 @@ public class CustomUserDetails implements UserDetails, OidcUser {
                 ? Collections.unmodifiableSet(new LinkedHashSet<>(this.sortAuthorities(authorities)))
                 : Collections.unmodifiableSet(new LinkedHashSet<>(AuthorityUtils.NO_AUTHORITIES));
         this.attributes = attributes;
-    }
-
-    public CustomUserDetails(String email, com.keodam.keodam_backend.app.user.domain.RoleType roleType, Set<SimpleGrantedAuthority> singleton, Map<String, Object> attributes,
-                             String username, String password, RoleType roleType1, Set<GrantedAuthority> authorities,
-                             Map<String, Object> attributes1) {
-        this.username = username;
-        this.password = password;
-        this.roleType = roleType1;
-        this.authorities = authorities;
-        this.attributes = attributes1;
     }
 
     @Override

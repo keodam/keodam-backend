@@ -1,4 +1,5 @@
 package com.keodam.keodam_backend.global.security.oidc.domain.userinfo;
+
 import java.util.Map;
 
 public class KakaoUserInfo extends UserInfo{
@@ -11,5 +12,4 @@ public class KakaoUserInfo extends UserInfo{
 
     @Override
     public String getEmail(){ return (String) attributes.get("email"); }
-
 }
