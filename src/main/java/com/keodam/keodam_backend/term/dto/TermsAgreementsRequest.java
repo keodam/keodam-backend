@@ -1,4 +1,4 @@
-package com.keodam.keodam_backend.term;
+package com.keodam.keodam_backend.term.dto;
 
 import jakarta.validation.constraints.AssertTrue;
 

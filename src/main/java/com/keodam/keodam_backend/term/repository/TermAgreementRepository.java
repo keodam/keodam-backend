@@ -1,6 +1,6 @@
 package com.keodam.keodam_backend.term.repository;
 
-import com.keodam.keodam_backend.app.domain.User;
+import com.keodam.keodam_backend.app.user.domain.User;
 import com.keodam.keodam_backend.term.domain.Term;
 import com.keodam.keodam_backend.term.domain.TermAgreement;
 import com.keodam.keodam_backend.term.domain.TermAgreementId;
