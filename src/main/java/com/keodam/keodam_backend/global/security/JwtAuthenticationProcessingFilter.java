@@ -78,7 +78,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         CustomUserDetails userDetailsUser = new CustomUserDetails(
                 myUser.getEmail(),
                 myUser.getRoleType(),
-                Collections.singleton(new SimpleGrantedAuthority(myUser.getRoleType().toString())),
+                Collections.singleton(new SimpleGrantedAuthority("ROLE_" + myUser.getRoleType().toString())),
                 Collections.emptyMap());
 
         Authentication authentication =
