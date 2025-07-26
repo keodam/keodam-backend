@@ -98,7 +98,9 @@ public enum ErrorStatus implements BaseErrorCode {
 
     //term
     TERM_NOT_FOUND(HttpStatus.BAD_REQUEST, "TERM01", "존재하지 않는 약관입니다."),
-    ALREADY_AGREED_TERM(HttpStatus.BAD_REQUEST, "TERM02", "이미 동의한 약관입니다.");
+    PRIVACY_TERM_NOT_FOUND(HttpStatus.BAD_REQUEST, "TERM02", "존재하지 않는 개인정보 약관입니다."),
+    SERVICE_TERM_NOT_FOUND(HttpStatus.BAD_REQUEST, "TERM03", "존재하지 않는 서비스 약관입니다."),
+    MARKETING_TERM_NOT_FOUND(HttpStatus.BAD_REQUEST, "TERM04", "존재하지 않는 마케팅 약관입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
