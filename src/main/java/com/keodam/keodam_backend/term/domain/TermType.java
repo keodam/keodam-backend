@@ -1,5 +1,8 @@
 package com.keodam.keodam_backend.term.domain;
 
+import com.keodam.keodam_backend.exception.GeneralException;
+import com.keodam.keodam_backend.global.code.status.ErrorStatus;
+
 import java.util.Arrays;
 
 public enum TermType {
@@ -20,6 +23,6 @@ public enum TermType {
         return Arrays.stream(values())
                 .filter(e -> e.code.equalsIgnoreCase(code))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 약관 코드: " + code));
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TERM_NOT_FOUND));
     }
 }
