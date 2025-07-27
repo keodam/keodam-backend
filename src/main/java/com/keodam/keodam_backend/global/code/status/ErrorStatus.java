@@ -94,7 +94,13 @@ public enum ErrorStatus implements BaseErrorCode {
     MENTOR_NOT_FOUND(HttpStatus.BAD_REQUEST, "MENTOR01", "존재하지 않는 멘토 프로필입니다."),
 
     //oidc
-    UNSUPPORTED_PROVIDER(HttpStatus.BAD_REQUEST, "LOGIN01", "지원하지 않는 제공 업체입니다.");
+    UNSUPPORTED_PROVIDER(HttpStatus.BAD_REQUEST, "LOGIN01", "지원하지 않는 제공 업체입니다."),
+
+    //term
+    TERM_NOT_FOUND(HttpStatus.BAD_REQUEST, "TERM01", "존재하지 않는 약관입니다."),
+    PRIVACY_TERM_NOT_FOUND(HttpStatus.BAD_REQUEST, "TERM02", "존재하지 않는 개인정보 약관입니다."),
+    SERVICE_TERM_NOT_FOUND(HttpStatus.BAD_REQUEST, "TERM03", "존재하지 않는 서비스 약관입니다."),
+    MARKETING_TERM_NOT_FOUND(HttpStatus.BAD_REQUEST, "TERM04", "존재하지 않는 마케팅 약관입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

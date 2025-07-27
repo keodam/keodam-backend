@@ -8,10 +8,15 @@ import com.keodam.keodam_backend.app.admin.dto.AdminRegisterDto;
 import com.keodam.keodam_backend.app.admin.service.AdminService;
 import com.keodam.keodam_backend.global.ApiResponse;
 import com.keodam.keodam_backend.global.code.status.SuccessStatus;
+import com.keodam.keodam_backend.term.dto.TermCreateRequest;
+import com.keodam.keodam_backend.term.dto.TermCreateResponse;
+import com.keodam.keodam_backend.term.service.TermService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
 
     private final AdminService adminService;
+    private final TermService termService;
 
     @PostMapping("/register")
     @Operation(summary = "관리자 회원가입 신청", description = "미승인 상태의 관리자 계정 생성")
@@ -45,5 +51,14 @@ public class AdminController {
             @RequestBody AdminPasswordUpdateDto dto) {
         adminService.updatePassword(adminDetails.getAdmin(), dto.currentPassword(), dto.newPassword());
         return ResponseEntity.ok(ApiResponse.of(SuccessStatus._OK, "비밀번호가 변경되었습니다."));
+    }
+
+    /** 컨트롤러 따로 만들지 말지 결정 필요 **/
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/terms/create")
+    @Operation(summary = "약관 등록", description = "약관을 등록하는 API", security = @SecurityRequirement(name = "Authorization"))
+    public ApiResponse<TermCreateResponse> createTerm(@RequestBody TermCreateRequest request){
+
+        return ApiResponse.onSuccess(termService.addTerm(request));
     }
 }

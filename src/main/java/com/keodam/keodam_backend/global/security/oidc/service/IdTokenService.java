@@ -41,7 +41,7 @@ public class IdTokenService {
         return new CustomUserDetails(
                 findUser.getEmail(),
                 findUser.getRoleType(),
-                Collections.singleton(new SimpleGrantedAuthority(findUser.getRoleType().toString())),
+                Collections.singleton(new SimpleGrantedAuthority("ROLE_" + findUser.getRoleType().toString())),
                 attributes
         );
     }
