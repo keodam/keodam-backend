@@ -1,5 +1,6 @@
 package com.keodam.keodam_backend.mypage.roulette.service;
 
+import com.keodam.keodam_backend.app.user.coffeeChatProfile.repository.MentorRepository;
 import com.keodam.keodam_backend.app.user.domain.User;
 import com.keodam.keodam_backend.app.user.repository.UserRepository;
 import com.keodam.keodam_backend.exception.GeneralException;
@@ -11,9 +12,11 @@ import com.keodam.keodam_backend.mypage.roulette.dto.SpinResultResponse;
 import com.keodam.keodam_backend.mypage.roulette.repository.ExchangeRequestRepository;
 import com.keodam.keodam_backend.mypage.roulette.repository.RouletteSpinLogRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RouletteService {
@@ -21,28 +24,29 @@ public class RouletteService {
     private final UserRepository userRepository;
     private final RouletteSpinLogRepository rouletteSpinLogRepository;
     private final ExchangeRequestRepository exchangeRequestRepository;
+    private final MentorRepository mentorRepository;
 
     @Transactional(readOnly = true)
-    public RouletteStatusResponse getRouletteStatus(Long userId) {
-        User user = findUserById(userId);
+    public RouletteStatusResponse getRouletteStatus(String email) {
+        User user = findUserByEmail(email);
         return new RouletteStatusResponse(user.getRouletteCoupon(), user.getCoffeeCoupon());
     }
 
     @Transactional
-    public SpinResultResponse spinRoulette(Long userId) {
-        User user = findUserById(userId);
+    public SpinResultResponse spinRoulette(String email) {
+        User user = findUserByEmail(email);
 
-        if (user.getRouletteCoupon() <= 0) {
-            throw new GeneralException(ErrorStatus.NO_ROULETTE_COUPONS);
-        }
         user.decreaseRouletteCoupon(1);
 
         SpinResultType result = determineSpinResult();
 
         if (result == SpinResultType.COUPON) {
             user.increaseCoffeeCoupon(1);
+        } else if (result == SpinResultType.EXP150) {
+            addExperienceToMentor(user, 150);
+        } else if (result == SpinResultType.EXP300) {
+            addExperienceToMentor(user, 300);
         }
-        // TODO: 경험치 EXP, 꽝 당첨 시 로직 추가
 
         RouletteSpinLog log = new RouletteSpinLog();
         log.setUser(user);
@@ -53,31 +57,37 @@ public class RouletteService {
     }
 
     @Transactional
-    public void requestCoffeeExchange(Long userId, CoffeeExchangeRequest request) {
-        User user = findUserById(userId);
+    public void requestCoffeeExchange(String email, CoffeeExchangeRequest request) {
+        String formattedPhoneNumber = normalizeAndValidatePhoneNumber(request.getPhoneNumber());
+        User user = findUserByEmail(email);
 
-        if (user.getCoffeeCoupon() <= 0) {
-            throw new GeneralException(ErrorStatus.NO_COFFEE_COUPONS);
-        }
         user.decreaseCoffeeCoupon(1);
 
-        // 교환 신청 내역 저장
-        ExchangeRequest exchangeRequest = ExchangeRequest.builder()
-                .user(user)
-                .phoneNumber(request.getPhoneNumber())
-                .status(ExchangeRequestStatus.PENDING)
-                .build();
-        exchangeRequestRepository.save(exchangeRequest);
+        try {
+            ExchangeRequest exchangeRequest = ExchangeRequest.builder()
+                    .user(user)
+                    .phoneNumber(formattedPhoneNumber)
+                    .status(ExchangeRequestStatus.PENDING)
+                    .build();
+            exchangeRequestRepository.save(exchangeRequest);
+        } catch (Exception e) {
+            log.error("커피 교환 신청 처리 중 에러 발생: {}", e.getMessage());
+            throw new GeneralException(ErrorStatus.EXCHANGE_REQUEST_FAILED);
+        }
     }
 
-    // 공통 사용자 조회 메소드
-    private User findUserById(Long userId) {
-        return userRepository.findById(userId)
+    private void addExperienceToMentor(User user, int amount) {
+        mentorRepository.findByUser(user).ifPresent(mentor -> {
+            mentor.addExpPoint(amount);
+        });
+    }
+
+    private User findUserByEmail(String email) {
+        return userRepository.findByEmail(email)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
     }
 
     private SpinResultType determineSpinResult() {
-        // TODO: 실제 확률 정책에 맞게 구현
         double random = Math.random();
         if (random < 0.1) {
             return SpinResultType.COUPON;
@@ -88,5 +98,19 @@ public class RouletteService {
         } else {
             return SpinResultType.NONE;
         }
+    }
+
+    private String normalizeAndValidatePhoneNumber(String phoneNumber) {
+        if (phoneNumber == null) {
+            throw new GeneralException(ErrorStatus.INVALID_PHONE_NUMBER_FORMAT);
+        }
+
+        String digits = phoneNumber.replaceAll("[^0-9]", "");
+
+        if (!digits.startsWith("010") || digits.length() != 11) {
+            throw new GeneralException(ErrorStatus.INVALID_PHONE_NUMBER_FORMAT);
+        }
+
+        return digits.replaceAll("(\\d{3})(\\d{4})(\\d{4})", "$1-$2-$3");
     }
 }
