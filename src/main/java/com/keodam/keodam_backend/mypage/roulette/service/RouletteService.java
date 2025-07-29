@@ -1,6 +1,7 @@
 package com.keodam.keodam_backend.mypage.roulette.service;
 
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.repository.MentorRepository;
+import com.keodam.keodam_backend.app.user.coffeeChatProfile.domain.MypageStats;
+import com.keodam.keodam_backend.app.user.coffeeChatProfile.repository.MypageStatsRepository;
 import com.keodam.keodam_backend.app.user.domain.User;
 import com.keodam.keodam_backend.app.user.repository.UserRepository;
 import com.keodam.keodam_backend.exception.GeneralException;
@@ -24,7 +25,7 @@ public class RouletteService {
     private final UserRepository userRepository;
     private final RouletteSpinLogRepository rouletteSpinLogRepository;
     private final ExchangeRequestRepository exchangeRequestRepository;
-    private final MentorRepository mentorRepository;
+    private final MypageStatsRepository mypageStatsRepository;
 
     @Transactional(readOnly = true)
     public RouletteStatusResponse getRouletteStatus(String email) {
@@ -42,10 +43,12 @@ public class RouletteService {
 
         if (result == SpinResultType.COUPON) {
             user.increaseCoffeeCoupon(1);
-        } else if (result == SpinResultType.EXP150) {
-            addExperienceToMentor(user, 150);
-        } else if (result == SpinResultType.EXP300) {
-            addExperienceToMentor(user, 300);
+        } else if (result == SpinResultType.EXP150 || result == SpinResultType.EXP300) {
+            MypageStats stats = mypageStatsRepository.findByUser(user)
+                    .orElseGet(() -> mypageStatsRepository.save(MypageStats.builder().user(user).build()));
+
+            int amount = (result == SpinResultType.EXP150) ? 150 : 300;
+            stats.addExpPoint(amount);
         }
 
         RouletteSpinLog log = new RouletteSpinLog();
@@ -74,12 +77,6 @@ public class RouletteService {
             log.error("커피 교환 신청 처리 중 에러 발생: {}", e.getMessage());
             throw new GeneralException(ErrorStatus.EXCHANGE_REQUEST_FAILED);
         }
-    }
-
-    private void addExperienceToMentor(User user, int amount) {
-        mentorRepository.findByUser(user).ifPresent(mentor -> {
-            mentor.addExpPoint(amount);
-        });
     }
 
     private User findUserByEmail(String email) {

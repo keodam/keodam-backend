@@ -37,9 +37,6 @@ public class Mentor {
     @Column(name = "mentoring_bean_amount")
     private Integer mentoringBeanAmount;
 
-    @Column(name = "exp_point")
-    private Integer expPoint;
-
     @Builder
     public Mentor(User user, String major, String company, String jobDescription, String mentoringTopics, String selfIntroduction, Integer mentoringBeanAmount) {
         this.user = user;
@@ -49,7 +46,6 @@ public class Mentor {
         this.mentoringTopics = mentoringTopics;
         this.selfIntroduction = selfIntroduction;
         this.mentoringBeanAmount = mentoringBeanAmount;
-        this.expPoint = 0;
     }
 
     public void updateFromDto(User user, MentorRequestDto mentorRequestDto) {
@@ -60,12 +56,5 @@ public class Mentor {
         this.mentoringTopics = mentorRequestDto.getMentoringTopics();
         this.selfIntroduction = mentorRequestDto.getSelfIntroduction();
         this.mentoringBeanAmount = mentorRequestDto.getMentoringBeanAmount();
-    }
-
-    public void addExpPoint(int amount) {
-        if (this.expPoint == null) {
-            this.expPoint = 0;
-        }
-        this.expPoint += amount;
     }
 }

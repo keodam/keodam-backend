@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Mypage Roulette", description = "마이페이지 룰렛 기능 API")
+@Tag(name = "User Mypage Roulette", description = "유저 마이페이지 룰렛 기능 API")
 @RestController
 @RequestMapping("/api/mypage/roulette")
 @RequiredArgsConstructor
