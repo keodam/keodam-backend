@@ -6,6 +6,7 @@ import com.keodam.keodam_backend.app.user.coffeeChatProfile.dto.request.MenteeRe
 import com.keodam.keodam_backend.app.user.coffeeChatProfile.dto.response.MenteeResponseDto;
 import com.keodam.keodam_backend.app.user.coffeeChatProfile.repository.MenteeHashtagRepository;
 import com.keodam.keodam_backend.app.user.coffeeChatProfile.repository.MenteeRepository;
+import com.keodam.keodam_backend.app.user.domain.User;
 import com.keodam.keodam_backend.app.user.repository.UserRepository;
 import com.keodam.keodam_backend.community.domain.HashTag;
 import com.keodam.keodam_backend.community.repository.HashTagRepository;
