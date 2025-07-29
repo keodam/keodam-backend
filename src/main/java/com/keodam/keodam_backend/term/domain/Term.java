@@ -24,6 +24,7 @@ public class Term {
     @Column(nullable = false)
     private Integer version;
 
+    @Lob
     @Column(nullable = false)
     private String content;
 
