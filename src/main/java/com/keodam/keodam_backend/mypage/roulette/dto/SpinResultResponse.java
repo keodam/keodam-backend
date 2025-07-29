@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class SprinResultResponse {
+public class SpinResultResponse {
     private String result;
     private int remainingRouletteCoupons;
 }
