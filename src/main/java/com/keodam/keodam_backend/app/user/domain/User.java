@@ -108,4 +108,20 @@ public class User {
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
+
+    public void decreaseRouletteCoupon(int amount) {
+        if (this.rouletteCoupon < amount) {
+            throw new GeneralException(ErrorStatus.NO_ROULETTE_COUPONS);
+        }
+        this.rouletteCoupon -= amount;
+    }
+
+    public void increaseCoffeeCoupon(int amount) { this.coffeeCoupon += amount; }
+
+    public void decreaseCoffeeCoupon(int amount) {
+        if (this.coffeeCoupon < amount) {
+            throw new GeneralException(ErrorStatus.NO_COFFEE_COUPONS);
+        }
+        this.coffeeCoupon -= amount;
+    }
 }

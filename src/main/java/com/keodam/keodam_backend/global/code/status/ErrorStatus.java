@@ -100,7 +100,13 @@ public enum ErrorStatus implements BaseErrorCode {
     TERM_NOT_FOUND(HttpStatus.BAD_REQUEST, "TERM01", "존재하지 않는 약관입니다."),
     PRIVACY_TERM_NOT_FOUND(HttpStatus.BAD_REQUEST, "TERM02", "존재하지 않는 개인정보 약관입니다."),
     SERVICE_TERM_NOT_FOUND(HttpStatus.BAD_REQUEST, "TERM03", "존재하지 않는 서비스 약관입니다."),
-    MARKETING_TERM_NOT_FOUND(HttpStatus.BAD_REQUEST, "TERM04", "존재하지 않는 마케팅 약관입니다.");
+    MARKETING_TERM_NOT_FOUND(HttpStatus.BAD_REQUEST, "TERM04", "존재하지 않는 마케팅 약관입니다."),
+
+    // 룰렛 관련 오류
+    NO_ROULETTE_COUPONS(HttpStatus.BAD_REQUEST, "ROULETTE4001", "룰렛 이용권이 없습니다."),
+    NO_COFFEE_COUPONS(HttpStatus.BAD_REQUEST, "ROULETTE4002", "보유한 커피 교환권이 없습니다."),
+    INVALID_PHONE_NUMBER_FORMAT(HttpStatus.BAD_REQUEST, "ROULETTE4003", "휴대폰 번호 형식을 다시 확인해주세요."),
+    EXCHANGE_REQUEST_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "ROULETTE5001", "교환 신청에 실패하였습니다. 관리자에게 문의바랍니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
