@@ -93,6 +93,7 @@ public enum ErrorStatus implements BaseErrorCode {
 
     //mentor
     MENTOR_NOT_FOUND(HttpStatus.BAD_REQUEST, "MENTOR01", "존재하지 않는 멘토 프로필입니다."),
+    MENTOR_ACCESS_ONLY(HttpStatus.BAD_REQUEST, "ROLE4002", "멘토만 접근 가능한 API입니다."),
 
     //oidc
     UNSUPPORTED_PROVIDER(HttpStatus.BAD_REQUEST, "LOGIN01", "지원하지 않는 제공 업체입니다."),
