@@ -44,6 +44,7 @@ public enum ErrorStatus implements BaseErrorCode {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4001", "회원 정보를 찾을 수 없습니다."),
     ALREADY_REGISTER_REFERRAL(HttpStatus.BAD_REQUEST, "USER4003", "이미 추천인을 등록하셨습니다."),
     CANNOT_REFER_SELF(HttpStatus.BAD_REQUEST, "USER4004", "자기 자신은 추천인으로 등록할 수 없습니다."),
+    INVALID_STUDENT_STATUS(HttpStatus.BAD_REQUEST, "USER4001", "유효하지 않은 재학상태입니다."),
 
     // admin
     ALREADY_REGISTER_ADMIN(HttpStatus.BAD_REQUEST, "ADMIN4001", "이미 가입한 기록이 존재합니다."),
@@ -92,6 +93,7 @@ public enum ErrorStatus implements BaseErrorCode {
 
     //mentor
     MENTOR_NOT_FOUND(HttpStatus.BAD_REQUEST, "MENTOR01", "존재하지 않는 멘토 프로필입니다."),
+    MENTOR_ACCESS_ONLY(HttpStatus.BAD_REQUEST, "ROLE4002", "멘토만 접근 가능한 API입니다."),
 
     //oidc
     UNSUPPORTED_PROVIDER(HttpStatus.BAD_REQUEST, "LOGIN01", "지원하지 않는 제공 업체입니다."),

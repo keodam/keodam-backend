@@ -1,4 +1,4 @@
-package com.keodam.keodam_backend.app.user.coffeeChatProfile.domain;
+package com.keodam.keodam_backend.app.user.coffeechatprofile.domain;
 
 public enum MentorHashtagType {
     HELP,      // 도움 줄 수 있는 분야

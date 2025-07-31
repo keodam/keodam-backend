@@ -1,13 +1,13 @@
-package com.keodam.keodam_backend.app.user.coffeeChatProfile.service;
+package com.keodam.keodam_backend.app.user.coffeechatprofile.service;
 
 import com.keodam.keodam_backend.app.user.domain.User;
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.domain.Mentor;
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.domain.MentorHashtag;
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.domain.MentorHashtagType;
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.dto.request.MentorRequestDto;
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.dto.response.MentorResponseDto;
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.repository.MentorHashtagRepository;
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.repository.MentorRepository;
+import com.keodam.keodam_backend.app.user.coffeechatprofile.domain.Mentor;
+import com.keodam.keodam_backend.app.user.coffeechatprofile.domain.MentorHashtag;
+import com.keodam.keodam_backend.app.user.coffeechatprofile.domain.MentorHashtagType;
+import com.keodam.keodam_backend.app.user.coffeechatprofile.dto.request.MentorRequestDto;
+import com.keodam.keodam_backend.app.user.coffeechatprofile.dto.response.MentorResponseDto;
+import com.keodam.keodam_backend.app.user.coffeechatprofile.repository.MentorHashtagRepository;
+import com.keodam.keodam_backend.app.user.coffeechatprofile.repository.MentorRepository;
 import com.keodam.keodam_backend.app.user.repository.UserRepository;
 import com.keodam.keodam_backend.community.domain.HashTag;
 import com.keodam.keodam_backend.community.repository.HashTagRepository;

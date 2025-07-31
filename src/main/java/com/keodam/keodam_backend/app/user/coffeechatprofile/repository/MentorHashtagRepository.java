@@ -1,8 +1,8 @@
-package com.keodam.keodam_backend.app.user.coffeeChatProfile.repository;
+package com.keodam.keodam_backend.app.user.coffeechatprofile.repository;
 
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.domain.Mentor;
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.domain.MentorHashtag;
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.domain.MentorHashtagType;
+import com.keodam.keodam_backend.app.user.coffeechatprofile.domain.Mentor;
+import com.keodam.keodam_backend.app.user.coffeechatprofile.domain.MentorHashtag;
+import com.keodam.keodam_backend.app.user.coffeechatprofile.domain.MentorHashtagType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

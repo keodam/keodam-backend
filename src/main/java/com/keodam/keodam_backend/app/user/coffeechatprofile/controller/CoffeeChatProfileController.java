@@ -1,11 +1,11 @@
-package com.keodam.keodam_backend.app.user.coffeeChatProfile.controller;
+package com.keodam.keodam_backend.app.user.coffeechatprofile.controller;
 
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.dto.request.MenteeRequestDto;
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.dto.response.MenteeResponseDto;
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.dto.request.MentorRequestDto;
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.dto.response.MentorResponseDto;
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.service.MenteeProfileService;
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.service.MentorProfileService;
+import com.keodam.keodam_backend.app.user.coffeechatprofile.dto.request.MenteeRequestDto;
+import com.keodam.keodam_backend.app.user.coffeechatprofile.dto.response.MenteeResponseDto;
+import com.keodam.keodam_backend.app.user.coffeechatprofile.dto.request.MentorRequestDto;
+import com.keodam.keodam_backend.app.user.coffeechatprofile.dto.response.MentorResponseDto;
+import com.keodam.keodam_backend.app.user.coffeechatprofile.service.MenteeProfileService;
+import com.keodam.keodam_backend.app.user.coffeechatprofile.service.MentorProfileService;
 import com.keodam.keodam_backend.global.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -42,7 +42,7 @@ public class CoffeeChatProfileController {
     @GetMapping("/mentee/{menteeId}")
     @Operation(summary = "커피챗 멘티 프로필 조회", description = "멘티 프로필 조회", security = @SecurityRequirement(name = "Authorization"))
     public ApiResponse<MenteeResponseDto> getMentee(@PathVariable Long menteeId) {
-        return ApiResponse.onSuccess( menteeProfileService.getMentee(menteeId));
+        return ApiResponse.onSuccess(menteeProfileService.getMentee(menteeId));
     }
 
     @GetMapping("/mentor/{mentorId}")

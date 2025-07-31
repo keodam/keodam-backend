@@ -1,7 +1,7 @@
 package com.keodam.keodam_backend.mypage.roulette.service;
 
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.domain.MypageStats;
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.repository.MypageStatsRepository;
+import com.keodam.keodam_backend.app.user.coffeechatprofile.domain.MypageStats;
+import com.keodam.keodam_backend.app.user.coffeechatprofile.repository.MypageStatsRepository;
 import com.keodam.keodam_backend.app.user.domain.User;
 import com.keodam.keodam_backend.app.user.repository.UserRepository;
 import com.keodam.keodam_backend.exception.GeneralException;

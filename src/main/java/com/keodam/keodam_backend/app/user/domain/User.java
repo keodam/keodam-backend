@@ -69,6 +69,10 @@ public class User {
     @Column(name = "profile_status")
     private ProfileStatus profileStatus;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "student_status")
+    private StudentStatus studentStatus;
+
     @Builder
     public User(String nickname, String email, String profileUrl, SocialType socialType, RoleType roleType, String oauthId) {
         this.nickname = nickname;
@@ -116,12 +120,18 @@ public class User {
         this.rouletteCoupon -= amount;
     }
 
-    public void increaseCoffeeCoupon(int amount) { this.coffeeCoupon += amount; }
+    public void increaseCoffeeCoupon(int amount) {
+        this.coffeeCoupon += amount;
+    }
 
     public void decreaseCoffeeCoupon(int amount) {
         if (this.coffeeCoupon < amount) {
             throw new GeneralException(ErrorStatus.NO_COFFEE_COUPONS);
         }
         this.coffeeCoupon -= amount;
+    }
+
+    public void updateStudentStatus(StudentStatus status) {
+        this.studentStatus = status;
     }
 }

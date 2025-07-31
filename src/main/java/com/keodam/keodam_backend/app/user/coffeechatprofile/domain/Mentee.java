@@ -1,7 +1,7 @@
-package com.keodam.keodam_backend.app.user.coffeeChatProfile.domain;
+package com.keodam.keodam_backend.app.user.coffeechatprofile.domain;
 
 import com.keodam.keodam_backend.app.user.domain.User;
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.dto.request.MenteeRequestDto;
+import com.keodam.keodam_backend.app.user.coffeechatprofile.dto.request.MenteeRequestDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

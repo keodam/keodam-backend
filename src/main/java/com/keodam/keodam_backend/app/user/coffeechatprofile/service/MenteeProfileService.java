@@ -1,11 +1,11 @@
-package com.keodam.keodam_backend.app.user.coffeeChatProfile.service;
+package com.keodam.keodam_backend.app.user.coffeechatprofile.service;
 
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.domain.Mentee;
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.domain.MenteeHashtag;
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.dto.request.MenteeRequestDto;
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.dto.response.MenteeResponseDto;
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.repository.MenteeHashtagRepository;
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.repository.MenteeRepository;
+import com.keodam.keodam_backend.app.user.coffeechatprofile.domain.Mentee;
+import com.keodam.keodam_backend.app.user.coffeechatprofile.domain.MenteeHashtag;
+import com.keodam.keodam_backend.app.user.coffeechatprofile.dto.request.MenteeRequestDto;
+import com.keodam.keodam_backend.app.user.coffeechatprofile.dto.response.MenteeResponseDto;
+import com.keodam.keodam_backend.app.user.coffeechatprofile.repository.MenteeHashtagRepository;
+import com.keodam.keodam_backend.app.user.coffeechatprofile.repository.MenteeRepository;
 import com.keodam.keodam_backend.app.user.domain.User;
 import com.keodam.keodam_backend.app.user.repository.UserRepository;
 import com.keodam.keodam_backend.community.domain.HashTag;

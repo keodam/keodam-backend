@@ -3,6 +3,7 @@ package com.keodam.keodam_backend.app.user.controller;
 import com.keodam.keodam_backend.app.user.domain.User;
 import com.keodam.keodam_backend.app.user.dto.NicknameRequestDto;
 import com.keodam.keodam_backend.app.user.dto.RoleRequestDto;
+import com.keodam.keodam_backend.app.user.dto.StudentStatusRequestDto;
 import com.keodam.keodam_backend.app.user.dto.UserResponseDto;
 import com.keodam.keodam_backend.app.user.service.UserService;
 import com.keodam.keodam_backend.exception.GeneralException;
@@ -48,7 +49,11 @@ public class UserController {
     }
 
     @PatchMapping("/role")
-    @Operation(summary = "역할 설정 및 수정", description = "역할 설정 및 수정 API", security = @SecurityRequirement(name = "Authorization"))
+    @Operation(
+            summary = "역할 설정 및 수정",
+            description = "역할 설정 및 수정 API\n\n" +
+                    "사용 가능한 역할: GUEST, MENTOR, MENTEE",
+            security = @SecurityRequirement(name = "Authorization"))
     public ResponseEntity<ApiResponse<UserResponseDto>> selectRole(
             @RequestBody RoleRequestDto roleRequestDto,
             Authentication authentication) {
@@ -65,11 +70,51 @@ public class UserController {
     @PatchMapping(value = "file", consumes = "multipart/form-data")
     @Operation(summary = "사용자 프로필 사진 등록 및 수정", description = "파일이미지로 프로필 등록 API", security = @SecurityRequirement(name = "Authorization"))
     public ResponseEntity<ApiResponse<UserResponseDto>> uploadProfileImage(Authentication authentication,
-                                                             @RequestPart(name = "ImageFile", required = true) MultipartFile file) {
+                                                                           @RequestPart(name = "ImageFile", required = true) MultipartFile file) {
         String email = authentication.getName();
         User user = userService.findByEmail(email)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
         return ResponseEntity.ok(ApiResponse.onSuccess(userService.uploadProfileImage(user, file)));
+    }
+
+    @PatchMapping("/student-status")
+    @Operation(
+            summary = "재학상태 설정 및 수정",
+            description = "재학상태 설정 및 수정 API\n\n" +
+                    "사용 가능한 값: HIGH_SCHOOL_GRADUATE, UNIVERSITY_STUDENT, UNIVERSITY_GRADUATE_2_3, UNIVERSITY_GRADUATE_4, JOB_SEEKER, EMPLOYEE",
+            security = @SecurityRequirement(name = "Authorization"))
+    public ResponseEntity<ApiResponse<String>> updateStudentStatus(Authentication authentication,
+                                                                   @RequestBody StudentStatusRequestDto studentStatusRequestDto) {
+        String email = authentication.getName();
+        User user = userService.findByEmail(email)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        userService.updateStudentStatus(user, studentStatusRequestDto);
+        return ResponseEntity.ok(ApiResponse.onSuccess("Successfully update student status"));
+    }
+
+    @GetMapping("/profile-complete")
+    @Operation(summary = "커뮤니티 최초 프로필 완료 여부 반환 API", description = "커뮤니티 최초 프로필 완료 여부 반환 API", security = @SecurityRequirement(name = "Authorization"))
+    public ResponseEntity<ApiResponse<Boolean>> completeProfile(Authentication authentication) {
+        String email = authentication.getName();
+
+        User user = userService.findByEmail(email)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        return ResponseEntity.ok(ApiResponse.onSuccess(userService.completeProfile(user)));
+    }
+
+    @PostMapping("/mentoring-bean")
+    @Operation(summary = "커뮤니티 최초 프로필 작성 시 멘토의 원두 설정 API", description = "커뮤니티 최초 프로필 작성 시 멘토 원두 설정 API", security = @SecurityRequirement(name = "Authorization"))
+    public ResponseEntity<ApiResponse<String>> createMentoringBean(Authentication authentication,
+                                                                   @RequestBody int mentoringBean) {
+        String email = authentication.getName();
+
+        User user = userService.findByEmail(email)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        userService.createMentoringBean(user, mentoringBean);
+        return ResponseEntity.ok(ApiResponse.onSuccess("Successfully created mentoring bean."));
     }
 }
