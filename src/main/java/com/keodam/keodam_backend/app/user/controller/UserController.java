@@ -95,7 +95,7 @@ public class UserController {
     }
 
     @GetMapping("/profile-complete")
-    @Operation(summary = "커뮤니티 최초 프로필 완료 여부 반환", description = "커뮤니티 최초 프로필 완료 여부 반환 API", security = @SecurityRequirement(name = "Authorization"))
+    @Operation(summary = "커뮤니티 최초 프로필 완료 여부 반환 API", description = "커뮤니티 최초 프로필 완료 여부 반환 API", security = @SecurityRequirement(name = "Authorization"))
     public ResponseEntity<ApiResponse<Boolean>> completeProfile(Authentication authentication) {
         String email = authentication.getName();
 
@@ -103,5 +103,18 @@ public class UserController {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
         return ResponseEntity.ok(ApiResponse.onSuccess(userService.completeProfile(user)));
+    }
+
+    @PostMapping("/mentoring-bean")
+    @Operation(summary = "커뮤니티 최초 프로필 작성 시 멘토의 원두 설정 API", description = "커뮤니티 최초 프로필 작성 시 멘토 원두 설정 API", security = @SecurityRequirement(name = "Authorization"))
+    public ResponseEntity<ApiResponse<String>> createMentoringBean(Authentication authentication,
+                                                                   @RequestBody int mentoringBean) {
+        String email = authentication.getName();
+
+        User user = userService.findByEmail(email)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        userService.createMentoringBean(user, mentoringBean);
+        return ResponseEntity.ok(ApiResponse.onSuccess("Successfully created mentoring bean."));
     }
 }

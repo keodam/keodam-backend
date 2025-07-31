@@ -1,5 +1,6 @@
 package com.keodam.keodam_backend.app.user.service;
 
+import com.keodam.keodam_backend.app.user.coffeechatprofile.domain.Mentor;
 import com.keodam.keodam_backend.app.user.coffeechatprofile.repository.MentorRepository;
 import com.keodam.keodam_backend.app.user.domain.RoleType;
 import com.keodam.keodam_backend.app.user.domain.StudentStatus;
@@ -133,6 +134,19 @@ public class UserService {
             return isMentorProfileComplete(user);
         }
         return false;
+    }
+
+    @Transactional
+    public void createMentoringBean(User user, int mentoringBean) {
+        if (user.getRoleType() != RoleType.MENTOR) {
+            throw new GeneralException(ErrorStatus.MENTOR_ACCESS_ONLY);
+        }
+
+        Mentor mentor = Mentor.builder()
+                .user(user)
+                .mentoringBeanAmount(mentoringBean)
+                .build();
+        mentorRepository.save(mentor);
     }
 
     private boolean isMentorProfileComplete(User user) {
