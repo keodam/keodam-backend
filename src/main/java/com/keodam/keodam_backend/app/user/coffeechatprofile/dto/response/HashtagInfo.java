@@ -1,4 +1,4 @@
-package com.keodam.keodam_backend.app.user.coffeeChatProfile.dto.response;
+package com.keodam.keodam_backend.app.user.coffeechatprofile.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;

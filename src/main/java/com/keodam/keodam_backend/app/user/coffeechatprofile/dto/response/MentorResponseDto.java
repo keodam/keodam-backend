@@ -1,7 +1,7 @@
-package com.keodam.keodam_backend.app.user.coffeeChatProfile.dto.response;
+package com.keodam.keodam_backend.app.user.coffeechatprofile.dto.response;
 
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.domain.Mentor;
-import com.keodam.keodam_backend.app.user.coffeeChatProfile.domain.MentorHashtag;
+import com.keodam.keodam_backend.app.user.coffeechatprofile.domain.Mentor;
+import com.keodam.keodam_backend.app.user.coffeechatprofile.domain.MentorHashtag;
 import lombok.Builder;
 import lombok.Getter;
 

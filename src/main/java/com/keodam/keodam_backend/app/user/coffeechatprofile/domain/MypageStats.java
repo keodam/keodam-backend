@@ -1,4 +1,4 @@
-package com.keodam.keodam_backend.app.user.coffeeChatProfile.domain;
+package com.keodam.keodam_backend.app.user.coffeechatprofile.domain;
 
 import com.keodam.keodam_backend.app.user.domain.User;
 import jakarta.persistence.*;

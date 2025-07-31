@@ -1,4 +1,4 @@
-package com.keodam.keodam_backend.app.user.coffeeChatProfile.dto.request;
+package com.keodam.keodam_backend.app.user.coffeechatprofile.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
