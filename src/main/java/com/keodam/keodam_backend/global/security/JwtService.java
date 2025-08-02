@@ -42,7 +42,7 @@ public class JwtService {
 
     public String createAccessToken(String email) {
         Date now = new Date();
-        return JWT.create()
+        return BEARER + JWT.create()
                 .withSubject(ACCESS_TOKEN)
                 .withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))
                 .withClaim(EMAIL_CLAIM, email)
@@ -51,7 +51,7 @@ public class JwtService {
 
     public String createRefreshToken() {
         Date now = new Date();
-        return JWT.create()
+        return BEARER + JWT.create()
                 .withSubject(REFRESH_TOKEN)
                 .withExpiresAt(new Date(now.getTime() + refreshTokenExpirationPeriod))
                 .sign(Algorithm.HMAC512(secretKey));
