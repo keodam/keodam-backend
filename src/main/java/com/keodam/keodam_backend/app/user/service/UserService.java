@@ -1,16 +1,21 @@
 package com.keodam.keodam_backend.app.user.service;
 
+import com.keodam.keodam_backend.app.phone.domain.UserIdentityInfo;
+import com.keodam.keodam_backend.app.phone.repository.UserIdentityInfoRepository;
 import com.keodam.keodam_backend.app.user.coffeechatprofile.domain.Mentor;
 import com.keodam.keodam_backend.app.user.coffeechatprofile.repository.MentorRepository;
 import com.keodam.keodam_backend.app.user.domain.RoleType;
 import com.keodam.keodam_backend.app.user.domain.StudentStatus;
 import com.keodam.keodam_backend.app.user.domain.User;
 import com.keodam.keodam_backend.app.user.dto.StudentStatusRequestDto;
+import com.keodam.keodam_backend.app.user.dto.UserMeResponseDto;
 import com.keodam.keodam_backend.app.user.repository.UserRepository;
 import com.keodam.keodam_backend.app.user.dto.UserResponseDto;
 import com.keodam.keodam_backend.exception.GeneralException;
 import com.keodam.keodam_backend.global.aws.AwsS3Service;
 import com.keodam.keodam_backend.global.code.status.ErrorStatus;
+import com.keodam.keodam_backend.term.domain.TermType;
+import com.keodam.keodam_backend.term.repository.TermAgreementRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +31,59 @@ public class UserService {
     private final UserRepository userRepository;
     private final AwsS3Service awsS3Service;
     private final MentorRepository mentorRepository;
+    private final UserIdentityInfoRepository userIdentityInfoRepository;
+    private final TermAgreementRepository termAgreementRepository;
+
+
+    @Transactional(readOnly = true)
+    public UserMeResponseDto getUserInfoAndSignupStep(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        boolean agreedTerms = termAgreementRepository.existsByUserAndTerm_Type(user, TermType.PRIVACY_POLICY) &&
+                termAgreementRepository.existsByUserAndTerm_Type(user, TermType.TERMS_OF_SERVICE);
+
+        Optional<UserIdentityInfo> identityOpt = userIdentityInfoRepository.findByUser(user);
+        boolean isPhoneVerified = identityOpt.isPresent() &&
+                identityOpt.get().getIsActive() &&
+                identityOpt.get().getVerifiedAt() != null;
+
+        boolean isProfileCompleted = user.getNickname() != null &&
+                user.getStudentStatus() != null &&
+                user.getRoleType() != null &&
+                user.getRoleType() != RoleType.GUEST;
+
+        boolean isMentor = user.getRoleType() == RoleType.MENTOR;
+        boolean isBeanPreferenceSet = false;
+        if (isMentor) {
+            isBeanPreferenceSet = isMentorProfileComplete(user);
+        }
+
+        String signupStep;
+        if (!agreedTerms) {
+            signupStep = "AGREEMENT";
+        } else if (!isPhoneVerified) {
+            signupStep = "PHONE_VERIFICATION";
+        } else if (!isProfileCompleted) {
+            signupStep = "PROFILE_SETUP";
+        } else if (isMentor && !isBeanPreferenceSet) {
+            signupStep = "BEAN_PREFERENCE_SETUP";
+        } else {
+            signupStep = "DONE";
+        }
+
+        return UserMeResponseDto.builder()
+                .email(user.getEmail())
+                .nickname(user.getNickname())
+                .profileImageUrl(user.getProfileUrl())
+                .agreedTerms(agreedTerms)
+                .phoneVerified(isPhoneVerified)
+                .profileCompleted(isProfileCompleted)
+                .mentor(isMentor)
+                .beanPreferenceSet(isBeanPreferenceSet)
+                .signupStep(signupStep)
+                .build();
+    }
 
     /**
      * 닉네임 저장 및 중복 체크

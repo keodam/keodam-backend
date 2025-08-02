@@ -5,6 +5,7 @@ import com.keodam.keodam_backend.app.user.dto.NicknameRequestDto;
 import com.keodam.keodam_backend.app.user.dto.RoleRequestDto;
 import com.keodam.keodam_backend.app.user.dto.StudentStatusRequestDto;
 import com.keodam.keodam_backend.app.user.dto.UserResponseDto;
+import com.keodam.keodam_backend.app.user.dto.UserMeResponseDto;
 import com.keodam.keodam_backend.app.user.service.UserService;
 import com.keodam.keodam_backend.exception.GeneralException;
 import com.keodam.keodam_backend.global.ApiResponse;
@@ -25,6 +26,17 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserController {
 
     private final UserService userService;
+
+    @GetMapping("/me")
+    @Operation(summary = "내 정보 조회 (Onboarding 상태 확인)",
+            description = "로그인 직후 호출하여 사용자의 기본 정보와 현재 온보딩 단계(signupStep)를 반환합니다. " +
+                    "프론트엔드는 이 'signupStep' 값을 기준으로 적절한 화면으로 라우팅해야 합니다.",
+            security = @SecurityRequirement(name = "Authorization"))
+    public ResponseEntity<ApiResponse<UserMeResponseDto>> getMyInfo(Authentication authentication) {
+        String email = authentication.getName();
+        UserMeResponseDto responseDto = userService.getUserInfoAndSignupStep(email);
+        return ResponseEntity.ok(ApiResponse.onSuccess(responseDto));
+    }
 
     @PatchMapping("/nickname")
     @Operation(summary = "닉네임 설정 및 수정", description = "닉네임 설정 및 수정 API", security = @SecurityRequirement(name = "Authorization"))
