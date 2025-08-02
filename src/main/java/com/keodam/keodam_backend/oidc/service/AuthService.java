@@ -8,6 +8,7 @@ import com.keodam.keodam_backend.global.code.status.ErrorStatus;
 import com.keodam.keodam_backend.global.security.JwtService;
 import com.keodam.keodam_backend.oidc.dto.IdTokenResponse;
 import com.keodam.keodam_backend.oidc.domain.IdTokenAttributes;
+import com.keodam.keodam_backend.oidc.dto.RefreshReqRes;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.util.Pair;
@@ -20,12 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 
-import com.keodam.keodam_backend.global.code.status.ErrorStatus;
-
 @Slf4j
 @Service
 @AllArgsConstructor
-public class IdTokenService {
+public class AuthService {
 
     private final JwtDecoder kakaoJwtDecoder;
     private final JwtDecoder googleJwtDecoder;
@@ -57,6 +56,29 @@ public class IdTokenService {
         findUser = checkUser(idTokenAttributes);
 
         return Pair.of(new IdTokenResponse(findUser.getRoleType(), findUser.getRefreshToken()), jwtService.createAccessToken(findUser.getEmail()));
+    }
+
+    @Transactional
+    public Pair<RefreshReqRes, String> reIssueRefreshTokenAndAccessToken(String refreshToken){
+
+        if(refreshToken.startsWith("BEARER"))
+            refreshToken = refreshToken.substring(7);
+
+        if(!jwtService.isTokenValid(refreshToken))
+            throw new GeneralException(ErrorStatus.RELOGIN_REQUIRED);
+
+        User user = userRepository.findByRefreshToken(refreshToken)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        return Pair.of(new RefreshReqRes(reIssueRefreshToken(user)), jwtService.createAccessToken(user.getEmail()));
+    }
+
+    private String reIssueRefreshToken(User user) {
+
+        String reIssuedRefreshToken = jwtService.createRefreshToken();
+        user.updateRefreshToken(reIssuedRefreshToken);
+        userRepository.saveAndFlush(user);
+        return reIssuedRefreshToken;
     }
 
     private SocialType checkIssuer(String provider){

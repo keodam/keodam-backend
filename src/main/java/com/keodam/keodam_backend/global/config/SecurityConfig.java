@@ -1,7 +1,5 @@
 package com.keodam.keodam_backend.global.config;
 
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.keodam.keodam_backend.app.admin.repository.AdminRepository;
 import com.keodam.keodam_backend.app.admin.security.AdminJwtAuthenticationFilter;
 import com.keodam.keodam_backend.app.user.repository.UserRepository;
