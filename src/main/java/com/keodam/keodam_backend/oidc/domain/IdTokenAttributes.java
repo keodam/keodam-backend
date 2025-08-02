@@ -1,12 +1,8 @@
-package com.keodam.keodam_backend.global.security.oidc.domain;
+package com.keodam.keodam_backend.oidc.domain;
 
 import com.keodam.keodam_backend.app.user.domain.RoleType;
 import com.keodam.keodam_backend.app.user.domain.SocialType;
 import com.keodam.keodam_backend.app.user.domain.User;
-import com.keodam.keodam_backend.global.security.oidc.domain.userinfo.AppleUserInfo;
-import com.keodam.keodam_backend.global.security.oidc.domain.userinfo.GoogleUserInfo;
-import com.keodam.keodam_backend.global.security.oidc.domain.userinfo.KakaoUserInfo;
-import com.keodam.keodam_backend.global.security.oidc.domain.userinfo.UserInfo;
 import lombok.Getter;
 
 import java.util.Map;
@@ -18,10 +14,9 @@ public class IdTokenAttributes {
     private SocialType socialType;
 
     public IdTokenAttributes(Map<String, Object> attributes, SocialType socialType){
-        this.socialType = socialType;
-        if(socialType == SocialType.GOOGLE) this.userInfo = new GoogleUserInfo(attributes);
-        if(socialType == SocialType.KAKAO) this.userInfo = new KakaoUserInfo(attributes);
-        if(socialType == SocialType.APPLE) this.userInfo = new AppleUserInfo(attributes);
+
+       userInfo = new UserInfo(attributes);
+       this.socialType = socialType;
     }
 
     public User toUser() {

@@ -1,4 +1,4 @@
-package com.keodam.keodam_backend.global.security.oidc;
+package com.keodam.keodam_backend.oidc.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
