@@ -15,6 +15,8 @@ public enum ErrorStatus implements BaseErrorCode {
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "COMMON401", "인증이 필요합니다."),
     FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON403", "금지된 요청입니다."),
 
+    INVALID_PROVIDER(HttpStatus.BAD_REQUEST, "LOGIN4001", "잘못된 제공업체입니다."),
+
     MEMBER_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4001", "사용자가 없습니다."),
     EMAIL_NOT_FOUND(HttpStatus.BAD_REQUEST, "MEMBER4003", "이메일이 없습니다."),
     NICKNAME_NOT_EXIST(HttpStatus.BAD_REQUEST, "MEMBER4002", "닉네임은 필수 입니다."),
@@ -26,6 +28,7 @@ public enum ErrorStatus implements BaseErrorCode {
     JWT_SIGNATURE_INVALID(HttpStatus.UNAUTHORIZED, "AUTH001", "JWT 서명이 올바르지 않습니다."),
     JWT_EXPIRED(HttpStatus.UNAUTHORIZED, "AUTH002", "JWT 토큰이 만료되었습니다."),
     JWT_MALFORMED(HttpStatus.UNAUTHORIZED, "AUTH003", "JWT 토큰이 올바르지 않은 형식입니다."),
+    INVALID_JWT(HttpStatus.BAD_REQUEST, "AUTH004", "잘못된 JWT 토큰입니다."),
 
     //UserVerifyCode
     INVALID_PHONE_FORMAT(HttpStatus.BAD_REQUEST, "PHONE4001", "휴대폰번호 형식을 확인해주세요. "),
