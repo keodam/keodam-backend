@@ -36,7 +36,7 @@ public class AddressDataProcessor {
 
         List<AddressEntry> validEntries = allEntries.stream()
                 .filter(entry -> entry.get삭제일자() == null || entry.get삭제일자().isEmpty())
-                .collect(Collectors.toList());
+                .toList();
 
         Map<String, Map<String, List<String>>> processedData = new HashMap<>();
 

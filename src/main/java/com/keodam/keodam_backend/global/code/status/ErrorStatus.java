@@ -51,6 +51,12 @@ public enum ErrorStatus implements BaseErrorCode {
     INVALID_PROVINCE(HttpStatus.BAD_REQUEST, "ADDRESS_4001", "유효하지 않은 시/도명입니다."),
     INVALID_DISTRICT(HttpStatus.BAD_REQUEST, "ADDRESS_4002", "유효하지 않은 시/군/구명입니다."),
 
+    // profile
+    INVALID_USER_TYPE(HttpStatus.BAD_REQUEST, "PROFILE_4001", "유효하지 않은 사용자 타입입니다."),
+    INVALID_PREFERRED_DAY(HttpStatus.BAD_REQUEST, "PROFILE_4002", "유효하지 않은 선호 요일이 포함되어 있습니다."),
+    INVALID_LOCATION_FORMAT(HttpStatus.BAD_REQUEST, "PROFILE_4003", "선호 장소 형식이 올바르지 않습니다."),
+    INVALID_LOCATION_DETAIL(HttpStatus.BAD_REQUEST, "PROFILE_4004", "선호 장소의 상세 정보가 유효하지 않습니다."),
+
     // admin
     ALREADY_REGISTER_ADMIN(HttpStatus.BAD_REQUEST, "ADMIN4001", "이미 가입한 기록이 존재합니다."),
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "ADMIN4002", "비밀번호를 확인해주세요."),
