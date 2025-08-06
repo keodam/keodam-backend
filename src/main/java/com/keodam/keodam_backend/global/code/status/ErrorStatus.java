@@ -46,6 +46,11 @@ public enum ErrorStatus implements BaseErrorCode {
     CANNOT_REFER_SELF(HttpStatus.BAD_REQUEST, "USER4004", "자기 자신은 추천인으로 등록할 수 없습니다."),
     INVALID_STUDENT_STATUS(HttpStatus.BAD_REQUEST, "USER4001", "유효하지 않은 재학상태입니다."),
 
+    // address
+    INVALID_ADDRESS(HttpStatus.BAD_REQUEST, "ADDRESS_400", "유효하지 않은 주소명입니다."),
+    INVALID_PROVINCE(HttpStatus.BAD_REQUEST, "ADDRESS_4001", "유효하지 않은 시/도명입니다."),
+    INVALID_DISTRICT(HttpStatus.BAD_REQUEST, "ADDRESS_4002", "유효하지 않은 시/군/구명입니다."),
+
     // admin
     ALREADY_REGISTER_ADMIN(HttpStatus.BAD_REQUEST, "ADMIN4001", "이미 가입한 기록이 존재합니다."),
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "ADMIN4002", "비밀번호를 확인해주세요."),
