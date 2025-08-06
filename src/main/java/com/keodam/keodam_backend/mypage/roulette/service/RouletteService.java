@@ -40,15 +40,23 @@ public class RouletteService {
         user.decreaseRouletteCoupon(1);
 
         SpinResultType result = determineSpinResult();
+        String itemIndex;
 
         if (result == SpinResultType.COUPON) {
             user.increaseCoffeeCoupon(1);
-        } else if (result == SpinResultType.EXP150 || result == SpinResultType.EXP300) {
+            itemIndex = "item2";
+        } else if (result == SpinResultType.EXP150) {
             MypageStats stats = mypageStatsRepository.findByUser(user)
                     .orElseGet(() -> mypageStatsRepository.save(MypageStats.builder().user(user).build()));
-
-            int amount = (result == SpinResultType.EXP150) ? 150 : 300;
-            stats.addExpPoint(amount);
+            stats.addExpPoint(150);
+            itemIndex = "item1";
+        } else if (result == SpinResultType.EXP300) {
+            MypageStats stats = mypageStatsRepository.findByUser(user)
+                    .orElseGet(() -> mypageStatsRepository.save(MypageStats.builder().user(user).build()));
+            stats.addExpPoint(300);
+            itemIndex = "item4";
+        } else {
+            itemIndex = "item3";
         }
 
         RouletteSpinLog log = new RouletteSpinLog();
@@ -56,7 +64,7 @@ public class RouletteService {
         log.setResultType(result);
         rouletteSpinLogRepository.save(log);
 
-        return new SpinResultResponse(result.name(), user.getRouletteCoupon());
+        return new SpinResultResponse(result.name(), user.getRouletteCoupon(), itemIndex);
     }
 
     @Transactional
@@ -64,15 +72,21 @@ public class RouletteService {
         String formattedPhoneNumber = normalizeAndValidatePhoneNumber(request.getPhoneNumber());
         User user = findUserByEmail(email);
 
-        user.decreaseCoffeeCoupon(1);
+        if (user.getCoffeeCoupon() < request.getQuantity()) {
+            throw new GeneralException(ErrorStatus.NOT_ENOUGH_COFFEE_COUPONS);
+        }
+
+        user.decreaseCoffeeCoupon(request.getQuantity());
 
         try {
-            ExchangeRequest exchangeRequest = ExchangeRequest.builder()
-                    .user(user)
-                    .phoneNumber(formattedPhoneNumber)
-                    .status(ExchangeRequestStatus.PENDING)
-                    .build();
-            exchangeRequestRepository.save(exchangeRequest);
+            for (int i = 0; i < request.getQuantity(); i++) {
+                ExchangeRequest exchangeRequest = ExchangeRequest.builder()
+                        .user(user)
+                        .phoneNumber(formattedPhoneNumber)
+                        .status(ExchangeRequestStatus.PENDING)
+                        .build();
+                exchangeRequestRepository.save(exchangeRequest);
+            }
         } catch (Exception e) {
             log.error("커피 교환 신청 처리 중 에러 발생: {}", e.getMessage());
             throw new GeneralException(ErrorStatus.EXCHANGE_REQUEST_FAILED);

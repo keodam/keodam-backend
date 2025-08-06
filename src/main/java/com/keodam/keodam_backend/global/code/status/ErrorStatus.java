@@ -107,7 +107,8 @@ public enum ErrorStatus implements BaseErrorCode {
     // 룰렛 관련 오류
     NO_ROULETTE_COUPONS(HttpStatus.BAD_REQUEST, "ROULETTE4001", "룰렛 이용권이 없습니다."),
     NO_COFFEE_COUPONS(HttpStatus.BAD_REQUEST, "ROULETTE4002", "보유한 커피 교환권이 없습니다."),
-    INVALID_PHONE_NUMBER_FORMAT(HttpStatus.BAD_REQUEST, "ROULETTE4003", "휴대폰 번호 형식을 다시 확인해주세요."),
+    NOT_ENOUGH_COFFEE_COUPONS(HttpStatus.BAD_REQUEST, "ROULETTE4003", "보유한 커피 교환권 수량을 확인해주세요."),
+    INVALID_PHONE_NUMBER_FORMAT(HttpStatus.BAD_REQUEST, "ROULETTE4004", "휴대폰 번호 형식을 다시 확인해주세요."),
     EXCHANGE_REQUEST_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "ROULETTE5001", "교환 신청에 실패하였습니다. 관리자에게 문의바랍니다.");
 
     private final HttpStatus httpStatus;
