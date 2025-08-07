@@ -12,7 +12,6 @@ import com.keodam.keodam_backend.app.user.coffeechatprofile.repository.MenteeRep
 import com.keodam.keodam_backend.mypage.address.service.AddressService;
 import java.util.HashSet;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
