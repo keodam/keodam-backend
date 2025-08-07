@@ -31,7 +31,7 @@ public class AddressService {
             }
         } catch (IOException e) {
             log.error("Failed to load address data: {}", e.getMessage());
-            throw new RuntimeException("Failed to load address data", e);
+            throw new GeneralException(ErrorStatus.INVALID_ADDRESS);
         }
     }
 
@@ -59,6 +59,7 @@ public class AddressService {
         if (neighborhoods == null) {
             throw new GeneralException(ErrorStatus.INVALID_DISTRICT);
         }
-        return new ArrayList<>(neighborhoods);
+
+        return List.copyOf(neighborhoods);
     }
 }
