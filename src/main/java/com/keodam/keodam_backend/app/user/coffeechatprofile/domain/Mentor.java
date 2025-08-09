@@ -7,6 +7,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -37,8 +42,14 @@ public class Mentor {
     @Column(name = "mentoring_bean_amount")
     private Integer mentoringBeanAmount;
 
+    @Column(name = "preferred_days", length = 255)
+    private String preferredDays;
+
+    @Column(name = "preferred_locations", length = 2048)
+    private String preferredLocations;
+
     @Builder
-    public Mentor(User user, String major, String company, String jobDescription, String mentoringTopics, String selfIntroduction, Integer mentoringBeanAmount) {
+    public Mentor(User user, String major, String company, String jobDescription, String mentoringTopics, String selfIntroduction, Integer mentoringBeanAmount, List<String> preferredDays, List<String> preferredLocations) {
         this.user = user;
         this.major = major;
         this.company = company;
@@ -46,6 +57,8 @@ public class Mentor {
         this.mentoringTopics = mentoringTopics;
         this.selfIntroduction = selfIntroduction;
         this.mentoringBeanAmount = mentoringBeanAmount;
+        updatePreferredDays(preferredDays);
+        updatePreferredLocations(preferredLocations);
     }
 
     public void updateFromDto(User user, MentorRequestDto mentorRequestDto) {
@@ -56,5 +69,27 @@ public class Mentor {
         this.mentoringTopics = mentorRequestDto.getMentoringTopics();
         this.selfIntroduction = mentorRequestDto.getSelfIntroduction();
         this.mentoringBeanAmount = mentorRequestDto.getMentoringBeanAmount();
+    }
+
+    public void updatePreferredDays(List<String> preferredDays) {
+        this.preferredDays = preferredDays != null ? String.join(",", preferredDays) : null;
+    }
+
+    public List<String> getPreferredDaysAsList() {
+        if (this.preferredDays == null || this.preferredDays.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return Arrays.stream(this.preferredDays.split(",")).collect(Collectors.toList());
+    }
+
+    public void updatePreferredLocations(List<String> preferredLocations) {
+        this.preferredLocations = preferredLocations != null ? String.join(",", preferredLocations) : null;
+    }
+
+    public List<String> getPreferredLocationsAsList() {
+        if (this.preferredLocations == null || this.preferredLocations.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return Arrays.stream(this.preferredLocations.split(",")).collect(Collectors.toList());
     }
 }

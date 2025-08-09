@@ -8,4 +8,5 @@ import lombok.Getter;
 public class SpinResultResponse {
     private String result;
     private int remainingRouletteCoupons;
+    private String itemIndex;
 }

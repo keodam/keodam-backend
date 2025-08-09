@@ -46,6 +46,17 @@ public enum ErrorStatus implements BaseErrorCode {
     CANNOT_REFER_SELF(HttpStatus.BAD_REQUEST, "USER4004", "자기 자신은 추천인으로 등록할 수 없습니다."),
     INVALID_STUDENT_STATUS(HttpStatus.BAD_REQUEST, "USER4001", "유효하지 않은 재학상태입니다."),
 
+    // address
+    INVALID_ADDRESS(HttpStatus.BAD_REQUEST, "ADDRESS_400", "유효하지 않은 주소명입니다."),
+    INVALID_PROVINCE(HttpStatus.BAD_REQUEST, "ADDRESS_4001", "유효하지 않은 시/도명입니다."),
+    INVALID_DISTRICT(HttpStatus.BAD_REQUEST, "ADDRESS_4002", "유효하지 않은 시/군/구명입니다."),
+
+    // profile
+    INVALID_USER_TYPE(HttpStatus.BAD_REQUEST, "PROFILE_4001", "유효하지 않은 사용자 타입입니다."),
+    INVALID_PREFERRED_DAY(HttpStatus.BAD_REQUEST, "PROFILE_4002", "유효하지 않은 선호 요일이 포함되어 있습니다."),
+    INVALID_LOCATION_FORMAT(HttpStatus.BAD_REQUEST, "PROFILE_4003", "선호 장소 형식이 올바르지 않습니다."),
+    INVALID_LOCATION_DETAIL(HttpStatus.BAD_REQUEST, "PROFILE_4004", "선호 장소의 상세 정보가 유효하지 않습니다."),
+
     // admin
     ALREADY_REGISTER_ADMIN(HttpStatus.BAD_REQUEST, "ADMIN4001", "이미 가입한 기록이 존재합니다."),
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "ADMIN4002", "비밀번호를 확인해주세요."),
@@ -107,7 +118,8 @@ public enum ErrorStatus implements BaseErrorCode {
     // 룰렛 관련 오류
     NO_ROULETTE_COUPONS(HttpStatus.BAD_REQUEST, "ROULETTE4001", "룰렛 이용권이 없습니다."),
     NO_COFFEE_COUPONS(HttpStatus.BAD_REQUEST, "ROULETTE4002", "보유한 커피 교환권이 없습니다."),
-    INVALID_PHONE_NUMBER_FORMAT(HttpStatus.BAD_REQUEST, "ROULETTE4003", "휴대폰 번호 형식을 다시 확인해주세요."),
+    NOT_ENOUGH_COFFEE_COUPONS(HttpStatus.BAD_REQUEST, "ROULETTE4003", "보유한 커피 교환권 수량을 확인해주세요."),
+    INVALID_PHONE_NUMBER_FORMAT(HttpStatus.BAD_REQUEST, "ROULETTE4004", "휴대폰 번호 형식을 다시 확인해주세요."),
     EXCHANGE_REQUEST_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "ROULETTE5001", "교환 신청에 실패하였습니다. 관리자에게 문의바랍니다.");
 
     private final HttpStatus httpStatus;
