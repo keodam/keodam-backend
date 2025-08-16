@@ -36,4 +36,11 @@ public class UserMeResponseDto {
     @Schema(description = "회원가입 진행 단계", example = "DONE",
             allowableValues = {"AGREEMENT", "PHONE_VERIFICATION", "PROFILE_SETUP", "BEAN_PREFERENCE_SETUP", "DONE"})
     private String signupStep;
+
+    @Schema(description = "재학상태 추가", example = "HIGH_SCHOOL_GRADUATE")
+    private String studentStatus;
+
+    @Schema(description = "추천인 등록 여부", example = "true")
+    private String referralRegistered;
+
 }
