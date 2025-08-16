@@ -16,6 +16,7 @@ import com.keodam.keodam_backend.global.aws.AwsS3Service;
 import com.keodam.keodam_backend.global.code.status.ErrorStatus;
 import com.keodam.keodam_backend.term.domain.TermType;
 import com.keodam.keodam_backend.term.repository.TermAgreementRepository;
+import com.keodam.keodam_backend.app.user.referral.repository.ReferralRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +34,7 @@ public class UserService {
     private final MentorRepository mentorRepository;
     private final UserIdentityInfoRepository userIdentityInfoRepository;
     private final TermAgreementRepository termAgreementRepository;
+    private final ReferralRepository referralRepository;
 
 
     @Transactional(readOnly = true)
@@ -59,6 +61,8 @@ public class UserService {
             isBeanPreferenceSet = isMentorProfileComplete(user);
         }
 
+        String referralStatus = getReferralRegister(user);
+
         String signupStep;
         if (!agreedTerms) {
             signupStep = "AGREEMENT";
@@ -82,6 +86,8 @@ public class UserService {
                 .mentor(isMentor)
                 .beanPreferenceSet(isBeanPreferenceSet)
                 .signupStep(signupStep)
+                .studentStatus(getStudentStatusString(user))
+                .referralRegistered(referralStatus)
                 .build();
     }
 
@@ -211,5 +217,21 @@ public class UserService {
         return mentorRepository.findByUser(user)
                 .map(mentor -> mentor.getMentoringBeanAmount() != null)
                 .orElse(false);
+    }
+
+    private String getReferralRegister(User user) {
+        if (referralRepository.findBySponsor(user).isPresent()) {
+            return "REGISTERED";
+        } else {
+            return "NOT_REGISTERED";
+        }
+    }
+
+    private String getStudentStatusString(User user) {
+        if (user.getStudentStatus() != null) {
+            return user.getStudentStatus().name();
+        } else {
+            return "NOT_STATUS";
+        }
     }
 }
