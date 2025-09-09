@@ -129,4 +129,15 @@ public class UserController {
         userService.createMentoringBean(user, mentoringBean);
         return ResponseEntity.ok(ApiResponse.onSuccess("Successfully created mentoring bean."));
     }
+
+    @DeleteMapping("/delete-user")
+    @Operation(summary = "커뮤니티 최초 프로필 작성한 유저 정보 삭제 API", description = "커뮤니티 최초 프로필 작성 유저 삭제 API", security = @SecurityRequirement(name = "Authorization"))
+    public ResponseEntity<ApiResponse<String>> deleteUser(Authentication authentication) {
+        String email = authentication.getName();
+        User user = userService.findByEmail(email)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+        userService.deleteUser(user);
+        return ResponseEntity.ok(ApiResponse.onSuccess("Successfully delete user"));
+    }
 }
+
