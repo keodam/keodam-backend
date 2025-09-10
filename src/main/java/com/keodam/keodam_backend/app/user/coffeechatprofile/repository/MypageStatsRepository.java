@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MypageStatsRepository extends JpaRepository<MypageStats, Long> {
     Optional<MypageStats> findByUser(User user);
+    void deleteByUser(User user);
 }

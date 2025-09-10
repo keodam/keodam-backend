@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface MentorRepository extends JpaRepository<Mentor, Long> {
     Optional<Mentor> findByUser(User user);
+    void deleteByUser(User user);
 }

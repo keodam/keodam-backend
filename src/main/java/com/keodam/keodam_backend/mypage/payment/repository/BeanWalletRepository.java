@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface BeanWalletRepository extends JpaRepository<BeanWallet, Long> {
     Optional<BeanWallet> findByUser(User user);
+    void deleteByUser(User user);
 }

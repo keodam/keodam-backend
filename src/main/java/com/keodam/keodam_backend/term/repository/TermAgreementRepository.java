@@ -14,4 +14,6 @@ public interface TermAgreementRepository extends JpaRepository<TermAgreement, Te
     Optional<TermAgreement> findByUserAndTerm(User user, Term term);
 
     boolean existsByUserAndTerm_Type(User user, TermType type);
+
+    void deleteByUser(User user);
 }
