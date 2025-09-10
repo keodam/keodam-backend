@@ -2,7 +2,9 @@ package com.keodam.keodam_backend.app.user.service;
 
 import com.keodam.keodam_backend.app.phone.domain.UserIdentityInfo;
 import com.keodam.keodam_backend.app.phone.repository.UserIdentityInfoRepository;
+import com.keodam.keodam_backend.app.user.coffeechatprofile.domain.Mentee;
 import com.keodam.keodam_backend.app.user.coffeechatprofile.domain.Mentor;
+import com.keodam.keodam_backend.app.user.coffeechatprofile.repository.MenteeRepository;
 import com.keodam.keodam_backend.app.user.coffeechatprofile.repository.MentorRepository;
 import com.keodam.keodam_backend.app.user.domain.RoleType;
 import com.keodam.keodam_backend.app.user.domain.StudentStatus;
@@ -32,6 +34,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final AwsS3Service awsS3Service;
     private final MentorRepository mentorRepository;
+    private final MenteeRepository menteeRepository;
     private final UserIdentityInfoRepository userIdentityInfoRepository;
     private final TermAgreementRepository termAgreementRepository;
     private final ReferralRepository referralRepository;
@@ -211,6 +214,23 @@ public class UserService {
                 .mentoringBeanAmount(mentoringBean)
                 .build();
         mentorRepository.save(mentor);
+    }
+
+    @Transactional
+    public void deleteUser(User user) {
+        if (user.getRoleType() == RoleType.MENTOR) {
+            Mentor mentor = mentorRepository.findByUser(user).orElseThrow(()
+                    -> new GeneralException(ErrorStatus.MENTOR_NOT_FOUND));
+            mentorRepository.delete(mentor);
+        }
+        if (user.getRoleType() == RoleType.MENTEE) {
+            Mentee mentee = menteeRepository.findByUser(user).orElseThrow(()
+                    -> new GeneralException(ErrorStatus.MENTEE_NOT_FOUND));
+            menteeRepository.delete(mentee);
+        }
+        referralRepository.findBySponsor(user).ifPresent(referralRepository::delete);
+
+        userRepository.delete(user);
     }
 
     private boolean isMentorProfileComplete(User user) {
