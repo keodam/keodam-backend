@@ -21,4 +21,5 @@ public interface UserIdentityInfoRepository extends JpaRepository<UserIdentityIn
 
     // 사용자 이름(실명)으로 사용자 정보 조회
     Optional<UserIdentityInfo> findByUserRealName(String userRealName);
+    void deleteByUser(User user);
 }

@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface MenteeRepository extends JpaRepository<Mentee, Long> {
     Optional<Mentee> findByUser(User user);
+    void deleteByUser(User user);
 }
