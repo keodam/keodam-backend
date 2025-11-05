@@ -1,17 +1,19 @@
-name: Docker Image CI/CD
+name: Docker Image CI/CD (to OCIR & Deploy via SSH)
 
 on:
   push:
     branches: [ "develop" ]
 
 jobs:
-  build:
+  build-and-push:
+    name: Build and Push to OCIR
     runs-on: ubuntu-latest
     permissions:
       contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -35,46 +37,50 @@ jobs:
 
       - name: Modify build file name
         run: cp ./build/libs/*SNAPSHOT.jar ./keodam-main.jar
-
-      - name: Set up AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
-          
-      - name: Login to AWS ECR
+        
+      - name: Login to Oracle Cloud Infrastructure Registry (OCIR)
         run: |
-          aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY }}
+          echo "${{ secrets.OCIR_AUTH_TOKEN }}" | docker login ap-chuncheon-1.ocir.io -u 'axyafvnpfykf/ocir' --password-stdin
           
-      - name: Build and Push Docker Image
+      # --- OCIR 경로로 빌드 및 푸시 ---
+      - name: Build and Push Docker Image to OCIR
         run: |
           docker build -t keodam .
-          docker tag keodam:latest ${{ secrets.ECR_REPOSITORY }}/keodam:latest
-          docker push ${{ secrets.ECR_REPOSITORY }}/keodam:latest
+          docker tag keodam:latest ${{ secrets.OCIR_REPOSITORY_PATH }}:latest
+          docker push ${{ secrets.OCIR_REPOSITORY_PATH }}:latest
 
   deploy:
-    needs: build
+    name: Deploy to Server via SSH
+    needs: build-and-push # 이전 job 이름과 일치시킵니다.
     runs-on: ubuntu-latest
 
     steps:
-      - name: Configure AWS credentials using IAM role
-        uses: aws-actions/configure-aws-credentials@v2
+      # --- AWS SSM 대신 SSH로 배포 ---
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.3 # SSH 접속을 위한 인기 액션
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
+          host: ${{ secrets.SSH_HOST }}            
+          username: ${{ secrets.SSH_USERNAME }}   
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22                              
           
-      - name: Run Docker container on EC2 via SSM
-        run: |
-          aws ssm send-command \
-            --instance-ids ${{ secrets.EC2_INSTANCE_ID }} \
-            --document-name "AWS-RunShellScript" \
-            --comment "Deploy Docker container" \
-            --parameters 'commands=[
-              "aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY }}",
-              "docker pull ${{ secrets.ECR_REPOSITORY }}/keodam:latest",
-              "sudo docker stop keodam",
-              "sudo docker rm keodam",
-              "sudo docker run -d --name keodam -p 8080:8080 ${{ secrets.ECR_REPOSITORY }}/keodam:latest"
-            ]'
+          # GitHub Secrets를 서버의 환경 변수로 전달
+          envs: OCIR_AUTH_TOKEN, OCIR_REPOSITORY_PATH 
+          
+          script: |
+            # --- 서버에서 실행할 스크립트 ---
+            
+            # 1. (서버에서) OCIR 로그인 (GitHub Secret을 환경변수로 받아 사용)
+            echo $OCIR_AUTH_TOKEN | docker login ap-chuncheon-1.ocir.io -u 'axyafvnpfykf/ocir' --password-stdin
+            
+            # 2. 최신 이미지 PULL
+            docker pull $OCIR_REPOSITORY_PATH:latest
+            
+            # 3. 기존 컨테이너 중지 (없으면 오류 방지)
+            sudo docker stop keodam || true
+            
+            # 4. 기존 컨테이너 삭제 (없으면 오류 방지)
+            sudo docker rm keodam || true
+            
+            # 5. 새 컨테이너 실행
+            sudo docker run -d --name keodam -p 8080:8080 $OCIR_REPOSITORY_PATH:latest
