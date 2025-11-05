@@ -71,10 +71,10 @@ jobs:
             # --- 서버에서 실행할 스크립트 ---
             
             # 1. (서버에서) OCIR 로그인 (GitHub Secret을 환경변수로 받아 사용)
-            echo $OCIR_AUTH_TOKEN | docker login ap-chuncheon-1.ocir.io -u 'axyafvnpfykf/ocir' --password-stdin
+            echo $OCIR_AUTH_TOKEN | sudo docker login ap-chuncheon-1.ocir.io -u 'axyafvnpfykf/ocir' --password-stdin
             
             # 2. 최신 이미지 PULL
-            docker pull $OCIR_REPOSITORY_PATH:latest
+            sudo docker pull $OCIR_REPOSITORY_PATH:latest
             
             # 3. 기존 컨테이너 중지 (없으면 오류 방지)
             sudo docker stop keodam || true
